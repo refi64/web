@@ -73,7 +73,7 @@ export function attachDomCallbacks(callbacks: Callbacks, options?: Options) {
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function loaded() {
+  function loaded() {
     document.removeEventListener('DOMContentLoaded', loaded)
 
     if (callbacks.onRootLoad) {
@@ -94,5 +94,14 @@ export function attachDomCallbacks(callbacks: Callbacks, options?: Options) {
         navigateCompleteListener
       )
     }
-  })
+  }
+
+  if (
+    document.readyState === 'complete' ||
+    document.readyState === 'interactive'
+  ) {
+    loaded()
+  } else {
+    document.addEventListener('DOMContentLoaded', loaded)
+  }
 }
