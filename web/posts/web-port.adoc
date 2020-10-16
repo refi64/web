@@ -1,0 +1,86 @@
+# Going from Polymer to Vue, from JavaScript to Dart
+
+:created: 2017-10-10
+
+:tags: programming,website,polymer,dart,vue
+
+[#teaser]
+--
++++Remember the post a while back where I rewrote my website in Polymer? Yeah?+++
+
++++Well, I rewrote it. Again.+++
+--
+
+[id=polymer]
+== What was wrong with Polymer?
+
+[id=shadow]
+=== Shadow DOM isn't ready for prime time
+
++++Shadow DOM is a cool idea. However, in practice...not so much.+++
+
++++This all started with Polymer 2. I didn't like the new syntax, but I was still looking into upgrading. Now, rememebr that Polymer 2 brings shadow DOM by default instead of shady DOM.+++ **+++As awesome as this is, very few libraries support using shadow DOM.+++**
+
++++Trying to make Disqus and Prism work with shadow DOM was a freaking hot mess. Disqus... I never got it to work. After using a mix of+++ link:+++https://github.com/krux/postscribe+++[+++postscribe+++] +++to load the JS and+++ link:+++https://github.com/uzairfarooq/arrive+++[+++arrive+++] +++to move around global styles and elements, as well as+++ __+++monkey-patching+++__ +++the+++ ``+++document+++`` +++query functions to look into my components' shadow DOM, I managed to reach the point where everyone's avatars disappeared. It mostly worked otherwise, but the avatars were kinda obvious...+++
+
++++That's when I switched to Muut. I managed to get that one to work, using the same convulted mix of all those JS libraries and hacks. I never got around to making Prism work, because I reached the point where I didn't want to maintain the freaking code mess.+++
+
+[id=es6]
+=== I don't like ES6
+
++++Well, maybe not ES6 as much as the tooling around it.+++
+
++++There are the transpilers. For some reason that surpasses understanding, Babel is basically an abstract transpiler framework. By itself, that's not bad.+++
+
++++What really baffles me is+++ __+++why you need to install packages to literally do anything+++__ +++. Pretty much everyone uses Babel for ES6, yet you need to install a package for that.+++
+
++++Then there's the build tools. Remember when Gulp was cool? Forget about Gulp, Webpack's what you want now! I'm maintaining this site in my free time, and I don't mind...because it's fun. However, I don't find working with these over-engineered build tools fun+++ __+++at all+++__ +++.+++
+
+[id=dart]
+=== I wanted to use Dart, but Polymer+Dart is a lost cause
+
++++Dart has had+++ link:+++https://github.com/dart-lang/polymer-dart+++[+++Polymer 1.0 bindings+++] +++for a+++ __+++while+++__ +++now. However, these bindings haven't been updated since last year. Why? Because Polymer reached 2.0, and a lot of stuff changed.+++
+
++++Alas,+++ link:+++https://github.com/polymer-dart/polymerize+++[+++Polymerize+++] +++to the rescue! Well, maybe not... Polymerize requires you to use the Dart Dev Compiler, a.k.a. it doesn't support dart2js. The TL;DR of this is that DDC is supposed to be used for development purposes only. In addition, as DDC compiles to ES6 (dart2js compiles to ES5), I would need to also run a transpiler (e.g. Babel)+++ __+++on top+++__ +++of the already-transpiled Dart code.+++
+
+[id=vue]
+== What about Vue?
+
++++The second I found it, I knew I was in love. See, the thing I like is that it's+++ __+++practical+++__ +++. Amidst an ecosystem of over-engineered, poorly-designed frameworks and tools, Vue sticks out because it actually genuinely works well. I was up and running in around 10 minutes. I can't name another framework that allowed me to dive in so quickly.+++
+
++++However, the "official" way of making Vue components revolves around Webpack, a tool that I have no desire to use. Instead, I wrote+++ link:+++https://github.com/kirbyfan64/vue-module+++[+++vue-module+++] +++, which lets you define Vue components using a web components-like syntax. This also made the Polymer -> Vue transition significantly easier! (It also has atrocious load times because of all the AJAX calls for HTML imports, but ehh...)+++
+
+[id=material]
+=== VueMaterial is seriously great
+
++++Oddly enough, you'd expect Google's web framework to have the best material design components. Despite that, I've found VueMaterial's components to be a lot more lightweight and flexible. They're inspired by the (superior IMO) Angular material components.+++
+
+[id=js-to-dart]
+== From JS to Dart
+
++++Despite all this, I still don't like JS. My disdain for using JS tooling led my site to overkill on AJAX requests, and I knew I was fighting a losing battle. There was going to have to be a build of sorts+++ __+++somewhere+++__ +++. As I started to toy with Dart more and more, I realized I'd probably be able to bind Vue without+++ __+++too+++__ +++much trouble, right?+++
+
++++And thus the+++ link:+++http://www.dailymotion.com/video/x5upu9o+++[+++rabBIThole+++] +++began...+++
+
+[id=vuedart]
+=== Enter VueDart
+
++++This series of events is what led me to develop+++ link:+++https://refi64.com/vuedart/+++[+++VueDart+++] +++. Of course, when you develop a new set of framework bindings, you need docs. When writing the docs, you need syntax highlighting. All this led me to+++ __+++also+++__ +++write+++ link:+++https://github.com/kirbyfan64/pygments-dart+++[+++pygments-dart+++] +++, a pub HTML transformer that runs pygments on source code snippets. (This wasn't that redundant, though, since I ended up using the transformer for this very site.)+++
+
++++I also built+++ link:+++https://github.com/kirbyfan64/scopify+++[+++scopify+++] +++for VueDart, since Dart didn't seem to have any libraries to handle this, and I figured someone else might be able to use it in the future.+++
+
++++After VueDart reached a certain point feature-wise, I figured it was time for me to rewrite my website. Again.+++
+
++++Note that+++ __+++this site is built using the GitHub version, not the release+++__ +++. Several features (like scoped styles) aren't in a release variant yet.+++
+
+[id=transition]
+=== The transition
+
++++It was actually a lot easier than I thought. The JS to Dart conversions were rather straightforward, and Dart's bigger standard library and static typing helped out quite a bit.+++
+
++++Also, since now all the components are compiled into just one ~180K file for my Dart code and two packed JS and CSS files with Vue and other dependencies (sizes of those are 340K and 176K, respectively). It's still kind of big, but now it's not doing a dozen AJAX requests. A cold cache load of the site is around ~700KB on average (depending on the page), and now that I'm loading Muut separately from the rest of the page, everything is just a smidget faster. At minimum,+++ link:+++https://mobiforge.com/research-analysis/the-web-is-doom+++[+++the site's smaller than Doom+++] +++.+++
+
+[id=done]
+== Is this it?
+
++++I think so. After rewrite and rewrite, I finally feel pretty decently happy with how this all came out, whereas the other two times I could already imagine how I was going to redo everything again. I might go here and there and clean up the Dart code, or upgrade the VueDart version on new releases, but this site itself should be pretty stable for a while now.+++

@@ -1,0 +1,135 @@
+# Using AppVeyor to distribute Python wheels
+
+:created: 2014-09-21
+
+:tags: appveyor,ci,python,wheels
+
+[#teaser]
+--
+++++++ link:+++http://wheel.readthedocs.org/en/latest/+++[+++Wheels+++] +++are the future of distribution. No more messy broken setup.py scripts or need for a compiler to build C extensions! Of course, this has a glaring issue: a Linux user can't build Wheels of their C extension for Windows. Unless, of course, you use+++ link:+++https://travis-ci.org/+++[+++Travis CI+++] +++, install the MinGW compilers, define the compiler variables, etc. However, there is an easier way:+++ link:+++http://www.appveyor.com+++[+++AppVeyor+++] +++.+++
+--
+
++++AppVeyor uses a simple configuration file that uses YAML. Here is what the config file for your project might look like:+++
+
+[source,yaml]
+----
+
+install:
+  - ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'C:/get-pip.py')
+  - C:/Python34/python.exe C:/get-pip.py
+  - C:/Python34/Scripts/pip.exe install wheel
+build_script:
+  - python setup.py build
+test_script:
+  - C:/Python34/Scripts/py.test
+deploy_script:
+  - python setup.py sdist bdist_wheel upload
+    
+----
+
++++It goes into a file named appveyor.yml. Here's what's going on, one piece at a time:+++
+
+[source,yaml]
+----
+
+install:
+    
+----
+
++++The install section defines commands to run for installation.+++
+
+[source,yaml]
+----
+
+- ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'C:/get-pip.py')
+- C:/Python34/python.exe C:/get-pip.py
+    
+----
+
++++These two lines install pip. The first uses PowerShell to download the install script; the second runs it.+++
+
+[source,yaml]
+----
+
+- C:/Python34/Scripts/pip.exe install wheel
+- C:/Python34/Scripts/pip.exe install pytest
+    
+----
+
++++The first line installs wheel. The second is optional; it just installs pytest (a unit testing framework). I put it here as an example of installing other packages with pip.+++
+
+[source,yaml]
+----
+
+build_script:
+  - C:/Python34/python.exe setup.py build
+    
+----
+
++++The commands to build your Python project go here.+++
+
+[source,yaml]
+----
+
+test_script:
+  - C:/Python34/Scripts/py.test
+    
+----
+
++++Whatever you do to run your project tests go here.+++
+
+[source,yaml]
+----
+
+deploy_script:
+  - python setup.py sdist bdist_wheel upload
+    
+----
+
++++This is the magic part; it runs bdist_wheel and uploads the result.+++
+
++++That's it! Pretty simple, no? Now, you can build Windows binary wheels easily.+++
+
+++++++ **+++EDIT:+++** +++Someone pointed out in the comments that I completely ignored PyPI authentication. Luckily, it's a simple addition.+++
+
+. +
+--
++++Go to your AppVeyor account and click your username in the top-right corner. Select "Encrypt Data" in the menu that appears.+++
+
+image::http://s5.postimg.org/lmtn7ucsn/appveyor_encrypt.png[]
+--
++
+. +
+--
++++Type your password in the box and click "Encrypt". AppVeyor should give you an encrypted value. Copy it.+++
+
+image::http://s5.postimg.org/50c2yrjuv/appveyor_encrypt_win.png[]
+--
++
+. +
+--
++++Now, add this to the end of appveyor.yml:+++
+
+[source,yaml]
+----
+
+environment:
+  password:
+    secure: 
+        
+----
+
++++replaing+++ ``+++value+++`` +++with the value you copied from the Encrypt Data page. Then, change the deploy_script part to read this:+++
+
+[source,yaml]
+----
+
+deploy_script:
+  - "echo [pypi] > %USERPROFILE%\\.pypirc"
+  - "echo username: user >> %USERPROFILE%\\.pypirc"
+  - "echo password: %password% >> %USERPROFILE%\\.pypirc"
+  - python setup.py sdist bdist_wheel upload
+        
+----
+--
++

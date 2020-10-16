@@ -1,0 +1,21 @@
+{% extends "web/template/main.njk" %}
+{% from "web/template/_macros.njk" import post_title %}
+
+{% block title %} {{ metadata.doctitle }} {% endblock %}
+
+{% block content %}
+  {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}
+
+  {% block post_content %}
+  {% endblock %}
+
+  <div id="hyvor-talk-view"></div>
+  <script type="text/javascript">
+    var HYVOR_TALK_WEBSITE = {{ settings.hyvor_website_id }};
+    var HYVOR_TALK_CONFIG = {
+        url: window.location.href.split('#')[0],
+        id: 'cache' + window.location.pathname
+    };
+  </script>
+  <script async type="text/javascript" src="//talk.hyvor.com/web-api/embed"></script>
+{% endblock %}

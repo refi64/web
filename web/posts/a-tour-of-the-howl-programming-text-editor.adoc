@@ -1,0 +1,14 @@
+# A tour of the Howl programming text editor
+
+:created: 2016-03-20
+
+:tags: howl,moonscript,lua,video,youtube,editor
+
+[#teaser]
+--
++++Check it out on+++ link:+++https://youtu.be/FmxKXWXj90c+++[+++YouTube+++] +++or right here:+++
+--
+
+video::FmxKXWXj90c[youtube]
+
++++I think I did pretty well, considering I've never used a microphone before...+++

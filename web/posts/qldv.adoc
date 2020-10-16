@@ -1,0 +1,237 @@
+#  Getting rid of version warnings: an experiment at hacking the Linux/glibc dynamic linker to shut up
+
+:created: 2018-01-02
+
+:tags: programming,hack,assembly,qldv,elf
+
+[#teaser]
+--
++++If you use a non-Debian/Ubuntu distro (I recently switched to Arch), you've probably had a moment where you downloaded some binaries and tried running them, only to get an error like this:+++
+
+[source,bash]
+----
+
+$ lldb-argdumper -h
+usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available (required by usr/bin/lldb-argdumper)
+usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
+usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
+usr/bin/lldb-argdumper: /usr/lib/libpanel.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
+      
+----
+
++++Ugh. Normally these warnings are nothing more than an annoyance. However, recently I started trying to get Swift working on my new Arch install. With Swift, the warnings suddenly turned much more lethal: some part of+++ ``+++swift package build+++`` +++assumes that, if one of the commands outputs anything (including these warnings), it has failed, and the build will be aborted.+++
+
++++Obviously, I couldn't stand for this. I mean, how hard could this be to fix?+++
+
++++(Spoiler alert: if you want to cut to the chase, I created a tool called+++ link:+++https://github.com/kirbyfan64/qldv+++[+++qldv+++] +++that does everything listed below already.)+++
+--
+
+[id=start]
+== Starting the search: LD_NOWARN
+
++++When I started Googling, all I could find where Stack Overflow posts where the accepted answer was,+++ __+++upgrade your packages+++__ +++. Of course, that only works if your distro uses versioned shared libraries. Guess What?+++ __+++Arch doesn't+++__ +++.+++
+
++++I then discovered the+++ __+++LD_NOWARN+++__ +++environment variable. This looked like the perfect solution! Except...it didn't work. Time to dig in the code.+++
+
+[id=source]
+== Exploring the glibc source code
+
++++A quick GitHub search led me to find+++ link:+++https://github.com/bminor/glibc/blob/master/elf/dl-version.c+++[+++dl-version.c+++] +++, the file where the warning is emitted. This is what the code looks like:+++
+
+[source,c]
+----
+
+  if (__glibc_unlikely (map->l_info[VERSYMIDX (DT_VERDEF)] == NULL))
+    {
+      /* The file has no symbol versioning.  I.e., the dependent
+	 object was linked against another version of this file.  We
+	 only print a message if verbose output is requested.  */
+      if (verbose)
+	{
+	  /* XXX We cannot translate the messages.  */
+	  _dl_exception_create_format
+	    (&exception, DSO_FILENAME (map->l_name),
+	     "no version information available (required by %s)", name);
+	  goto call_cerror;
+	}
+      return 0;
+    }
+    
+----
+
++++Looks pretty simple, right? This is inside the function+++ __+++match_symbol+++__ +++, which takes an argument named+++ __+++verbose+++__ +++. I figured all I had to do was figure out how to make+++ __+++verbose+++__ +++0/false.+++
+
++++A further search showed that+++ __+++match_symbol+++__ +++is called by+++ __+++_dl_check_map_versions+++__ +++, which passes down the+++ __+++verbose+++__ +++argument.+++ __+++That+++__ +++function is called by+++ __+++_dl_check_all_versions+++__ +++, which+++ __+++again+++__ +++is passing down a+++ __+++verbose+++__ +++argument.+++
+
+++++++ __+++_dl_check_all_versions+++__ +++is in turn called by+++ __+++version_check_doit+++__ +++located in+++ link:+++https://github.com/bminor/glibc/blob/master/elf/rtld.c+++[+++rtld.c+++] +++. This is the code:+++
+
+[source,c]
+----
+
+static void
+version_check_doit (void *a)
+{
+  struct version_check_args *args = (struct version_check_args *) a;
+  if (_dl_check_all_versions (GL(dl_ns)[LM_ID_BASE]._ns_loaded, 1,
+			      args->dotrace) && args->doexit)
+    /* We cannot start the application.  Abort now.  */
+    _exit (1);
+}
+    
+----
+
++++See the constant+++ ``+++1+++`` +++argument that can't be changed? Yup, that's the+++ __+++verbose+++__ +++argument.+++
+
+[id=binary]
+== Hacking the ld.so binary
+
++++This seems impossible to overcome. Unless, of course, you modify the+++ ``+++ld.so+++`` +++binary, right?+++
+
++++First off, I located my dynamic linker:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~  patchelf --print-interpreter /bin/sh
+/lib64/ld-linux-x86-64.so.2
+ ryan@DevPC-archLX  ~  realpath /lib64/ld-linux-x86-64.so.2
+/usr/lib/ld-2.26.so
+ ryan@DevPC-archLX  ~  mkdir ld-hack
+ ryan@DevPC-archLX  ~  cd ld-hack
+ ryan@DevPC-archLX  ~/ld-hack  cp /usr/lib/ld-2.26.so ld.so
+    
+----
+
++++Now that I had a copy of the linker, I used lldb to print the assembler code inside of the+++ __+++_dl_check_all_versions+++__ +++(this seemed like an easy target to change):+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  lldb ld.so -bo 'di -F intel -n _dl_check_all_versions'
+Current executable set to 'ld.so' (x86_64).
+(lldb) di -F intel -n _dl_check_all_versions
+ld.so`_dl_check_all_versions:
+ld.so[0x111a0] <+0>:   push   r13
+ld.so[0x111a2] <+2>:   push   r12
+ld.so[0x111a4] <+4>:   push   rbp
+ld.so[0x111a5] <+5>:   push   rbx
+ld.so[0x111a6] <+6>:   sub    rsp, 0x8
+ld.so[0x111aa] <+10>:  test   rdi, rdi
+ld.so[0x111ad] <+13>:  je     0x11200                   ; <+96>
+ld.so[0x111af] <+15>:  mov    rbx, rdi
+ld.so[0x111b2] <+18>:  mov    r12d, esi
+ld.so[0x111b5] <+21>:  mov    r13d, edx
+ld.so[0x111b8] <+24>:  xor    ebp, ebp
+ld.so[0x111ba] <+26>:  jmp    0x111c9                   ; <+41>
+ld.so[0x111bc] <+28>:  nop    dword ptr [rax]
+ld.so[0x111c0] <+32>:  mov    rbx, qword ptr [rbx + 0x18]
+ld.so[0x111c4] <+36>:  test   rbx, rbx
+ld.so[0x111c7] <+39>:  je     0x111f3                   ; <+83>
+ld.so[0x111c9] <+41>:  test   byte ptr [rbx + 0x315], 0x2
+ld.so[0x111d0] <+48>:  jne    0x111c0                   ; <+32>
+ld.so[0x111d2] <+50>:  mov    rdi, rbx
+ld.so[0x111d5] <+53>:  mov    edx, r13d
+ld.so[0x111d8] <+56>:  mov    esi, r12d
+ld.so[0x111db] <+59>:  call   0x10d30                   ; _dl_check_map_versions
+ld.so[0x111e0] <+64>:  mov    rbx, qword ptr [rbx + 0x18]
+ld.so[0x111e4] <+68>:  test   eax, eax
+ld.so[0x111e6] <+70>:  setne  al
+ld.so[0x111e9] <+73>:  movzx  eax, al
+ld.so[0x111ec] <+76>:  or     ebp, eax
+ld.so[0x111ee] <+78>:  test   rbx, rbx
+ld.so[0x111f1] <+81>:  jne    0x111c9                   ; <+41>
+ld.so[0x111f3] <+83>:  add    rsp, 0x8
+ld.so[0x111f7] <+87>:  mov    eax, ebp
+ld.so[0x111f9] <+89>:  pop    rbx
+ld.so[0x111fa] <+90>:  pop    rbp
+ld.so[0x111fb] <+91>:  pop    r12
+ld.so[0x111fd] <+93>:  pop    r13
+ld.so[0x111ff] <+95>:  ret
+ld.so[0x11200] <+96>:  add    rsp, 0x8
+ld.so[0x11204] <+100>: xor    ebp, ebp
+ld.so[0x11206] <+102>: pop    rbx
+ld.so[0x11207] <+103>: mov    eax, ebp
+ld.so[0x11209] <+105>: pop    rbp
+ld.so[0x1120a] <+106>: pop    r12
+ld.so[0x1120c] <+108>: pop    r13
+ld.so[0x1120e] <+110>: ret
+    
+----
+
+++++++ __+++_dl_check_all_versions+++__ +++calls+++ __+++_dl_check_map_versions+++__ +++at offset+++ ``+++0x111db+++`` +++:+++ ``+++call 0x10d30+++`` +++. Look at the instruction immediately before it (at+++ ``+++0x111d8+++`` +++):+++ ``+++mov esi, r12d+++`` +++. With the System-V x86_64 ABI,+++ ``+++esi+++`` +++is the register used to hold the second argument. Therefore, this instruction is the one that gets the+++ __+++verbose+++__ +++argument ready to pass to+++ __+++_dl_check_map_versions+++__ +++.+++
+
++++In order to make+++ __+++verbose+++__ +++0, this instruction needs to be replaced with one that assigns it to 0. In addition, this instruction is 3 bytes in size. The replacement therefore needs to be either 3 bytes or smaller (it can be padded with extra+++ ``+++nop+++`` +++s). A quick experiment shows that+++ ``+++xor esi, esi+++`` +++is the way to go:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  echo -e 'mov esi, 0\nxor esi, esi' > x.asm
+ ryan@DevPC-archLX  ~/ld-hack  nasm -f elf64 -o x.o x.asm
+ ryan@DevPC-archLX  ~/ld-hack  objdump -Mintel -D x.o
+
+x.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <.text>:
+   0:	be 00 00 00 00       	mov    esi,0x0
+   5:	31 f6                	xor    esi,esi
+    
+----
+
++++(Technically,+++ ``+++shr esi, 1+++`` +++would've also done the trick, since+++ ``+++1 >> 1 == 0+++`` +++.)+++
+
++++Now's to patch the linker to replace the instruction with+++ ``+++xor esi, esi+++`` +++(+++ ``+++0x31 0xf6+++`` +++, as shown above) followed by a+++ ``+++nop>+++`` +++(which is+++ ``+++0x90+++`` +++).+++ __+++printf+++__ +++++++ __+++dd+++__ +++can be used for this:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  printf '\x31\xf6\x90' | dd of=ld.so bs=1 seek=$((0x111d8)) count=3 conv=notrunc
+    
+----
+
+++++++ __+++printf+++__ +++is used to send the bytes to+++ __+++dd+++__ +++, which will write them to+++ __+++ld.so+++__ +++at the given offset (the+++ ``+++$((...))+++`` +++syntax is used to convert the hex location to decimal).+++ __+++count=3+++__ +++is passed to ensure only 3 bytes are written, and+++ __+++conv=notrunc+++__ +++prevents+++ __+++dd+++__ +++from truncating the rest of the file.+++
+
++++Now, if you run lldb again, you'll see the changed bytes:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  lldb ld.so -bo 'di -F intel -n _dl_check_all_versions'
+Current executable set to 'ld.so' (x86_64).
+(lldb) di -F intel -n _dl_check_all_versions
+ld.so`_dl_check_all_versions:
+(...)
+ld.so[0x111d8] <+56>:  xor   esi, esi
+ld.so[0x111da] <+58>:  nop
+    
+----
+
++++Viola!+++
+
+[id=new-linker]
+== Using the new dynamic linker
+
++++Of course, our application is still using the old linker. Let's use patchelf to force use of the new one:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  patchelf --set-interpreter $PWD/ld.so usr/bin/lldb-argdumper
+    
+----
+
++++Now you can try the executable again, and there will be no warnings this time!+++
+
+[id=qldv]
+== Using qldv
+
++++This is all a bit tedious, so I created a tool for this:+++ link:+++https://github.com/kirbyfan64/qldv+++[+++qldv+++] +++. With qldv, this all is reduced to:+++
+
+[source,bash]
+----
+
+ ryan@DevPC-archLX  ~/ld-hack  qldv -set usr/bin/lldb-argdumer ld.so
+    
+----

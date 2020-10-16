@@ -1,0 +1,8 @@
+.brt/
+bazel-*
+node_modules/
+settings.bzl
+user.bazelrc
+migrate/repo
+third_party/
+yarn-error.log

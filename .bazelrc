@@ -1,0 +1,2 @@
+try-import user.bazelrc
+build --strategy=SassCompiler=sandboxed

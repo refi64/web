@@ -1,0 +1,52 @@
+{% extends "web/template/main.njk" %}
+{% from "web/template/_macros.njk" import post_title %}
+
+{% block title %} Tags {% endblock %}
+{% block side_title %} Tags {% endblock %}
+
+<!-- XXX: garbage time complexity but we don't have enough tags to care (yet) -->
+{% set tags = [] %}
+
+{% for post in posts %}
+  {% for tag in post.tags %}
+    {% if not tag in tags %}
+      {% set tags = (tags.push(tag), tags) %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% block head %}
+  <script src="/js/bundle.tags.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="mdc-typography--headline6">Select some tags to filter posts</div>
+
+  <div class="mdc-chip-set mdc-chip-set--filter" role="grid">
+    {% for tag in tags | sort %}
+      <div id="chip-{{tag}}" class="mdc-chip" role="row">
+        <div class="mdc-chip__ripple"></div>
+        <span class="mdc-chip__checkmark" >
+          <svg class="mdc-chip__checkmark-svg" viewBox="-2 -3 30 30">
+            <path class="mdc-chip__checkmark-path" fill="none" stroke="black"
+                  d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+          </svg>
+        </span>
+        <span role="gridcell">
+          <span role="checkbox" tabindex="0" aria-checked="false" class="mdc-chip__primary-action">
+            <span class="mdc-chip__text">{{ tag }}</span>
+          </span>
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% for post in posts %}
+    <div style="display: none;" class="{% for tag in post.tags %} tag-{{tag}} {% endfor %}">
+      {% set url = '/posts/' + post.id %}
+      {{ post_title(title = post.title, url = url, created = post.created, small = true) }}
+      <div>{{ post.teaser | safe }}</div>
+      <p><a href="{{ url }}">Read more...</a></p>
+    </div>
+  {% endfor %}
+{% endblock %}

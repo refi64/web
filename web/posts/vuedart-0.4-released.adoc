@@ -1,0 +1,324 @@
+# VueDart 0.4 released!
+
+:created: 2018-10-08
+
+:tags: vue,vuedart
+
+[#teaser]
+--
++++After almost a year, I'm happy to+++ __+++finally+++__ +++be able to announce VueDart 0.4! It's got Dart 2.0 support, a ton of great changes, a+++ link:+++https://refi64.com/vuedart+++[+++new website+++] +++, and more. This is definitely a much bigger release than even 0.3 was!+++
+--
+
+[id=redesign]
+== Website redesign
+
++++First off, since cosmetics are obviously the most important part of a web framework (/s): the website has undergone a+++ __+++complete+++__ +++redesign, built on top of+++ link:+++#vdmc+++[+++vdmc+++] +++and VueDart 0.4.+++
+
++++Here's some pictures for comparison (they're in pairs: first comes the old, then the new design):+++
+
+image::https://image.ibb.co/cdPjR9/old1.png[]
+
+image::https://image.ibb.co/iPBym9/new1.png[]
+
+image::https://image.ibb.co/nhZjR9/old2.png[]
+
+image::https://image.ibb.co/jxaPR9/new2.png[]
+
+image::https://image.ibb.co/bXDNDp/old1m.png[]
+
+image::https://image.ibb.co/emd0zU/new1m.png[]
+
+image::https://image.ibb.co/hjx4R9/old2m.png[]
+
+image::https://image.ibb.co/mGF2Dp/new2m.png[]
+
+[id=changes]
+== Major changes
+
+[id=dart-2.0]
+=== Dart 2 support
+
++++VueDart 0.4 comes with first-class Dart 2 support. pub is no longer supported, and everything has been moved over to+++ ``+++package:build+++`` +++. This caused some major changes in the way VueDart transforms code, which led to several other changes that will be mentioned below.+++
+
++++That being said, the immediate change is that you'll no longer be using+++ ``+++pub+++`` +++to build and serve your projects. Instead,+++ link:+++https://webdev.dartlang.org/tools/webdev+++[+++webdev+++] +++is taking its place.+++
+
+[id=vue2]
+=== vue2 is now vue
+
++++The package names+++ ``+++vue2+++`` +++and+++ ``+++vue2_cli+++`` +++are now just+++ ``+++vue+++`` +++and+++ ``+++vue_cli+++`` +++, respectively. Huge thanks to+++ **+++@emilniklas+++** +++for+++ link:+++https://github.com/emilniklas/vue-dart/issues/2#issuecomment-350628985+++[+++letting me use it+++] +++!+++
+
+[id=mixins]
+=== Mixins
+
++++Mixins have undergone two major changes.+++
+
++++First up: all mixins must now have+++ ``+++implements VueMixinRequirements+++`` +++:+++
+
+[source,dart]
+----
+
+@VueMixin()
+class MyMixin implements VueMixinRequirements {
+  // ...
+}
+  
+----
+
++++The other change is that there is no longer a mixins: argument to VueComponent:+++
+
+[source,dart]
+----
+
+// Before
+@VueComponent(
+  // ...
+  mixins: const [MyMixin],
+)
+// Notice the mixins are given twice: the mixins: argument above only takes VueDart mixins
+class MyComponent extends VueComponentBase with MyMixin
+  
+----
+
++++Of course, the problem was you could forget to put the mixin in both places properly. Now, you just need to put it inside the+++ ``+++with+++`` +++clause and drop the+++ ``+++mixins:+++`` +++argument.+++
+
++++As one other bonus, mixins can now be passed to+++ ``+++VueApp+++`` +++, not just+++ ``+++VueComponent+++`` +++.+++
+
+[id=global-register]
+=== Components are no longer globally registered
+
++++Before, component registration was a bit like this:+++
+
+[source,dart]
+----
+
+@VueComponent('my-component', template: '<<')
+  
+----
+
++++Now, it's like this:+++
+
+[source,dart]
+----
+
+@VueComponent(template: '<<')
+  
+----
+
++++Wait, what? Where did the component name go?+++
+
++++In VueDart 0.4, no components are globally registered. Instead, they must be passed to the components/apps using them, just like in vanilla Vue. For example:+++
+
+[source,dart]
+----
+
+@VueComponent(template: 'stuff here')
+class MyComponent extends VueComponentBase {
+}
+
+@VueComponent(template: '<my-component/>',
+              // Have to pass MyComponent to say it's being used
+              components: [MyComponent])
+class MyOtherComponent extends VueComponentBase {
+}
+
+@VueApp(id: '#app', components: [MyOtherComponent])
+class App {
+}
+  
+----
+
++++The primary benefit is better tree-shaking.+++
+
++++If you have a lot of components that you frequently use, you can put them all in a mixin:+++
+
+[source,dart]
+----
+
+@VueMixin(components: [MyComponent, MyOtherComponent])
+class MyMixin implements VueMixinRequirements {}
+
+@VueComponent(template: '<my-component>')
+class MyThirdComponent extends VueComponentBase with MyMixin {}
+  
+----
+
++++As a side note, one nice new feature of Dart 2 is that you no longer need to prefix the type lists with+++ ``+++const+++`` +++like you did for the old mixins.+++
+
+[id=boilerplate]
+=== No more constructor boilerplate
+
++++You may noticed something interesting about the above examples: the constructor boilerplate from before (+++ ``+++Component(context): super(context)+++`` +++and the whole factory dance) are now completely gone! However, as a side-effect of this, you can no longer use the constructor as the+++ ``+++created+++`` +++. Instead, a+++ link:+++#lifecycle+++[+++proper method override has been added+++] +++.+++
+
+[id=lifecycle]
+=== Lifecycle hook renaming
+
++++All the overridable lifecycle methods now are prefixed with+++ __+++lifecycle+++__ +++:+++
+
+[source,dart]
+----
+
+// Before
+@override
+void mounted() {}
+
+// Now
+@override
+void lifecycleMounted() {}
+  
+----
+
++++In addition, as mentioned above, there's now a+++ ``+++lifecycleCreated+++`` +++hook.+++
+
+[id=events]
+=== Type-safe event API
+
++++The primary way of handling events in Vue is via+++ ``+++v-event:event="handler"+++`` +++(or+++ ``+++@event="handler"+++`` +++). However, it offers another method, via+++ ``+++$emit+++`` +++,+++ ``+++$on+++`` +++,+++ ``+++$off+++`` +++, and+++ ``+++$once+++`` +++.+++
+
++++If this seems familiar, it's because this is basically a JavaScript/Vue version of Dart's streams. VueDart now has a type-safe API for interacting with events that utilizes these streams! Here's an example:+++
+
+[source,dart]
+----
+
+@VueComponent(template: '<button @click="_clicked">Button</button>')
+class MyButton {
+  // The event spec.
+  static final buttonClicked = VueEventSpec<int>('button-clicked');
+
+  // The sink is used to emit events, and the stream is used to receive them.
+  VueEventSink<int> buttonClickedSink;
+  VueEventStream<int> buttonClickedStream;
+
+  @override
+  void lifecycleCreated() {
+    buttonClickedSink = buttonClicked.createSink(this);
+    buttonClickedStream = buttonClickedStream.createStream(this);
+  }
+
+  @method
+  void _clicked() => buttonClickedSink.add(DateTime.now().millisecondsSinceEpoch);
+}
+
+@VueComponent(template: '<my-button ref="button"></my-button>',
+              components: [MyButton])
+class MyOtherButton {
+  @ref
+  MyButton button;
+
+  @override
+  void lifecycleMounted() {
+    // Receive events
+    button.buttonClickedStream.listen((time) {
+      print('Clicked at $time');
+    });
+  }
+}
+  
+----
+
+[id=sass]
+=== Sass support
+
++++You can now use Sass inside your component styles:+++
+
+[source,html]
+----
+
+<template vuedart>
+  <!-- ... -->
+</template>
+
+<style scoped lang="sass">
+  p {
+    background-color: purple;
+
+    :hover {
+      background-color: blue;
+    }
+  }
+<style>
+  
+----
+
+[id=model]
+=== Model support
+
++++Models are now supported via+++ ``+++@model()+++`` +++:+++
+
+[source,dart]
+----
+
+@model(event: 'my-event')
+@prop
+int someProp = 0;
+  
+----
+
+[id=bugfixes]
+== Bugfixes
+
+[id=bool]
+=== bool props work properly
+
++++Before, if you created a+++ ``+++bool+++`` +++prop, it would end up being assigned the empty string instead of true and null instead of false. This now works properly.+++
+
+[id=optional]
+=== Methods can take optional arguments
+
++++This "worked" under Dart 1.0, but it was actually never supposed to. VueDart 0.4 now implements this properly.+++
+
+[id=plugins]
+== Plugin-related work
+
+[id=router]
+=== VueRouter changes and VueAppOptions
+
++++When you pass components to VueRouter, you must now use+++ ``+++ComponentName()+++`` +++instead of+++ ``+++#ComponentName+++`` +++.+++
+
++++In addition, a new API for passing miscellaneous options to the Vue JavaScript constructor has been added, called+++ ``+++VueAppOptions+++`` +++. VueRouter has been adapted to use this new API: instead of the previous way of passing the router to your app, pass it via+++ ``+++app.create(options: [router])+++`` +++.+++
+
+[id=material]
+=== VueMaterial is now considered legacy
+
++++The built-in VueMaterial support has been moved to+++ ``+++package:vue/plugins/vuematerial_legacy+++`` +++. It was never past VueMaterial 0.8, and future work in Material Design support is going towards+++ link:+++#vdmc+++[+++Vdmc+++] +++.+++
+
+[id=cli]
+== CLI work
+
+[id=versioning]
+=== Version numbers now align with VueDart
+
++++The versioning system now matches the corresponding VueDart version. For instance, vue_cli 0.4 will generate VueDart 0.4 projects.+++
+
+[id=migrate]
+=== The migrate command is now unsupported
+
++++It was a cool idea that never actually worked that well and could wreck stuff easily. It's still there, but you probably shouldn't be using it.+++
+
+[id=next]
+== What's next?
+
++++Unfortunately, due to the...chaos that went into this release (fun fact: wiping out your home partition is+++ __+++not+++__ +++fun), there were some things that didn't quite make it in, or aren't polished to the extent that I want. This will likely come to the next VueDart version, most likely 0.5 (though the Aspen parts may come to a 0.4.1, if it were to be released).+++
+
+[id=aspen]
+=== Aspen rework
+
++++Aspen still has to be run manually via the command line. This sort of made sense when pub was a build system, but now with+++ ``+++package:build+++`` +++, as well as the new focus on vdmc, it's a+++ **+++disaster+++** +++. Therefore, the goal is to rework Aspen to be a builder. In addition, it may will generate Dart code rather than direct JavaScript.+++
+
++++The main benefit will come from being able to use generated outputs as assets. In addition, you won't have to worry about forgetting to run it! It'll also be more easily used by vdmc. Speaking of vdmc...+++
+
+[id=vdmc]
+=== VueDart Material Components
+
+++++++ link:+++https://github.com/kirbyfan64/vdmc+++[+++Vdmc+++] +++is an early WIP set of wrappers over+++ link:+++https://matsp.github.io/material-components-vue/+++[+++Material Components Vue+++] +++, which is in turn a set of wrappers over+++ link:+++https://material.io/develop/web/+++[+++Material Components for Web+++] +++. This basically means that, soon, VueDart will have a full set of wrappers over the official Material Design components! I was hoping this would be ready for prime time by now, but more work needs to be done. In particular, I want it to properly use the new, coming-soon Aspen for assets and have actual documentation.+++
+
++++That being said, you can already see how it looks via the+++ link:+++#redesign+++[+++VueDart website redesign+++] +++.+++
+
+[id=compilation]
+=== Compiling component templates
+
++++This is my personal main target for 0.5. Right now, component template HTML is inserted directly into the code and compiled at runtime. I want 0.5 to have a template compiler like normal Vue does, which would actually compile the HTML templates into Dart render functions (though better render function support is probably going to come in the pipeline first).+++
+
+[id=vuex]
+=== Vuex
+
++++Yes, this got delayed again. It will come...eventually...+++

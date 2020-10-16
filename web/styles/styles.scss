@@ -1,0 +1,336 @@
+@use '@material/theme' with (
+  $primary: #ffffffdb,
+  $secondary: #0d47a1,
+  $on-primary: black,
+);
+
+$headline-font-family: Montserrat, Roboto, sans-serif;
+
+@use '@material/typography' with (
+  $font-family: unquote('Roboto, sans-serif'),
+
+  $styles-headline1: (font-family: $headline-font-family),
+  $styles-headline2: (font-family: $headline-font-family),
+  $styles-headline3: (font-family: $headline-font-family),
+  $styles-headline4: (font-family: $headline-font-family),
+  $styles-headline5: (font-family: $headline-font-family),
+  $styles-headline6: (font-family: $headline-font-family),
+  $styles-subtitle1: (font-family: $headline-font-family),
+);
+
+@use "@material/icon-button";
+@use "@material/shape";
+
+@use '@material/chips/mdc-chips';
+@use '@material/drawer/mdc-drawer';
+@use '@material/list/mdc-list';
+@use '@material/theme/mdc-theme';
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use '@material/typography/mdc-typography';
+
+@use '@material/drawer/variables' as drawer-variables;
+@use '@material/list/mixins' as list-mixins;
+@use '@material/list/variables' as list-variables;
+@use '@material/top-app-bar/variables' as top-app-bar-variables;
+@use '@material/typography/mixins' as typography-mixins;
+
+// Have to use @import here, because @use can't go in a media query
+@media (prefers-color-scheme: light) {
+  @import 'highlight.js/scss/github';
+}
+@media (prefers-color-scheme: dark) {
+  @import 'highlight.js/scss/androidstudio';
+}
+
+@include icon-button.core-styles;
+
+$mobile-breakpoint: 768px;
+
+@mixin if-mobile {
+  @media (max-width: $mobile-breakpoint - 1px) {
+    @content;
+  }
+}
+
+@mixin if-not-mobile {
+  @media (min-width: $mobile-breakpoint) {
+    @content;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.imageblock {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  img {
+    margin: 8px;
+    max-height: 50vh;
+    max-width: 50vh;
+  }
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+// Links targets target a small span above the header, to accomodate for the
+// app bar's height
+.adjusted-link-target-outer {
+  position: relative;
+
+  .adjusted-link-target {
+    position: absolute;
+    top: -(top-app-bar-variables.$row-height);
+  }
+}
+
+@include if-mobile {
+  .if-not-mobile {
+    display: none;
+  }
+}
+
+@include if-not-mobile() {
+  .if-mobile {
+    display: none;
+  }
+}
+
+body {
+  margin: 0;
+  display: flex;
+}
+
+a:not(.post-section-header-link):not(.mdc-list-item) {
+  &,
+  &:visited {
+    color: var(--mdc-theme-secondary);
+    text-decoration: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.post-section-header-link {
+  vertical-align: middle;
+}
+
+pre {
+  font-family: 'Roboto Mono', monospace;
+  margin: 0 16px;
+  padding: 16px;
+  overflow-y: auto;
+
+  border: solid 1px var(--mdc-theme-on-primary);
+  @include shape.radius($radius: medium);
+}
+
+#moot-logo a {
+  z-index: 0 !important;
+}
+
+.mdc-top-app-bar {
+  .mdc-top-app-bar__section {
+    justify-content: space-between;
+  }
+
+  @include if-not-mobile {
+    // Hide the nav icon on desktop.
+    .mdc-top-app-bar__navigation-icon {
+      display: none;
+    }
+  }
+
+  @include if-mobile {
+    .mdc-top-app-bar__title {
+      // We want to center the title in the page, but its siblings on either side may not
+      // have equal sizes. Thus, pull it out of the normal page flow, so it can be properly
+      // centered.
+      // The previous version of this site assigned each item a size of 33% which...worked,
+      // but this is a bit nicer in that *only* the title needs to be modified.
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+
+      // Remove the usual padding.
+      padding-left: 0;
+    }
+  }
+
+  .side-title {
+    --mdc-typography-headline6-font-size: 1rem;
+    padding-right: top-app-bar-variables.$title-left-padding;
+  }
+}
+
+.mdc-drawer {
+  position: fixed;
+  height: 100vh;
+
+  .mdc-drawer__header {
+    .mdc-drawer__title {
+      --mdc-typography-headline6-font-weight: normal;
+      text-align: center;
+    }
+
+    @include if-not-mobile {
+      display: none;
+    }
+  }
+
+  @include if-not-mobile {
+    // HACK: In order to avoid needing JS at the start on mobile,
+    // we add mdc-drawer--modal on *all* viewports.
+    // Then, the effects are reversed here on desktop via media query.
+    display: initial !important;
+    box-shadow: none !important;
+    // Also make sure an open modal won't cause a gray background on rotate.
+    & + .mdc-drawer-scrim {
+      display: none !important;
+    }
+
+    // Make sure the navbar is always on top
+    z-index: 0;
+    // Based on mdc-top-app-bar.scss
+    padding-top: top-app-bar-variables.$row-height;
+  }
+}
+
+.mdc-drawer {
+  .mdc-list-group__subheader {
+    // Make sure the icon is aligned properly.
+    @include list-mixins.item-base_;
+
+    padding: 0 list-variables.$side-padding;
+    padding-top: 16px;
+
+    @include typography-mixins.typography(subtitle1);
+  }
+
+  .material-icons {
+    color: var(--mdc-theme-secondary);
+  }
+}
+
+.post-title {
+  line-height: 1.2;
+}
+
+.post-subheader {
+  margin-top: 0;
+}
+
+.page-outer {
+  width: 100%;
+
+  .page-content {
+    margin: 16px;
+    margin-top: 0;
+
+    @include if-not-mobile {
+      padding-left: drawer-variables.$width;
+    }
+
+    // For the loading transitions below
+    // XXX: need to clean this up
+    transition: opacity 0.2s linear;
+  }
+}
+
+.paragraph {
+  margin: 16px 0;
+}
+
+// XXX: this whole thing is insanely ugly
+
+.loading {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.loading-active {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: absolute;
+  width: 100%;
+  opacity: 1;
+
+  & + .page-content {
+    opacity: 0;
+  }
+
+  .circle {
+    display: inline-block;
+    background-color: var(--mdc-theme-secondary);
+    border: 1px solid var(--mdc-theme-secondary);
+    border-radius: 50%;
+  }
+
+  .large-circle {
+    margin: 0 20px;
+    height: 50px;
+    width: 50px;
+    animation: loading 2s infinite;
+  }
+
+  .small-circle {
+    height: 25px;
+    width: 25px;
+  }
+
+  .left-circle {
+    animation: left-movement 2s infinite;
+  }
+
+  .right-circle {
+    animation: right-movement 2s infinite;
+    margin-top: -27px;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: translateY(100px);
+    }
+    50% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(100px);
+    }
+  }
+
+  @keyframes left-movement {
+    0% {
+      transform: rotate(180deg) translateY(50px) rotate(180deg);
+    }
+    50% {
+      transform: rotate(0deg) translateY(50px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg) translateY(50px) rotate(180deg);
+    }
+  }
+
+  @keyframes right-movement {
+    0% {
+      transform: rotate(0deg) translateY(-50px) rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg) translateY(-50px) rotate(180deg);
+    }
+    100% {
+      transform: rotate(0deg) translateY(-50px) rotate(0deg);
+    }
+  }
+}

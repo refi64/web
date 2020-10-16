@@ -1,0 +1,305 @@
+#  An idea for concise, checked error handling in imperative languages
+
+:created: 2016-03-20
+
+:tags: programming,errors,crystal
+
+[#teaser]
+--
++++Yes, the post title sucks. However, I can't think of anything better...+++
+
++++This is an idea I've had for a while on an error handling model that tries to combine safe, checked code with the conciseness of unchecked exceptions. It's somewhat of a "rough draft", so to speak, and the syntax I'm using is just an example.+++
+--
+
+[id=current]
+== Current error handling strategies
+
++++There are a lot of models that currently exist for error handling. Among them are exceptions (C++, Python), checked exceptions (Java, Nim), multiple return values (Elixir, Go), union types/ADTs (Haskell, Felix, Rust, OCaml [I think...]), and a mix of them all (C). However, they all have some issues that cause religious wars between their supporters:+++
+
+* +++Exceptions are completely unchecked. Goodness knows whether or not you are handling all the cases. Often, a function will throw an exception that you didn't even know threw anything.+++
+* +++Checked exceptions can be either painful or breakable. When a compiler implements them with 100% precision, then you can run into issues with callbacks. Does+++ ``+++my_function_that_takes_a_callback(callback)+++`` +++not throw anything, but callback can? Too bad. When they're breakable, then that brings us back to the first problem.+++
+* +++Multiple return values can be a bit verbose at times. Go code tends to be littered with+++ ``+++if err != nil+++`` +++checks. Elixir code is MUCH better in this regard, but the errors a function can return are still somewhat unchecked. Since they use strings, you can't easily check what error exactly occurred. (Note that Elixir actually just uses a single return value that's a tuple, like+++ ``+++{:ok, result}+++`` +++or+++ ``+++{:error, error_message}+++`` +++.)+++
+* +
+--
+* +++In Haskell, functions that return+++ ``+++Maybe T+++`` +++don't quite say what error they returned, which was a problem with multiple return values.+++
+* +++In other languages, such as Felix, they can be quite a bit verbose. Rust is better, but things can still get a bit ugly at times.+++
+* +++If you ever have to deal with multiple different types of errors being thrown at once...tough luck.+++
+
+
+--
++
+
+[id=imperative-monads]
+== Imperative monads
+
++++Now, I'm going to present an idea that tries to combine the best of these WITHOUT the worst. Here it goes:+++
+
++++Let's take a language with type inference. Say Crystal. Now, we'll add a new type+++ ``+++T![a,b,c...]+++`` +++, which means+++ __+++T or any of the error types a, b, c, ....+++__
+
++++When a function wants an error to occur, it would do this:+++
+
+[source,crystal]
+----
+
+def myfunc(a : Int32)
+  raise MyErrorType.new if a == 0
+  return a
+end
+    
+----
+
++++This+++ __+++appears+++__ +++to be just a normal exception throw, but it really isn't.+++ ``+++raise+++`` +++here would actually just be returning+++ ``+++MyErrorType.new+++`` +++. This code would roughly be the exact same thing semantically as:+++
+
+[source,crystal]
+----
+
+def myfunc(a)
+  # Using Haskell Left/Right naming.
+  return Left.new "invalid number #{a}" if a == 0
+  return Right.new a
+end
+    
+----
+
++++In short, it's just union types, but more concise. Because of Crystal's type inference, this would make myfunc's return type+++ ``+++Int32![MyErrorType]+++`` +++.+++
+
++++The cool part comes with handling the errors. If this were fully union types, the code may be something like (Crystal doesn't actually have pattern matching like I show; I'm just improvising):+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  case myfunc a
+  when Left error
+    puts "An error occurred: #{error}"
+  when Right result
+    puts "Function returned: #{value}"
+  end
+end
+    
+----
+
++++However, this is where things go a completely different route:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  try
+    myfunc a
+  except MyErrorType as ex
+    puts "An error occurred: #{ex.message}"
+  else value
+    puts "Function returned: #{value}"
+end
+    
+----
+
++++"But wait," you say, "how is this different from exceptions!?" Well, this+++ ``+++try+++`` +++is not at all like a normal+++ ``+++try+++`` +++.+++
+
++++Instead, the body of the+++ ``+++try+++`` +++statement MUST be an expression that returns+++ ``+++T![E...]+++`` +++. If any+++ ``+++E+++`` +++is returned, then it goes to the appropriate+++ ``+++except+++`` +++block. If no error occurred, then it jumps to the+++ ``+++else+++`` +++block, giving it the value of type+++ ``+++T+++`` +++.+++
+
++++The key difference here is that you can't just do something like+++ ``+++1 + myfunc(1)+++`` +++; an error would occur since you're trying to add 1 (of type+++ ``+++Int32+++`` +++) to+++ ``+++myfunc(1)+++`` +++(of type+++ ``+++Int32![MyErrorType]+++`` +++).+++
+
++++Another major difference is what happens if an+++ ``+++except+++`` +++block doesn't cover a possible error. For instance, if+++ ``+++myfunc+++`` +++were changed to:+++
+
+[source,crystal]
+----
+
+def myfunc(a : Int32)
+  raise MyErrorType.new if a == 0
+  # A new error:
+  raise MyOtherErrorType.new if a < 0
+end
+    
+----
+
++++What would happen to+++ ``+++myotherfunc+++`` +++? It wouldn't compile!+++
+
++++If there would possibly be no matching+++ ``+++except+++`` +++block, then the compiler would treat+++ ``+++myotherfunc+++`` +++as if it said:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  try
+    myfunc a
+  except MyErrorType as ex
+    puts "An error occurred: #{ex.message}"
+  # Inserted by the compiler
+  except MyOtherErrorType as ex
+    raise ex # Re-raise the error
+  else value
+    puts "Function returned: #{value}"
+end
+    
+----
+
++++Now+++ ``+++myotherfunc+++`` +++is inferred to return+++ ``+++Int32![MyOtherErrorType]+++`` +++. In order to fix it, you can just do:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  try
+    myfunc a
+  # Take either type of error.
+  except MyErrorType | MyOtherErrorType as ex
+    puts "An error occurred: #{ex.message}"
+  else value
+    puts "Function returned: #{value}"
+end
+    
+----
+
++++You could also omit any+++ ``+++except+++`` +++clause. For example:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  try
+    myfunc a
+  # No except clauses
+  else value
+    puts "Function returned: #{value}"
+end
+    
+----
+
++++This would be equivalent to:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  try
+    myfunc a
+  # Inserted by compiler.
+  except MyErrorType | MyOtherErrorType as ex
+    raise ex
+  else value
+    puts "Function returned: #{value}"
+end
+    
+----
+
++++In addition, this can be an expression. If an error occurs, the function instantly returns; otherwise, the value of the+++ ``+++else+++`` +++block is returned:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  result = try
+    myfunc a
+  except MyErrorType | MyOtherErrorType as ex
+    puts "An error occurred: #{ex.message}"
+  else value
+    puts "Function returned: #{value}"
+    value + 1
+  puts result
+end
+    
+----
+
++++If the+++ ``+++else+++`` +++block is ommitted, then the non-error value is returned:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  result = try
+    myfunc a
+  except MyErrorType | MyOtherErrorType as ex
+    puts "An error occurred: #{ex.message}"
+  # No else block; same thing as putting:
+  # else value
+  #   value
+  puts result
+end
+    
+----
+
++++Now you can combine all this to get a nice shorthand:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  return try myfunc a
+end
+    
+----
+
++++The compiler would basically desugar that into:+++
+
+[source,crystal]
+----
+
+def myotherfunc(a)
+  return
+    try
+      myfunc a
+    except MyErrorType | MyOtherErrorType ex
+      raise ex
+    else value
+      value
+end
+    
+----
+
++++As an added benefit, you can chain+++ ``+++!+++`` +++uses, so+++ ``+++T![E1]![E2]+++`` +++would be converted to+++ ``+++T![E1,E2]+++`` +++. This seems useless, but it's very handy with generic types.+++
+
++++I call all this:+++
+
+**+++Imperative monads+++**
+
+[id=differences]
+== Differences from other strategies
+
+* +++Exceptions are unchecked. On the other hand, with imperative monads, if you try to use a function that can error in an expression, you'll get a type error (e.g.+++ ``+++1 + myfunc(2)+++`` +++). In addition, if you forgot to handle an error type, you'll still get a type error.+++
+* +++Unlike checked exceptions, imperative monads, when combined with type inference as shown above, don't necessarily require you to write out every single possible error. Callbacks would work as excepted, since errors are really just return values with some added awesomeness.+++
+* +++Imperative monads have lots of sugar to handle errors, so it's as safe as Go (if you can call it that...). In contrary to Elixir, imperative monads allow you to create your own error types, just like Go or normal exceptions. You can encode all the information you want into the type itself.+++
+* +++Union types can be a bit messy in imperative languages, but imperative monads were designed exactly for that. They're not verbose, and it would be almost impossible to end up with nested errors.+++
+
++++Last but not least, since errors are again types, there's lots of room for potential compiler optimizations.+++
+
+[id=sequencing]
+== Sequencing
+
++++This was actually not present in the original post, but someone pointed it out, so I'm adding it here. (I actually can't believe I forgot this, considering this is easily one of my error handling deal-breakers...)+++
+
++++What happens to error sequences? Exceptions are great for this:+++
+
+[source,python]
+----
+
+try:
+    x = something()
+    something_else(x)
+except IOError: # If any of the expressions result in an IOError.
+    print('Error occurred!')
+    
+----
+
++++Well, that could go something like this:+++
+
+[source,crystal]
+----
+
+try
+    x = try something
+    something_else x
+except IOError as ex
+    puts "Error occurred!"
+    
+----
+
++++What exactly does this do?+++
+
++++The core idea is that, when+++ ``+++try+++`` +++'s are nested, errors propogate up. This code does what you might expect; if+++ ``+++something+++`` +++returns an error type, it causes an error. This error is then propogated up to the outer+++ ``+++try+++`` +++, which would forward it to the+++ ``+++except+++`` +++block.+++
+
+[id=issues]
+== Issues
+
++++Honestly, the only issue I can think of is just with sequences and their transformation functions. If you have a functional language, you'll need multiple versions of every sequence function, like Haskell's+++ ``+++map+++`` +++vs+++ ``+++mapM+++`` +++and+++ ``+++filter+++`` +++vs+++ ``+++filterM+++`` +++.+++

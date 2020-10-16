@@ -1,0 +1,14 @@
+# Welcome!
+
+:created: 2014-09-10
+
+:tags: miscellaneous
+
+[#teaser]
+--
++++First post!+++
+
++++This website is my first ever web page. It's written using the excellent+++ link:+++http://getnikola.com/+++[+++Nikola+++] +++and reStructuredText. (+++ **+++EDIT:+++** +++Well now it's completely different. It uses Polymer;+++ link:+++/posts/moving-from-nuitka-to-polymer.html+++[+++see this post+++] +++.) (+++ **+++EDIT 2:+++** +++Aaaand I changed it again. It's now written using Vue.) The majority of its content is going to revolve around programming: tutorials, experiments, and lots and lots of rants. :)+++
+
++++Have fun browsing!+++
+--

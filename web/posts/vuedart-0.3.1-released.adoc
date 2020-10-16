@@ -1,0 +1,63 @@
+# VueDart 0.3.1 released!
+
+:created: 2017-11-19
+
+:tags: vue,vuedart
+
+[#teaser]
+--
+
+--
+
+[id=aspen]
+== Aspen and aspen_assets 0.2
+
++++VueDart 0.3.1's CLI (CLI version 0.1.1) brings in version 0.2 of+++ link:+++https://pub.dartlang.org/packages/aspen_assets+++[+++aspen_assets+++] +++. Although aspen_assets itself does not have many changes, it is simply a way of accessing the much-improved+++ link:+++https://pub.dartlang.org/packages/aspen+++[+++Aspen asset packer+++] +++, with an improved CLI interface and automated global asset loading.+++
+
+[id=scoped]
+== Scoped styles no longer bleed
+
++++This is technically a breaking change; however, as far as I know, no projects depended on the old behavior.+++
+
++++In VueDart 0.3, scoped styles would "bleed" by default into children, in order to support the styling of+++ ``+++v-html+++`` +++elements and other similar items (e.g. jQuery plugins):+++
+
+[source,html]
+----
+
+<template vuedart>
+  <div v-html="'<p>This is inside v-html!</p>'">
+</template>
+
+<style scoped>
+  p {
+    background-color: purple;
+  }
+<style>
+    
+----
+
++++However, there was a bug where these styles would also go into any child components, which basically defeated the entire purpose of scoped styles. Now, by default absolutely no bleeding will take place. If you want bleeding, you can use the+++ ``+++bleeds+++`` +++attribute:+++
+
+[source,html]
+----
+
+<template vuedart>
+  <div v-html="'<p>This is inside v-html!</p>'">
+</template>
+
+<style scoped bleeds>
+  p {
+    background-color: purple;
+  }
+<style>
+    
+----
+
++++Note that now, even if you pass+++ __+++bleeds+++__ +++, styles will only bleed into everything+++ __+++except+++__ +++VueDart components. This behavior is less error-prone than before.+++
+
++++The majority of these changes are thanks to+++ link:+++https://pub.dartlang.org/packages/scopify+++[+++scopify 0.2+++] +++.+++
+
+[id=tweaks]
+== Minor documentation tweaks
+
++++The documentation now better explains the significance of the+++ ``+++entry_points+++`` +++argument to the VueDart transformer.+++

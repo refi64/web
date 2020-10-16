@@ -1,0 +1,168 @@
+# Programming Decisions
+
+:created: 2015-06-19
+
+:tags: programming,joke,satire
+
+[#teaser]
+--
+++++++ **+++DISCLAIMER:+++** ++++++ __+++This is a satirical post. If your name is mentioned in a diminishing way, don't be insulted; I insult myself a few times throughout the post. Also, I like some of the projects I made fun of, including C++, JavaScript, Kotlin, Nim, Fbuild, and plenty of others. Again, this is satirical.+++__
+
++++A farmer couldn't figure out how to maintain his web servers, so he gave it to his animals. However, they simply couldn't agree on what tools to use.+++
+--
+
++++Horse: We should write it in PHP.+++
+
++++Cow: No; Ruby on Rails is better.+++
+
++++Duck: Forget about Rails; we need a native HTML+JS (or TypeScript) solution using React.js components.+++
+
++++Bee (various non-farm animals joined in the conversation): But Polymer is so much better!+++
+
++++Duck: And slower.+++
+
++++Bee: That was before 1.0.+++
+
++++Cow: But JavaScript is unmaintainable!+++
+
++++Leech: Use TypeScript.+++
+
++++Horse: Microsoft is evil.+++
+
++++Cow: With TypeScript, we need to compile our code. What about PyPy.js?+++
+
++++Fish: Then we end up with a 2 hour startup time. That thing blows through 10 MB of data!+++
+
++++Bee: Just use TypeScript with a build system like Grunt.+++
+
++++Leech: Ugh! Grunt is so last-gen! Use Gulp.+++
+
++++Ant: Or Google's Anvil.+++
+
++++Duck: Anvil? Sounds painful.+++
+
++++Pig: What about writing the site in Nim? It has a JS backend.+++
+
++++Horse: Python is evil, and therefore Nim is evil.+++
+
++++Leech: Nim's creator called me a Leech!+++
+
++++Pig:+++ __+++YOU ARE A LEECH!!+++__
+
++++Bee: We can use Java+GWT.+++
+
++++Duck: Or just Java.+++
+
++++Ant: Eh, no one likes Java; how about Scala?+++
+
++++Horse: Scala takes forever to compile, is slow, and is therefore evil.+++
+
++++Pig: We can use Kotlin or Groovy or...+++
+
++++Cow: But now we're back to the TypeScript problem: we need to compile our code.+++
+
++++Fish: Use Maven.+++
+
++++Ant: HA! We're not suicidal! Gradle is so much better.+++
+
++++Deer: And Buck.+++
+
++++Horse: Buck has Android build rules and is therefore evil.+++
+
++++Bee: All those suck! Just use Fbuild.+++
+
++++Duck: The Scala builder in Fbuild has been broken for ages, and no one there is seemingly smart enough to fix it.+++
+
++++Leech: At HLUYTSWE (Magic Engineering Company Inc.), they use a bunch of shell scripts layered under Shake using kdb to store hashes and redo for...+++
+
++++Horse: Shell scripts are evil.+++
+
++++Fish: *sigh* Whatever. How about C++?+++
+
++++Ant: Still not suicidal.+++
+
++++Cow: If we use C++, we need another build system. Again.+++
+
++++Fish: Fbuild.+++
+
++++Horse: Make.+++
+
++++Ant: CMake+Ninja.+++
+
++++Fish: Bazel.+++
+
++++Leech: Autotools.+++
+
++++Cow: Autotools == pain, horror, and lengthy config times. CMake is faster.+++
+
++++Horse: CMake uses macros and is therefore evil.+++
+
++++Cow: But CMake has a Ninja generator!+++
+
++++Fish: Then use GN. Or Gyp.+++
+
++++Duck: Gyp is ugly and complicated.+++
+
++++Pig: Ninja was written for Chromium. I heard that they track the type of oven you have and zap you if you boil peanuts. We should use C++ with Clang+Tup.+++
+
++++Horse: Clang is sponsored by Apple and is therefore evil. The creator of Tup has a secret alliance with Mordor; therefore, Tup is evil.+++
+
++++Ant: GCC is better. Their license is the one true way. Besides, what about writing the site in Crystal or Felix?+++
+
++++Horse: Richard Stallman's beard is too long; therefore, GCC is evil. Crystal is written by a sword-wielding apple and is therefore evil. Felix is written by someone who can't shut their mouth for over 5 minutes and is therefore evil.+++
+
++++Leech: The MIT Expat license is much better than the GPL. What about Rust?+++
+
++++Ant: Again, not suicidal. The sheer number of errors related to borrowing/stealing/pillaging gives me heartburn.+++
+
++++Horse: Rust...+++
+
++++Everyone: TO YOU EVERYTHING IS EVIL!!!!!!!!!!!!!!!+++
+
++++Bee: C++ still has better IDE support than the other languages; we can use Visual Studio.+++
+
++++Horse: Visual Studio...+++ __+++gets kicked by pig+++__
+
++++Duck: Nah, Vim is the best editor.+++
+
++++Pig: Emacs is better. I can type+++ ``+++C-f M-d shoot C-s-h-l-f-e+++`` +++and get a free hamburger.+++
+
++++Duck: Vim too:+++ ``+++ahsJGT12$@/ghns+++`` +++.+++
+
++++Leech: Forget about it. I know the best language to use: K. Someone actually wrote a BF interpreter in a few lines of code!+++
+
++++Pig: The creator of K has no concept of code maintainability, and the person who wrote that interpreter is an alien from Pluto.+++
+
++++Fish: We can use Elm, which compiles to JS. Or we can use Haskell. I momentarily forgot how superior purely functional programming is...+++
+
++++Horse:+++ __+++opens his mouth and gets kicked by Duck+++__ +++.+++
+
++++Cow: The entire database can be a monadic applicative functorical set-based polymorphic monomorphic mathical editorial purely functional SHA1-based data structure.+++
+
++++Leech: What about Python?+++
+
++++Bee: Booooo to indentation syntax.+++
+
++++Fish: How about Go?+++
+
++++Ant: I told you guys! Not suicidal!+++
+
++++Leech: Someone released a study proving that using Go makes you grow excess armpit hair.+++
+
++++Pig: Go tracks you steps and zaps you if you kick a gofer.+++
+
++++Horse: WE WILL GO TO THE FARMER AND ASK!+++
+
++++Ant, Bee, Leech: We'll go first!+++
+
++++The ant, bee, and leech went the farmer, who freaked out by the sudden showing of unwanted creatures and drowned them all in alcohol.+++
+
++++Fish: Why don't you think they've come back?+++
+
++++Horse: They are evil. We shall go next.+++
+
++++The horse, cow, duck, fish, pig, went to the farmer. Now, the farmer had been on a vegetarian diet. When he saw all these animals, he want haywire, shot them, and had horse-beef-duck-fish-pork stew for dinner+++
+
++++However, the farmer realized he still needed to fix his web site, so he paid someone on the side of the street 5 bucks. Now he has a website that handles 0.04 requests per second, and he cannot find anyone who knows how to maintain the INTERCAL+BF web app the person wrote.+++
+
+++++++ **+++Motto:+++** +++There's supposed to be a motto? Uhh...how about "If you don't stop debating, you'll get either drowned in alcohol or eaten?" Yeah, that's a good one! :)+++

@@ -1,0 +1,301 @@
+# VueDart 0.3 released! Featuring scoped styles, mixins, a CLI, and more!
+
+:created: 2017-11-19
+
+:tags: vue,vuedart
+
+[#teaser]
+--
++++After a few months of quiet, I'm super proud to announce VueDart 0.3! Unlike 0.2 (which should've been a minor release, except I wasn't thinking clearly), 0.3 brings an enormous amount of new features, bugfixes, and more.+++
+--
+
+[id=new]
+== New features
+
+[id=cli]
+=== The VueDart CLI
+
++++One of my favorite new features is the VueDart CLI. Installable via+++ ``+++pub global activate vue2_cli+++`` +++, this supports both creating projects from predefined templates+++ __+++and+++__ +++a basic migration tool (currently supporting the 0.2 -> 0.3 migration).+++
+
++++Now, creating a new project is as easy as:+++
+
+[source]
+----
+
+$ vuedart create my-project --aspen
+    
+----
+
++++(Aspen is covered below.)+++
+
++++Migrating from VueDart 0.2? Just run:+++
+
+[source]
+----
+
+$ vuedart migrate . pubspec.yaml lib/* any_other_files_to_migrate
+    
+----
+
++++I actually used the migration tool to update this website's components!+++
+
+[id=aspen]
+=== Aspen: A Dart-oriented asset acker
+
++++As I started to create more VueDart projects, I found myself often having to either depend on a CDN for all my JS dependencies, or manually concatenate them all together in my build scripts. In order to alleviate this problem, I created+++ link:+++https://pub.dartlang.org/packages/aspen+++[+++Aspen+++] +++! Aspen is by no means VueDart-specific, but it was designed with VueDart in mind.+++
+
++++Here's an example+++ ``+++aspen.yml+++`` +++used by this website:+++
+
+[source,yaml]
+----
+
+targets:
+  default:
+    outputs:
+      default: web/dist/pack.js
+
+    assets:
+    - dev: node_modules/vue/dist/vue.js
+      prod: node_modules/vue/dist/vue.min.js
+    - dev: node_modules/vue-material/dist/vue-material.debug.js
+      prod: node_modules/vue-material/dist/vue-material.debug.js
+    - dev: node_modules/better-share-button/dist/share-button.js
+      prod: node_modules/better-share-button/dist/share-button.min.js
+    - dev: node_modules/whendefined/dist/whendefined.js
+      prod: node_modules/whendefined/dist/whendefined.min.js
+    - web/analytics.js
+
+    - name: pygments-css
+      default: web/dist/pygments.css
+    - name: vue-material-css
+      default: node_modules/vue-material/dist/vue-material.css
+    - name: share-button-css
+      dev: node_modules/better-share-button/dist/share-button.css
+      prod: node_modules/better-share-button/dist/share-button.min.css
+    - name: material-icons-css
+      default: node_modules/material-design-icons/iconfont/material-icons.css
+    
+----
+
++++Now I just run+++ ``+++aspen+++`` +++for development builds and+++ ``+++aspen -m prod+++`` +++for production builds, and it all "just works".+++
+
++++Aspen is now the "official" way of handling assets for VueDart projects. As shown above in the CLI examples, passing+++ ``+++--aspen+++`` +++to the VueDart CLI will generate an Aspen-and-npm/yarn-based project instead of generating one that depends on CDNs.+++
+
+[id=scoped]
+=== Scoped styles
+
++++Scoped styles are now supported in your components, via the+++ link:+++pub.dartlang.org/packages/scopify+++[+++scopify+++] +++package. Just toss this into your templates:+++
+
+[source,html]
+----
+
+<template vuedart>
+  ...
+</template>
+
+<style scoped>
+  p {
+    background-color: purple;
+  }
+<style>
+    
+----
+
+[id=plugins]
+=== Support for the VueMaterial and VueRouter plugins
+
++++VueDart now includes built-in support for VueRouter and VueMaterial. Both are described in further detail in the documentation, but the short version is that you can now use VueRouter from VueDart, and you can now access VueMaterial component methods without needing to shell out to JS.+++
+
++++The syntax looks much like JavaScript:+++
+
+[source,dart]
+----
+
+final router = new VueRouter(routes: [
+  new VueRoute(path: '/item/:id', component: #RootComponent, children: [
+    new VueRoute(path: 'info', component: #ChildComponent),
+  ]),
+  new VueRoute(path: '/named-view/:id', components: {
+    'root': #RootComponent,
+  }),
+]);
+    
+----
+
++++In order to access+++ ``+++$router+++`` +++and+++ ``+++$route+++`` +++, you need to use the+++ ``+++VueRouterMixin+++`` +++mixin. Again, this is explained further in the documentation.+++
+
++++Part of the new router support also includes the ability to define an unnamed component (which is why+++ link:+++#name-positional+++[+++this breaking change+++] +++had to occur).+++
+
+[id=mixins]
+=== Mixins and watchers
+
++++Mixins are supported now, too. Here's an example:+++
+
+[source,dart]
+----
+
+@VueMixin()
+abstract class TodoMixin {
+  @method
+  String capitalize(String thing) => thing.toUpperCase();
+}
+
+@VueComponent(name: 'my-component', template: '<<', mixins: const [TodoMixin])
+class ShowName extends VueComponentBase with TodoMixin {
+  // ...
+}
+    
+----
+
++++Note that at the moment, only components can use mixins.+++
+
++++Watchers work now, too:+++
+
+[source,dart]
+----
+
+@watch('my-value')
+void watchMyValue() => print('Watching my-value!');
+    
+----
+
+[id=instance]
+=== $emit, $nextTick, and more instance properties/methods
+
++++As stated in the title, you can now emit events, and use+++ ``+++$on+++`` +++,+++ ``+++$off+++`` +++, and+++ ``+++$once+++`` +++:+++
+
+[source,dart]
+----
+
+$emit('my-custom-event', ['some arg', 'some other arg']);
+
+$on('something', (event) {
+  print(123);
+});
+    
+----
+
+``+++$nextTick+++`` +++also works:+++
+
+[source,dart]
+----
+
+$nextTick().then(() => {
+  print('In \$nextTick callback!');
+});
+    
+----
+
++++Several others work now, too.+++
+
+[id=config]
+=== Support for setting Vue config options via VueConfig
+
+++++++ ``+++VueConfig+++`` +++is making its debut with VueDart 0.3, though for now all it supports is assigning ignoredElements:+++
+
+[source]
+----
+
+VueConfig.ignoredElements = ['my-element'];
+    
+----
+
+[id=rewriting]
+=== HTML files won't be completely reformatted by the transformer
+
++++A minor change, but a useful one nonetheless. Before, any HTML files would be completely reformatted when they were run through the transformer, due to the way it worked. This was revamped, so now the formatting will be preserved.+++
+
+[id=renaming]
+=== Better automated script path renaming
+
++++By default, VueDart will automatically change your unpkg script tags when building in release mode. For instance, this:+++
+
+[source,html]
+----
+
+<script src="https://unpkg.com/vue">
+    
+----
+
++++will be transformed into this:+++
+
+[source,html]
+----
+
+<script src="https://unpkg.com/vue/dist/vue.min.js">
+    
+----
+
++++Now this will be done to any Vue imports, not just the ones from unpkg. Note that Aspen is still the recommended way of loading your Vue JS files.+++
+
+[id=breaking]
+== Breaking Changes
+
+[id=entry-points]
+=== Entry points must now be explicitly declared
+
++++In previous versions, VueDart's transformer would try to infer which of your Dart entry points (e.g. scripts containing a+++ ``+++main()+++`` +++declaration) required VueDart to be run. However, this was a buggy, error-prone process, so now the+++ ``+++entry_points+++`` +++must be explicitly declared in your transformer configuration:+++
+
+[source,yaml]
+----
+
+- vue2:
+    entry_points:
+      - web/index.dart
+    
+----
+
++++As mentioned above, the VueDart CLI will take care of this change for you.+++
+
+[id=name-positional]
+=== The component name being passed to VueComponent is now a named parameter
+
+**+++TL;DR:+++** +++Instead of this:+++
+
+[source,dart]
+----
+
+@VueComponent('my-component')
+    
+----
+
++++You now need to do this:+++
+
+[source,dart]
+----
+
+@VueComponent(name: 'my-component')
+    
+----
+
++++Again, this is a minor change, and the CLI will automatically migrate your code. (It's worth noting that this very website was migrated using the CLI, because I didn't want to go through all 12 components and change it manually.) It was necessary in order to allow a component to be unnamed (for VueRouter support).+++
+
+[id=fixes]
+== Bugfixes
+
+[id=errors]
+=== Errors instead of crashing
+
++++In many cases before, when there was a bug in your Dart components, VueDart's transformer would crash. Obviously, this is a very bad thing, so VueDart 0.3 will show proper errors in these situations.+++
+
+[id=multiline]
+=== Multiple data/prop declarations on one line no longer crash the transformer
+
++++Before, stuff like this would crash the transformer:+++
+
+[source,dart]
+----
+
+@prop
+String myFirstProp, mySecondProp;
+    
+----
+
++++Now, it works much like you'd expect: it declares multiple props on one line. Same goes for+++ ``+++@data+++`` +++, too.+++
+
+[id=notes]
+== Miscellaneous notes
+
++++The VueDart docs have been reorganized a bit, and since the site now uses Aspen, there shouldn't be any more problems with external upgrades on CDN-hosted items screwing with the website.+++
+
++++A+++ __+++lot+++__ +++of time and effort has gone into this release, and I hope you enjoy it! Happy Darting! (+++ __+++Is that even a thing? That's totally not a thing...)+++__

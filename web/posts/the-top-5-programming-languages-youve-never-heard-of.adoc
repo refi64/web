@@ -1,0 +1,192 @@
+# The top 5 programming languages you've never heard of
+
+:created: 2015-03-07
+
+:tags: compilers,felix,k,language,myrddin,nim,objeck,programming
+
+[#teaser]
+--
++++Lately, there's been a large surge in new programming languages as projects such as+++ link:+++http://www.rust-lang.org/+++[+++Rust+++] +++have been taking the spotlight and showing lots of promise. However, there are some programming languages few have heard of that deserve to be more popular. Here's a brief listing of some of my favorite languages that aren't common sights.+++
+--
+
+[id=nim]
+== Nim
+
+++++++ link:+++http://nim-lang.org/+++[+++Nim+++] +++is more popular than most languages on this list. It recently acquired+++ link:+++http://forum.nim-lang.org/t/870+++[+++corporate backing from 3DICC+++] +++and is under very active development. Here's a factorial program in Nim:+++
+
+[source,nim]
+----
+
+import unsigned, strutils
+
+proc fac(n: int): uint64 =
+  if n <= 1:
+    return n.uint64
+  else:
+    return n.uint64() * fac(n-1)
+
+stdout.write "Number: "
+var number = stdin.readLine.parseInt
+
+if number < 0:
+  echo "Number must be greater than 0"
+  quit QuitFailure
+
+echo fac number
+    
+----
+
+[id=felix]
+== Felix
+
+++++++ link:+++http://felix-lang.org/+++[+++Felix+++] +++is an experimental programming language that covers most problems in a unique way. It's very functional and has great coroutine support, a nice threading system, and a grammar defined in user space (a.k.a. you can extend the grammar inside your own programs). You run your files just like a scripting language:+++
+
+[source]
+----
+
+$ flx my_prog.flx arg1 arg2
+    
+----
+
++++Here's a factorial program, this time in Felix:+++
+
+[source]
+----
+
+// Recursive factorial
+fun fac(n: int) =>
+    if n <= 1
+    then n.ulong
+    else n.ulong * fac(n-1)
+;
+
+// Read a number from stdin
+print "Number: ";
+var number = cstdin.readln.int;
+
+if number < 0 do
+    println "Number must be greater than 0";
+    System::exit(1);
+done;
+
+// Print factorial
+println $ fac number
+    
+----
+
+[id=myrddin]
+== Myrddin
+
+++++++ link:+++http://eigenstate.org/myrddin/+++[+++Myrddin+++] +++is, to quote the web page, "A toy with delusions of usefulness." Well, it's pretty useful to me. It's my new favorite low-level language (yes, above Rust). Following is yet another factorial program, but this one in, guess what, Myrddin:+++
+
+[source]
+----
+
+use std
+use bio
+
+const fac = {n: int -> uint64
+    if n <= 1
+        -> n castto (uint64)
+    else
+        -> (n castto (uint64)) * fac(n-1)
+    ;;
+}
+
+const main = {
+    var stdin = bio.mkfile(0, bio.Rd)
+    std.put("Number: ")
+    match bio.readln(stdin)
+    | `std.Some s:
+        match std.intparse(std.strstrip(s))
+        | `std.Some n:
+            if n < 0
+                std.put("Number must be greater than 0\n")
+                std.exit(1)
+            ;;
+            std.put("%l\n", fac(n))
+        | `std.None:
+            std.put("error parsing integer input\n")
+            std.exit(1)
+        ;;
+    | `std.None:
+        std.put("error reading input\n")
+        std.exit(1)
+    ;;
+}
+    
+----
+
++++Notice the explicit error handling.+++
+
+[id=k]
+== K
+
+++++++ link:+++http://www.kuro5hin.org/story/2002/11/14/22741/791+++[+++K+++] +++(and it's open source counterpart,+++ link:+++https://github.com/kevinlawler/kona+++[+++Kona+++] +++) is a very unique language. Here's a factorial function in K:+++
+
+[source]
+----
+
+fac:{*/1+!x}
+    
+----
+
++++If that isn't readable enough, here's another version:+++
+
+[source]
+----
+
+fac:*/1+!:
+    
+----
+
++++You can now call it:+++
+
+[source]
+----
+
+fac[4]
+    
+----
+
++++K is actually surprisingly readable once you learn it...provided you don't get a nervous breakdown and blow your eyes out in the process. :)+++
+
+[id=objeck]
+== Objeck
+
+++++++ link:+++http://www.objeck.org/+++[+++Objeck+++] +++is kind of how Java should've been. Here's a factorial in Objeck (the language has a factorial function built in, but this is a custom one):+++
+
+[source]
+----
+
+class Factorial {
+    function : native : Factorial(n : Int) ~ Int {
+        if (n <= 1) {
+            return n;
+        } else {
+            return n * Factorial(n-1);
+        };
+    }
+
+    function : Main(args : String[]) ~ Nil {
+        "Number: "->Print();
+        number := IO.Console->ReadString()->ToInt();
+        if (number < 0) {
+            "Number must be greater than 0"->PrintLine();
+            Runtime->Exit(1);
+        };
+        Factorial(number)->PrintLine();
+    }
+}
+    
+----
+
+[source]
+----
+Int
+----
+
+[id=final-notes]
+== Final notes
+
++++I hope one of the languages here catches your eye. Just note that Myrddin and Felix are still VERY experimental.+++

@@ -1,0 +1,85 @@
+{% include "web/template/_macros.njk" %}
+
+<head>
+  <title>
+    {% block title %} {% endblock %} - re:fi.64's site
+  </title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons"
+  />
+  <link rel="stylesheet" href="/styles/styles.css" />
+  <script src="/js/bundle.core.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+
+  {% block head %} {% endblock %}
+</head>
+
+<body class="mdc-typography">
+  <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+    <div class="mdc-top-app-bar__row">
+      <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+        <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">
+          menu
+        </button>
+        <span class="mdc-top-app-bar__title">re:fi.64</span>
+        <span class="side-title mdc-typography--headline6">{% block side_title %}{% endblock %}</span>
+      </section>
+    </div>
+  </header>
+
+  <aside class="mdc-drawer mdc-drawer--modal">
+    <div class="mdc-drawer__header">
+      <span class="mdc-drawer__title">Navigation</span>
+    </div>
+
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        {% for item in sidebar.root %}
+          <a class="mdc-list-item" href="{{ item.url }}"
+            {% if loop.first %} tabindex="0" {% endif %} >
+            <span class="mdc-list-item__ripple"></span>
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">
+              {{ item.icon }}
+            </i>
+            <span class="mdc-list-item__text">{{ item.name }}</span>
+          </a>
+        {% endfor %}
+
+        {% for section in sidebar.sections %}
+          <hr class="mdc-list-divider">
+          <h6 class="mdc-list-group__subheader">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">
+              {{ section.icon }}
+            </i>
+            <span>{{ section.name }}</span>
+          </h6>
+
+          {% for item in section.items %}
+            <a class="mdc-list-item" href="{{ item.url }}">
+              <span class="mdc-list-item__ripple"></span>
+              <!-- Empty icon so the padding is aligned -->
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true"></i>
+              <span class="mdc-list-item__text">{{ item.name }}</span>
+            </a>
+          {% endfor %}
+        {% endfor %}
+      </nav>
+    </div>
+  </aside>
+
+  <div class="mdc-drawer-scrim"></div>
+
+  <main class="mdc-top-app-bar--fixed-adjust page-outer">
+    <div class="loading">
+      <div class="large-circle circle"></div>
+      <div class="left-circle small-circle circle"></div>
+      <div class="right-circle small-circle circle"></div>
+    </div>
+
+    <div class="page-content">
+      {% block content %} {% endblock %}
+    </div>
+  </main>
+</body>

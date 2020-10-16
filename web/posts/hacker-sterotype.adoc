@@ -1,0 +1,154 @@
+#  How to be an awesome hacker, according to the anime/J-drama industry
+
+:created: 2017-06-26
+
+:tags: programming
+
+[#teaser]
+--
++++The heroes tried their best, but the killer is getting away! Fortunately for them, they have a hacker on their side, complete with dark shades, a computer heavier than+++ link:+++https://youtu.be/VgD6E-LT9dg+++[+++an anvil+++] +++, and a two-centimeter USB stick that stores 277 TB of "hacking tools" on it. They type impossibly fast as the screen is literred with random numbers, and then+++ __+++BAM+++__ ++++++ link:+++https://imgs.xkcd.com/comics/regular_expressions.png+++[+++the killer's location is known+++] +++!+++
+
++++If only.+++
+--
+
+[id=bps]
+== Enter Battle Programmer Shirase (or, the BPS)
+
+++++++ __+++Battle Programmer Shirase+++__ +++is an (oddly enough, unfinished) anime that first aired around 2003. And, as cool as watching it is, I'm pretty sure some of the script writers+++ [.strike]#+++had no clue what they were doing+++# +++just didn't know enough about programming to actually air a show about it. At the center of the show is the insanely otaku programmer, Akira Shirase, a.k.a. the BPS:+++
+
+image::https://s5.postimg.org/680rff91j/Selection_002.jpg[Akira Shirase]
+
++++And thus the stupidity begins.+++
+
+[id=rabbit]
+=== Attack of the evil rabbit
+
++++First off, someone (not our hero, of course!) has hacked into a shipping company to get himself a supercomputer. Of course, no half-decent hacker is going to hide their tracks, so he programs a freaking rabbit to change the info FOR HIM:+++
+
+image::https://s5.postimg.org/u0a2qyb2f/Selection_001.jpg[rabbit]
+
+image::https://s5.postimg.org/jrhll4n0n/Selection_003.jpg[rabbit]
+
++++Of course, the rabbit isn't exactly subtle:+++
+
+image::https://s5.postimg.org/mzm2y69af/Selection_004.jpg[What on earth is that?]
+
++++So we have this rabbit, right? And this rabbit goes and manually changes the GUI, right? Please tell me I'm not the only one who found fault with this... There was also that scene in+++ link:+++https://scifi.stackexchange.com/questions/15141/how-did-the-computer-virus-get-uploaded-into-the-mothership-in-independence-day+++[+++Independence Day+++] +++where the virus also announced its presence to everyone. Like, the whole point is that no one knows you're there+++ __+++until your job is complete+++__ +++. Sigh.+++
+
+**+++Step 0: Animate a cute devil rabbit and use it to change random GUI elements around, that way everyone knows that they were hacked.+++**
+
++++Anyway, this CEO guy goes to meet the BPS because he has a job for him. The owner of the restaurant gives him words of advice:+++
+
+image::https://s5.postimg.org/xnptx0j9j/Selection_005.jpg[Don't piss him off.]
+
+image::https://s5.postimg.org/gpveowz9j/Selection_006.jpg[]
+
+image::https://s5.postimg.org/3o9pz2avb/Selection_007.jpg[]
+
++++That's comforting...+++
+
+**+++Step 1: Know how to make people's life miserable if they make you mad.+++**
+
+[id=wars]
+=== Programmer wars: featuring the T9 keyboard
+
++++I could be here all day with screenshots, but the TL;DR is that the CEO guy (I'll call him+++ __+++CEO-san+++__ +++for now because it sounds funny) received a threat letter. The guy who stole the supercomputer (henceforth referred to as+++ __+++temper-san+++__ +++) got mad because one of CEO-san's products didn't work, and temper-san is going to infect CEO-san's computers unless CEO-san brings back the X68 (no, not X86, X68) line of computers. Hence my name for him: temper-san.+++
+
++++But wait! Temper-san created a virus that blew up one of CEO-san's buildings!! Oh no!!+++
+
+**+++Step 10: Know how to blow up buildings. No, I have no clue how, either.+++**
+
+image::https://s5.postimg.org/pjmb60m87/Selection_008.jpg[Explosion]
+
++++According to BPS, the explosion was because of a virus called the+++ __+++Parasite Bomb+++__ +++. Never mind that+++ link:+++https://security.stackexchange.com/questions/13105/is-it-possible-to-turn-a-computer-into-a-bomb+++[+++it's ridiculously hard to blow up an entire building like this+++] +++. Of course...+++
+
+image::https://s5.postimg.org/n7eb8f9mv/Selection_009.jpg[You can program the virus to overload the building's power]
+
+image::https://s5.postimg.org/d7jesiydj/Selection_010.jpg[and ignite gas lines or gas in parked cars]
+
++++BUT WAIT, this is the BPS we're talking about!!+++
+
+image::https://s5.postimg.org/5nqbqh56v/Selection_011.jpg[BPS to CEO-san: Who's your carrier for that phone?]
+
++++He's going to use a random phone (with a T9 keypad, BTW) to access his server at home! How...BPS-like!+++
+
+**+++Step 11: Have mad skillz with a T9 keyboard.+++**
+
+image::https://s5.postimg.org/oq9pdeg7b/Selection_013.jpg[Temper-san wonders who's messing with his perfect program]
+
++++Sorry, temper-san. You messed with the BPS. Now temper-san has to go back home and use his supercomputer to deploy his virus. What a pity!! Never fear, though: the BPS is going to build up defense programs faster than all of temper-san's attacks!! On a T9 keyboard!!+++
+
+image::https://s5.postimg.org/jcax5uqh3/Selection_014.jpg[CEO-san to BPS: You can do that?]
+
+image::https://s5.postimg.org/b388ixbif/Selection_016.jpg[Temper-san's program loses the connection]
+
++++Now temper-san's+++ __+++really+++__ +++freaking out. His program that was printing out random lines of C++ code... (FWIW all the types have+++ __+++T+++__ +++prefixes, like Pascal, and he's using the+++ ``+++fastcall+++`` +++calling convention)+++
+
+image::https://s5.postimg.org/43u6jkbk7/Selection_017.jpg[BPS entering random numbers into T9 keyboard]
+
++++...all because BPS is entering random numbers into a random T9 keyboard. Apparently, transmitting all this information over a phone connection is faster than a supercomputer. I want this phone carrier.+++
+
+image::https://s5.postimg.org/umctsaa9z/Selection_018.jpg[BPS compiled defense programs against every attack]
+
+**+++Step 100: Have even more mad skillz with a T9 keyboard.+++**
+
++++Ok, I'll stop now, but one last thing:+++
+
+image::https://s5.postimg.org/muw3tq64n/Selection_019.jpg[BOOM]
+
+[id=crisis]
+== CRISIS Special Security Squad
+
+__+++Note that the title has also been translated as CRISIS: Public Security Mobile Investigation Unit.+++__
+
++++Now, I want you to meet Oyama Rei:+++
+
+image::https://s5.postimg.org/tcf0d8ghz/mpv-shot0001.jpg[]
+
++++Oh wait, the picture's upside down. It was correct until I uploaded it...DANG IT postimage. :/+++
+
++++She's the hacker on the Special Security Squad, a bunch of really cool people who kick butt in sweaty suits. Oh, and they have martial arts skills. Niiice.+++
+
++++(For bonus points, play+++ link:+++https://youtu.be/k2p21PFcs8k+++[+++this track+++] +++in the background while reading this.)+++
+
++++Some Context: The squad has been assigned to locate terrorist bombers on a train. They have located one of the bombers, and they're trying to find the other one.+++
+
+**+++Step (11|100).B: If you can't use a T9 keyboard, then bring your laptop with you. Everywhere.+++**
+
++++Now, before I actually address all the cool hackings stuff, let me mention this:+++
+
+image::https://s5.postimg.org/e68ymaqh3/mpv-shot0002.jpg[]
+
++++Oh gosh, Megumin's brother wants to confirm what type of bomb it is. By dismantling it. While still on the train full of people. 10/10 thinking there, my friend.+++
+
++++Anyway, back on topic. Rei uses her cool laptop with more random numbers on it to try and crack the PIN code of the bomber's phone:+++
+
+image::https://s5.postimg.org/3uwltmyrr/mpv-shot0003.jpg[]
+
+**+++Step 101: All your hacking tools must print random numbers while doing their hacking work.+++**
+
++++I just want to point out that that much I/O would probably be too expensive to have inside a tool to crack PIN codes, especially since there's another bomb that's going to go off soon...+++
+
+image::https://s5.postimg.org/bg482uj5z/mpv-shot0004.jpg[]
+
++++You've got to admit, at least the info messages look decently real. Excluding, of course, the fact that it says the passcode has already been found, yet it's showing a cool little animation before showing the code...+++
+
+image::https://s5.postimg.org/4n3v6kscn/mpv-shot0006.jpg[]
+
++++Now, this is a different episode. She's querying different people from the public security division. Of course, there was a nicely formatted UI that was already prepared for this exact task. The original designers must've known this would happen!!+++
+
+**+++Step 110: Design UIs for things you'll probably never do. Like counting cats. Or saving magical girls from evil drawings that shoot knives coughcough.+++**
+
+image::https://s5.postimg.org/75pk79e2v/mpv-shot0005.jpg[]
+
++++Oh look, a random Perl script!+++
+
+**+++Step 111: Leave a background program running that prints the same script over and over again, except now there's no indentation, and it waits 0.4 seconds between each line.+++**
+
+image::https://s5.postimg.org/8btk622dj/mpv-shot0009.jpg[]
+
++++I'm pretty sure Oython is a typo, since Python is later referenced with the correct spelling. That being said, I think this one was kind of cool. Even though there was no shell prompt for some reason.+++
+
+image::https://s5.postimg.org/y9x6c37uv/mpv-shot0010.jpg[]
+
+**+++Step 1000: Spawn a new window named Result for your results.+++**

@@ -1,0 +1,5 @@
+{
+    "https://github.com/bazelbuild/rules_sass/archive/1.26.10.tar.gz"                              : "a2b6342b8fc3f6947e47219171976ee60bb3df73c45ef7352bfdeecba9b73a38",
+    "https://github.com/bazelbuild/rules_nodejs/releases/download/1.7.0/rules_nodejs-1.7.0.tar.gz" : "84abf7ac4234a70924628baa9a73a5a5cbad944c4358cf9abdb4aab29c9a5b77",
+    "https://github.com/bazelbuild/bazel/releases/download/3.3.1/bazel-3.3.1-linux-x86_64"         : "7d9e80bddd2cbfbd83da415373e75b9a77cf9f7c784f74382b8f9f8b412bde20"
+}

@@ -1,0 +1,13 @@
+{% extends "web/template/main.njk" %}
+{% from "web/template/_macros.njk" import post_title %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    {% set url = '/posts/' + post.id %}
+    {{ post_title(title = post.title, url = url, created = post.created, small = true) }}
+    <div>{{ post.teaser | safe }}</div>
+    <p><a href="{{ url }}">Read more...</a></p>
+  {% endfor %}
+{% endblock %}

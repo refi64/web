@@ -1,0 +1,182 @@
+# Overloading functions with the C preprocessor
+
+:created: 2014-09-15
+
+:tags: hack,c,preprocessor,programming
+
+[#teaser]
+--
++++Let's have an imaginary scenario: you're trying to make a library that has a special function,+++ ``+++myfunc+++`` +++. Now, this functions needs to have two possible ways to invoke it. One way takes one int parameter, the other takes two. Here's how you might do that in C++:+++
+--
+
+[source,cpp]
+----
+
+void myfunc(int);
+void myfunc(int, int);
+    
+----
+
++++C doesn't have a way to do this. You'll often see code like this:+++
+
+[source,c]
+----
+
+void myfunc_1(int);
+void myfunc_2(int, int);
+    
+----
+
++++However, this+++ __+++can+++__ +++be implemented, albeit in a slightly convoluted way, using a very controversial tool: the C preprocessor.+++
+
+[WARNING]
+=-
++++This is a very messy method that is bound to cause confusion. Do not use this is real production code. Ever. At all.+++
+=-
+
++++Here's the code in myfunc.h:+++
+
+[source,c]
+----
+
+#ifndef MYFUNC_H
+#define MYFUNC_H
+
+void _myfunc_1(int a)
+{
+    puts("Got 1 arg");
+}
+
+void _myfunc_2(int a, int b)
+{
+    puts("Got 2 args");
+}
+
+#define _MYFUNC_SEL(_1, _2, _3, ...) _3
+#define myfunc(...) _MYFUNC_SEL(__VA_ARGS__, _myfunc_2, _myfunc_1)(__VA_ARGS__)
+
+#endif // MYFUNC_H
+    
+----
+
++++and the main file:+++
+
+[source,c]
+----
+
+#include "myfunc.h"
+
+int main()
+{
+    myfunc(1); // Got 1 arg
+    myfunc(1, 2); // Got 2 args
+    return 0;
+}
+    
+----
+
++++What's going on here? The easiest way to see is to look at what happens in the preprocessor.+++
+
++++The first call (+++ ``+++myfunc(1)+++`` +++) expands to this:+++
+
+[source,c]
+----
+
+_MYFUNC_SEL(1, _myfunc_2, _myfunc_1)(1)
+    
+----
+
++++Remember,+++ ``+++__VA_ARGS__+++`` +++expands to the+++ ``+++...+++`` +++arguments. The+++ ``+++_MYFUNC_SEL+++`` +++macro returns the third argument,+++ ``+++_myfunc_1+++`` +++. Therefore, the expansion is ends up being:+++
+
+[source,c]
+----
+
+_myfunc_1(1)
+    
+----
+
++++The second call (+++ ``+++myfunc(1, 2)+++`` +++) expands to this:+++
+
+[source,c]
+----
+
+_MYFUNC_SEL(1, 2, _myfunc_2, _myfunc_1)(1, 2)
+    
+----
+
++++Again,+++ ``+++_MYFUNC_SEL+++`` +++returns the third argument, which, in this case, is+++ ``+++_myfunc_2+++`` +++.+++
+
++++Now you're probably beginning to realize how simple the underlying logic is.+++
+
++++However, what if you need to overload by types instead? In C11, that's easily possible using the _Generic feature. See+++ link:+++http://www.robertgamble.net/2012/01/c11-generic-selections.html+++[+++this+++] +++for more info. Here's the new myfunc.h:+++
+
+[source,c]
+----
+
+#ifndef MYFUNC_H
+#define MYFUNC_H
+
+void _myfunc_1_int(int a)
+{
+    puts("Got 1 int");
+}
+
+void _myfunc_1_void(void* x)
+{
+    puts("Got 1 pointer");
+}
+
+void _myfunc_2(int a, int b)
+{
+    puts("Got 2 args");
+}
+
+#define _MYFUNC_1(x) _Generic((x), int: _myfunc_1_int, void*: _myfunc_1_void)(x)
+#define _MYFUNC_SEL(_1, _2, _3, ...) _3
+#define myfunc(...) _MYFUNC_SEL(__VA_ARGS__, _myfunc_2, _MYFUNC_1)(__VA_ARGS__)
+
+#endif // MYFUNC_H
+    
+----
+
++++and the new main source file:+++
+
+[source,c]
+----
+
+#include "myfunc.h"
+
+int main()
+{
+    myfunc(1); // Got 1 int
+    myfunc((void*)NULL); // Got 1 pointer
+    myfunc(1, 2); // Got 2 args
+    return 0;
+}
+    
+----
+
++++Let's review the expansion process:+++
+
+[source,c]
+----
+
+myfunc(1)
+_MYFUNC_SEL(1, _myfunc_2, _MYFUNC_1)(1)
+_MYFUNC_1(1)
+_Generic((1), int: _myfunc_1_int, void*: _myfunc_1_void)(1)
+    
+----
+
++++Now, the+++ ``+++_Generic+++`` +++function basically is like pattern-matching on types. (See the linked article above for more info.) The+++ ``+++_Generic+++`` +++call evaluates to:+++
+
+[source,c]
+----
+
+_myfunc_1_int(1)
+    
+----
+
++++See how the magic works?+++
+
++++All in all, you can see how much you can do with the preprocessor. Just don't abuse it, because the error messages kind of...well...suck. I'll put a way to get better errors in a future post.+++

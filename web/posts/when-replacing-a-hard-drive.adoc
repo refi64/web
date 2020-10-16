@@ -1,0 +1,147 @@
+# When replacing a hard drive turns into a fried motherboard, a VM mess, and a slow USB stick
+
+:created: 2017-05-26
+
+:tags: laptop,motherboard,usb
+
+[#teaser]
+--
++++Have you ever tried to do something simple, like changing a lightbulb, but in the end you end up rewiring your house, the neighbor's house, and the governer's ice box? Yeah, that's how I felt. It all started with...+++
+--
+
+[id=hard-drive]
+== ...replacing my hard drive
+
++++All I wanted to do was replace my Inspiron's rotating HDD with a Crucial SSD. Seems easy enough, right? Well, it+++ __+++would+++__ +++have been easy, but Dell decided, in their infinite+++ [.strike]#+++lack of+++# +++wisdom, to put the hard drive underneath the motherboard, meaning that I have to disassemble a pretty good portion of the laptop in order to access it. Yay...+++
+
+[id=usb]
+== Live USBs are hard
+
++++First off, I needed a battle plan. I decided to created a bootable Linux USB, boot up to it, use+++ ``+++dd+++`` +++to make an image, save onto my external HDD, and...that's it. It shouldn't take too long, right?+++
+
++++I decided to use a Kubuntu USB stick, that way I could replace my Linux distro right after restoring the old hard drive image. Therefore, I downloaded the ISO and...wait a sec, you can't burn ISOs to a USB stick. No problem; I'd just use+++ ``+++usb-creator-gtk+++`` +++. Spun it up, wrote the ISO, booted to the USB, and got a kernel panic. Ugh.+++
+
++++Next, I tried Unetbootin, with nearly identical results. This isn't going well, is it? Afterwards came mkusb, which seemed to work, but the USB never booted. Went back to Unetbootin, and it magically worked this time. I booted to the USB and make a hard disk image. This whole process took+++ **+++only+++** +++around 3 hours.+++ __+++Only.+++__
+
+[id=dis]
+== Disassembling stuff is hard
+
++++Next day was disassembling time. For reference here's how I had to disassemble the computer in order to access the hard drive:+++
+
+* +++Unscrew the screws in the baterry compartment.+++
+* +++Unscrew the screws beneath the computer.+++
+* +++Unscrew the screw under the RAM cover and pop out the DVD drive.+++
+* +++Unscrew the screws under the DVD drive.+++
+* +++Remove and disconnet the keyboard.+++
+* +++Unscrew the screws in and remove the palmrest assembly.+++
+* +++Unscrew the screw in and disconnect the fan.+++
+* +++Unscrew the screw in and disconnect the display cable.+++
+* +++Unscrew the screws in motherboard.+++
+* +++Pry out the motherboard. There's quite a bond between the main and I/O boards, so you have to pull pretty hard in order to get the stupid thing out.+++
+* +++Unscrew the hard drive holder and pull it out.+++
+
++++My disassembly attempts went a bit like this:+++
+
+* +++First attempt seemed to have gone, well, and there were only three screws left over after re-assembly. Oh, and I broke the plastic around the DVD drive, but it didn't matter too much. Re-assembled and booted up computer, went to restore disk image, and LO AND BEHOLD+++ __+++my new hard drive wasn't being picked up.+++__
+* +++Next attempt was going well, but after putting in the keyboard, I realized I left out all the screws from the palm rest.+++
+* +++Worked perfectly, except the computer didn't actually boot. Turns out, I forgot to re-connect the power button...+++
+* +++Actually worked, but I forgot to re-connect the display cable.+++ __+++Sigh...+++__
+* +++Again, it actually worked, but when I went to finish screwing everything in, the monitor popped out. See, my right hinge has been broken for a while, and while attempting to turn the laptop over, I pushed the LCD screen just enough to make it move inside the computer, causing the palm rest assembly to pop out.+++
+* +++Was all done, and the computer actually booted correctly...but while re-assembling, I dropped a screw inside the DVD player holder and couldn't reach it. Time to disassemble again!+++
+* +++Similar to before, but this time it was due to the broken hinge; one of the screws got lodged inside a crack.+++
+* +++This time it worked!+++
+
++++TADA! I booted up the computer and started writing the image to the hard drive. I noticed the battery was kind of low, so I plugged in the AC adapter and left the computer alone for a while. Came back, and...+++
+
+[id=dead]
+== ...it wasn't on anymore, and wouldn't come back on
+
++++These titles look a bit like Re:Creators episode titles with all the ellipses, don't they?+++
+
++++Yeah, the computer was off. I figured the battery died or something (maybe I didn't plug the AC adapter in all the way), so I tried to boot it back up. The three status lights on the top-right started flashing like normally during boot, but then it just shut back off. Ugh!+++
+
++++Disassembled it+++ __+++again+++__ +++and triple-checked all the connections. They were perfect. Heat sink looked OK (I had used compressed air on it earlier), fan looked okay, ribbons looked ok...I tried removing the RAM, and the motherboard sent out the normal beeps. Odd.+++
+
++++I did some multimeter tests, and the DC jack appeared to be dead. I figured it makes sense; computer was charging enough for it to not safely shut off, but it wasn't charging enough to actually charge, leading the battery to croak. Sounded about right...+++
+
+[id=dc-fail]
+== ...but the new DC jack didn't work
+
++++I mean, it worked now, but the computer symtoms were still the same. I noticed that the port where the DC jack goes into had burn marks. Uh-oh, this doesn't look good...+++
+
+image::https://s5.postimg.org/nrv1c1l3b/IMG_20170519_162823.jpg[]
+
+[id=access]
+== ...so I tried to boot into the raw disk through GRUB
+
++++...on my Dad's computer. After all, it shouldn't be too difficult, right? (If you know how casper booting works, you're probably face-palming right now. Yes, it failed.)+++
+
++++Oddly enough, my Unetbootin Kubuntu USB stick ended up using GRUB instead of syslinux on this particular computer (maybe because of EFI support?). Perfect! I'll just use the console to loop-mount the raw disk and boot into it.+++
+
++++Actually, not-so-perfect. Casper seems to only be able to boot into specially-prepared squashfs images. (If anybody knows a workaround, PLEASE let me know in the comments!) Well, there goes another several wasted hours...+++
+
+[id=vm]
+== ...then I tried to use a VirtualBox VM
+
++++Oh wait, I can't access the raw disk image in a safe RW manner, because it's on an ext4 file system, and my Dad's computer runs Windows 10. :/+++
+
++++A quick Google confirmed my suspicion that nested virtualization wouldn't work. Yeah, if you can't tell, I got nowhere with this very quickly.+++
+
++++In order to be able to access my files in the mean time, I did download and set up and elementary OS VM so I could loop-mount the raw disk image.+++
+
+[id=kvm]
+== ...then I tried to use KVM
+
++++Wait a sec, I can just use the Kubuntu USB stick to set up a KVM vm, booting straight from the raw disk image! Perfect, right?+++
+
++++Can of ten-thousand worms coming up. Fittingly enough, I had Sawano's+++ __+++Dim Light+++__ +++track stuck in my head for most of this time.+++ __+++If I find the Dim Light...+++__
+
++++First off, I knew the live USB wasn't persistent, but I figured I could just rerun all the needed commands each time. So I booted up, went to download QEM -- oh wait, the internet isn't working. Turns out, on this laptop, I need some Broadcom wireless drivers. No worries; I'll just download the drivers through Windows and install them in Kubuntu.+++
+
++++Oh wait, the Broadcom wireless drivers aren't actually building. No worries; I'll just patch the source code to make them build.+++
+
++++Oh wait, now every time I run+++ ``+++sudo+++`` +++, the computer locks up. Uggghhh... A quick Google points to me needing to edit+++ ``+++/etc/hosts+++`` +++first.+++
+
++++Oh wait, THIS ISN'T A PERSISTENT USB STICK.+++
+
+[id=persist]
+== ...but I can just create a persistent one instead
+
++++Another Google pointed to+++ __+++mkusb+++__ +++. I spun up the eOS VM, used it, and, turns out, it actually worked!+++
+
++++So then I redid EVERYTHING on the persistent USB, but+++ ``+++sudo+++`` ++++++ __+++still+++__ +++failed. Now, since it's a persistent USB, booting the computer up hangs, too! Time to re-make the USB stick, right?+++
+
+[id=wipe]
+== ...but then I wiped out my external HDD
+
++++Yes, this is the same external HDD that holds my disk image. I accidentally pointed+++ __+++mkusb+++__ +++to the external HDD instead of my USB stick. This is actually the+++ __+++third+++__ +++time I've accidentally wiped that drive. (First time was a rougue+++ ``+++dd+++`` +++while trying to make a Chromium OS USB stick; second time was when my Chromium OS dual-boot -- installed on the external drive -- decided to repair itself and wipe out the drive in the process.)+++
+
++++Luckily, the first 32 GB of the hard drive were filled with two partitions that I hadn't used yet, so the image that was written didn't touch my actual main files, though the partition table was lost. Sounds like a job for TestDisk! Sure enough, I was able to recover the original partition table in around 5 minutes. That tool is literally a godsend.+++
+
+[id=ethernet]
+== ...so I'll just use an ethernet cable instead of trying to make Wi-Fi drivers work
+
++++...which is what I really should've done from the beginning. Worked the first try. Grabbed QEMU, installed it, (after a brief fit of trying to debug package issues caused by forgetting to run+++ ``+++apt update+++`` +++), and ran it, and...+++
+
++++...it booted, though the splash screen wasn't there. I didn't care anyway, though. It worked, right?+++
+
++++Well, yeah, but it was really freaking+++ __+++slow+++__ +++. Like, it takes 6 seconds to open up the Applications menu slow. I checked if KVM was enabled and, sure enough, it was. I have+++ __+++no+++__ +++clue why the VM was so slow.+++
+
+[id=end]
+== ...and, in the end
+
++++I gave up.+++
+
++++Going to order a new motherboard. Right now, I'm typing this on my dad's laptop, in that original eOS VM. I just re-cloned my website from GitHub.+++
+
+[id=moral]
+== ...so, the moral of the story is
+
++++If you screw up your computer, don't spend a whole week trying to virtualize or just boot to your raw disk image, because it isn't going to work.+++
+
+[id=closing]
+== Closing throughts
+
++++First off, if anyone has+++ __+++any+++__ +++ideas on how to do...well, any of this (booting to a raw disk image, making QEMU+KVM actually be fast, try and get the motherboard working again), please let me know in the comments!+++
+
++++...yeah, that's it. Sorry.+++

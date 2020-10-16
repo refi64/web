@@ -1,0 +1,18 @@
+{% macro post_title(title, url, created, small = talse) %}
+  {% set desktop_level = 4 if small else 3 %}
+  {% set mobile_level = desktop_level + 1 %}
+
+  <a href="{{ url }}">
+    <span class="if-not-mobile post-title mdc-typography--headline{{desktop_level}}">
+      {{ title }}
+    </span>
+
+    <span class="if-mobile post-title mdc-typography--headline{{mobile_level}}">
+      {{ title }}
+    </span>
+  </a>
+
+  <p class="post-subheader">
+    Created on {{created}} - <a href="{{ url }}#comments">Comments</a>
+  </p>
+{% endmacro %}

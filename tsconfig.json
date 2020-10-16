@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "ES2019",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "lib": ["ES2019", "DOM"],
+    "paths": {
+      "web_next/*": ["*"]
+    }
+  },
+  "exclude": ["bazel*", "node_modules", "third_party"]
+}

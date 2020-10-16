@@ -1,0 +1,66 @@
+# Moving from Nikola to...Polymer!?
+
+:created: 2016-05-29
+
+:tags: website,nikola,polymer
+
+[#teaser]
+--
+++++++ **+++EDIT:+++** +++Yup, I rewrote it again.+++ link:+++/posts/web-port.html+++[+++More info here.+++]
+
++++We've all done those things before. You know it's a horrible idea, but it just sounds+++ __+++so+++__ +++cool that you can't resist.+++
+
++++Well, that's why I decided to move away from Nikola (which is awesome BTW) and roll a home-made website using Polymer and the paper components.+++
+--
+
+[id=why]
+== But...why?
+
++++To be honest, I have absolutely no idea.+++
+
++++I had been toying with Polymer, and I loved it. However, it seemed like there was nothing for me to use it on. Then I got the idea: why not move away from my perfectly good, fast, stable static site generator and rewrite the whole site by myself?+++
+
++++Also, I was bored and curious. I dislike "black boxes"; if I don't know how something works, I get frustrated easily.+++
+
++++In addition, where's the fun in+++ __+++not+++__ +++re-inventing the wheel?+++
+
+[id=easy]
+== The easy parts
+
++++Some stuff was pretty easy. For instance, I'm using+++ link:+++http://prismjs.com/+++[+++Prism+++] +++for syntax highlighting and+++ link:+++https://sharebutton.co/+++[+++share-button+++] +++for sharing stuff. I stuck with Disqus for commenting.+++
+
+[id=hard]
+== The hard/messy parts (mostly AJAX)
+
++++Well, of course there were some...err...+++ __+++complications+++__ +++...+++
+
++++In particular, notice the+++ link:+++/index.html+++[+++index page+++] +++. The whole thing is automatically-generated. With AJAX.+++
+
++++In the root of the website is+++ link:+++/posts.json+++[+++posts.json+++] +++. This contains a list of+++ __+++all+++__ +++the posts. The source code of+++ ``+++index.html+++`` +++uses AJAX to fetch the list of posts, then proceeds to again use AJAX (fun stuff) in order to fetch the post.+++
+
++++Now, the fetched post is already in DOM nodes, so I can use normal DOM querying to fetch the+++ ``+++div+++`` +++with the id+++ ``+++teaser+++`` +++and generate a teaser from it.+++
+
+[id=weird]
+== The really weird parts
+
++++Tags use a similar mechanism of getting the posts via AJAX and querying the+++ ``+++site-tags+++`` +++element. However, for some weird as heck reason, on my computer, clicking+++ ``+++any+++`` +++link that leads to a totally different page, it'll just take you back to+++ ``+++tags.html+++`` +++. Refresing fixes the issue. No clue what the heck is wrong...+++
+
+[id=stupid]
+== The stupid mistakes
+
++++So I don't usually do+++ __+++that+++__ +++much web development:+++
+
+* +++I consistently blew my brain out trying to figure out why elements weren't showing. Because I changed the opening tag of another element and forgot to change the closing tag. Resulting in it never being closed.+++
+* +++I code too much Python. Iny my JS code, I tried adding two arrays together with+++ ``+++++++`` +++...+++
+* +++Random other stuff. Mostly stuff related to styling/AJAX. JS is+++ __+++not+++__ +++my forte.+++
+
+[id=closing]
+== Closing thoughts
+
++++Normally, I dislike websites that use JavaScript a lot. But I just couldn't resist the idea of trying to do this whole thing without a static site generator. I mean, it+++ __+++mostly+++__ +++works...+++
+
++++Note that, at the moment, the RSS feed still no longer works. Not quite sure what to do about that yet.+++
+
++++Oh, and also:+++
+
+image::http://www.commitstrip.com/wp-content/uploads/2016/05/Strip-Detruire-les-serveurs-english650-final.jpg[CommitStrip: Why, for the glory of code, of course!]
