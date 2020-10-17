@@ -10,12 +10,18 @@
   {% endblock %}
 
   <div id="hyvor-talk-view"></div>
-  <script type="text/javascript">
-    var HYVOR_TALK_WEBSITE = {{ settings.hyvor_website_id }};
-    var HYVOR_TALK_CONFIG = {
-        url: window.location.href.split('#')[0],
-        id: 'cache' + window.location.pathname
-    };
+  <script>
+    // Make sure we handle our custom navigation.
+    window.HYVOR_TALK_WEBSITE = {{ settings.hyvor_website_id }}
+    window.HYVOR_TALK_CONFIG = {
+      url: window.location.href.split('#')[0],
+      id: window.location.pathname
+    }
+
+    console.log(window.HYVOR_TALK_CONFIG.id)
+    if (window.hyvor_talk) {
+      window.hyvor_talk.reload()
+    }
   </script>
-  <script async type="text/javascript" src="//talk.hyvor.com/web-api/embed"></script>
+  <script async src="//talk.hyvor.com/web-api/embed"></script>
 {% endblock %}
