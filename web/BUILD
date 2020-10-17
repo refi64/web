@@ -28,6 +28,7 @@ http_server(
     data = [
         ":index",
         ":tags",
+        "//web/images",
         "//web/js",
         "//web/posts",
         "//web/styles",

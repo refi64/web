@@ -19,21 +19,21 @@
 [.image-gallery]
 --
 
-image::https://image.ibb.co/cdPjR9/old1.png[Old home page, title="_alt"]
+image::/images/posts/vuedart-0.4-released/old1.png[Old home page, title="_alt"]
 
-image::https://image.ibb.co/iPBym9/new1.png[New home page, title="_alt"]
+image::/images/posts/vuedart-0.4-released/new1.png[New home page, title="_alt"]
 
-image::https://image.ibb.co/nhZjR9/old2.png[Old documentation, title="_alt"]
+image::/images/posts/vuedart-0.4-released/old2.png[Old documentation, title="_alt"]
 
-image::https://image.ibb.co/jxaPR9/new2.png[New documentation, title="_alt"]
+image::/images/posts/vuedart-0.4-released/new2.png[New documentation, title="_alt"]
 
-image::https://image.ibb.co/bXDNDp/old1m.png[Old home page (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/old1m.png[Old home page (mobile), title="_alt"]
 
-image::https://image.ibb.co/emd0zU/new1m.png[New home page (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/new1m.png[New home page (mobile), title="_alt"]
 
-image::https://image.ibb.co/hjx4R9/old2m.png[Old documentation (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/old2m.png[Old documentation (mobile), title="_alt"]
 
-image::https://image.ibb.co/mGF2Dp/new2m.png[New documentation (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/new2m.png[New documentation (mobile), title="_alt"]
 
 --
 

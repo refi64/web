@@ -69,7 +69,7 @@
 
 +++I mean, it worked now, but the computer symtoms were still the same. I noticed that the port where the DC jack goes into had burn marks. Uh-oh, this doesn't look good...+++
 
-image::https://s5.postimg.org/nrv1c1l3b/IMG_20170519_162823.jpg[]
+image::/images/posts/when-replacing-a-hard-drive/jack.jpg["The burned area"]
 
 [id=access]
 == ...so I tried to boot into the raw disk through GRUB

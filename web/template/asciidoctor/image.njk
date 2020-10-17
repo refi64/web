@@ -8,15 +8,33 @@
       {% set title = node.getAttribute('alt') %}
     {% endif %}
 
-    <a class="lightbox" href="{{node.getAttribute('target')}}">
+    {% set target = node.getAttribute('target') %}
+    {% set compressed = target.startsWith('/images') %}
+    {% if compressed %}
+      {% set basename = target.slice(0, target.lastIndexOf('.')) + '.compressed' %}
+      {% set extension = target.slice(target.lastIndexOf('.')) %}
+      {% set target = basename + extension %}
+    {% endif %}
+
+    <a class="lightbox" href="{{target}}">
+      {% if compressed %}
+        <picture>
+          <source srcset="{{basename}}.avif" type="image/avif">
+          <source srcset="{{basename}}.webp" type="image/webp">
+      {% endif %}
+
       <img
-        src="{{node.getAttribute('target')}}"
+        src="{{target}}"
         {% if node.hasAttribute('alt') %}
           alt="{{node.getAttribute('alt')}}"
         {% endif %}
         {% if title %}
           title="{{title}}"
         {% endif %}>
+
+      {% if compressed %}
+        </picture>
+      {% endif %}
     </a>
     {% if title %}
       <span class="imageblock-text">

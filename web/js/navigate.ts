@@ -116,7 +116,7 @@ function navigateTo(target: string, event: Event, kind: EventKind) {
 }
 
 function attachNavigationInterceptorsTo(el: Element) {
-  el.querySelectorAll('a').forEach((el) => {
+  el.querySelectorAll('a:not(.lightbox)').forEach((el: HTMLAnchorElement) => {
     // NOTE: nanomorph will not support this!
     if (el[navigationInterceptorAttached]) {
       return
@@ -141,7 +141,12 @@ export function attachNavigationInterceptors() {
   window.addEventListener('popstate', (event: PopStateEvent) => {
     // Don't bother going in if the previous path is identical, or this wasn't a navigation done by JS.
     console.debug(`popstate: ${window.currentState} -> ${event.state}`)
-    if (event.state === null || event.state === window.currentState) {
+    if (
+      event.state === null ||
+      event.state === window.currentState ||
+      event.state.tobii === 'close'
+    ) {
+      console.debug('Skipping this popstate')
       return
     }
 

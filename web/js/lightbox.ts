@@ -2,24 +2,28 @@
 import Tobii from 'tobii'
 import * as dom from './dom'
 
-let tobii: { init: () => void; reset: () => void }
+let tobii: { destroy: () => void }
 let firstPage = true
 
+function updateTobiiLinks() {
+  document
+    .querySelectorAll('.lightbox picture img')
+    .forEach((img: HTMLImageElement) => {
+      let lightbox: HTMLAnchorElement = img.closest('.lightbox')
+      lightbox.href = img.currentSrc
+    })
+}
+
 dom.attachDomCallbacks({
-  onRootLoad: () => {
-    tobii = new Tobii({ captionAttribute: 'title' })
-  },
-
   onPageLoad: () => {
-    if (firstPage) {
-      firstPage = false
-      return
+    updateTobiiLinks()
+    if (document.querySelector('.lightbox')) {
+      tobii = new Tobii({ captionAttribute: 'title' })
     }
-
-    tobii.init()
   },
 
   onLocalNavigateBegin: () => {
-    tobii.reset()
+    tobii?.destroy()
+    tobii = null
   },
 })
