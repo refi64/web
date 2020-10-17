@@ -60,10 +60,33 @@ rollup_bundle(
     ],
 )
 
+ts_library(
+    name = "lightbox_lib",
+    srcs = ["lightbox.ts"],
+    deps = [
+        ":dom_lib",
+        "@npm//tobii",
+    ],
+)
+
+rollup_bundle(
+    name = "bundle.lightbox",
+    config_file = "rollup.config.js",
+    entry_point = "lightbox.ts",
+    format = "iife",
+    deps = [
+        ":lightbox_lib",
+        "@npm//@rollup/plugin-commonjs",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//rollup-plugin-terser",
+    ],
+)
+
 filegroup(
     name = "js",
     srcs = [
         ":bundle.core",
+        ":bundle.lightbox",
         ":bundle.tags",
     ],
     visibility = ["//visibility:public"],

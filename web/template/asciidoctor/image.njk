@@ -1,17 +1,26 @@
 <div id="{{node.getId()}}" class="imageblock">
   <div class="imageblock-inner">
-    <img
-      {% if node.hasAttribute('target') %} src="{{node.getAttribute('target')}}" {% endif %}
-      {% if node.hasAttribute('alt') %} alt="{{node.getAttribute('alt')}}" {% endif %}>
     {% if node.hasTitle() %}
+      {% set title = node.getTitle() %}
+    {% endif %}
+
+    {% if title == '_alt' %}
+      {% set title = node.getAttribute('alt') %}
+    {% endif %}
+
+    <a class="lightbox" href="{{node.getAttribute('target')}}">
+      <img
+        src="{{node.getAttribute('target')}}"
+        {% if node.hasAttribute('alt') %}
+          alt="{{node.getAttribute('alt')}}"
+        {% endif %}
+        {% if title %}
+          title="{{title}}"
+        {% endif %}>
+    </a>
+    {% if title %}
       <span class="imageblock-text">
-        <span class="imageblock-text-inner">
-          {% if node.getTitle() == '_alt' %}
-            {{ node.getAttribute('alt') }}
-          {% else %}
-            {{ node.getTitle() }}
-          {% endif %}
-        </span>
+        <span class="imageblock-text-inner">{{title}}</span>
       </span>
     {% endif %}
   </div>

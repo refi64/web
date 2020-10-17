@@ -2285,6 +2285,11 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
+tobii@^2.0.0-alpha:
+  version "2.0.0-alpha"
+  resolved "https://registry.yarnpkg.com/tobii/-/tobii-2.0.0-alpha.tgz#90b6c4961046e453e16b2ca3c6803499b4352270"
+  integrity sha512-pPBdmay5bCMO4wW/8JTc2eSsS2ivfHmtCp5ypy/q6B9czL4EcnlRR7G08shwxgB8UGBglTdzT4rxKdJtPXjZCQ==
+
 tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.3:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"

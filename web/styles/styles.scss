@@ -34,6 +34,8 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
 @use '@material/top-app-bar/variables' as top-app-bar-variables;
 @use '@material/typography/mixins' as typography-mixins;
 
+@use 'tobii/src/scss/tobii';
+
 // Have to use @import here, because @use can't go in a media query
 @media (prefers-color-scheme: light) {
   @import 'highlight.js/scss/github';
@@ -86,6 +88,8 @@ html {
       left: 0;
       right: 0;
       bottom: 0;
+
+      pointer-events: none;
 
       display: flex;
       align-items: flex-end;

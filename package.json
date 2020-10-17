@@ -23,6 +23,7 @@
     "http-server": "^0.12.3",
     "material-components-web": "^7.0.0",
     "node-eval": "^2.0.0",
-    "nunjucks": "^3.2.1"
+    "nunjucks": "^3.2.1",
+    "tobii": "^2.0.0-alpha"
   }
 }

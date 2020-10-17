@@ -3,6 +3,10 @@
 
 {% block title %} {{ metadata.doctitle }} {% endblock %}
 
+{% block head %}
+  <script async src="/js/bundle.lightbox.js"></script>
+{% endblock %}
+
 {% block content %}
   {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}
 

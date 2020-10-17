@@ -14,5 +14,6 @@ npm_enabled_sass_binary(
         "//packages/material:shape",
         "//packages/material:theme",
         "//packages/material:top-app-bar",
+        "//packages/tobii",
     ],
 )
