@@ -42,6 +42,14 @@ async function localNavigateTo(target: string, kind: EventKind) {
   let newDoc = parser.parseFromString(html, 'text/html')
   let newContent: HTMLElement = newDoc.querySelector('.page-content')
 
+  // After morph, no script tags will actually be loaded, so those will need
+  // to be re-added manually. We track all the already-loaded ones before
+  // anything gets replaced, so later on those don't get reloaded when we
+  // re-add the new scripts.
+  let alreadyLoadedScripts = Array.from(document.querySelectorAll('script'))
+    .map((el) => el.src)
+    .filter((src) => src)
+
   document.querySelector('.page-content').replaceWith(newContent)
   attachNavigationInterceptorsTo(newContent)
 
@@ -49,7 +57,25 @@ async function localNavigateTo(target: string, kind: EventKind) {
     document.querySelector('.side-title'),
     newDoc.querySelector('.side-title')
   )
+
   nanomorph(document.head, newDoc.head)
+
+  document.querySelectorAll('script').forEach((el) => {
+    if (el.src && alreadyLoadedScripts.includes(el.src)) {
+      console.debug(`skipping ${el.src} because it's already loaded`)
+      return
+    }
+
+    var newEl = document.createElement('script')
+    newEl.textContent = el.textContent
+
+    if (el.src) {
+      newEl.src = el.src
+    }
+
+    newEl.async = el.async
+    el.replaceWith(newEl)
+  })
 
   if (kind == EventKind.LINK) {
     window.scrollTo(0, 0)
