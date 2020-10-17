@@ -16,7 +16,7 @@
 
 +++Here's some pictures for comparison (they're in pairs: first comes the old, then the new design):+++
 
-[.image-carousel]
+[.image-gallery]
 --
 
 image::https://image.ibb.co/cdPjR9/old1.png[Old home page, title="_alt"]
