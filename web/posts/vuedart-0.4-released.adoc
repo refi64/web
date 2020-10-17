@@ -16,21 +16,26 @@
 
 +++Here's some pictures for comparison (they're in pairs: first comes the old, then the new design):+++
 
-image::https://image.ibb.co/cdPjR9/old1.png[]
+[.image-carousel]
+--
 
-image::https://image.ibb.co/iPBym9/new1.png[]
+image::https://image.ibb.co/cdPjR9/old1.png[Old home page, title="_alt"]
 
-image::https://image.ibb.co/nhZjR9/old2.png[]
+image::https://image.ibb.co/iPBym9/new1.png[New home page, title="_alt"]
 
-image::https://image.ibb.co/jxaPR9/new2.png[]
+image::https://image.ibb.co/nhZjR9/old2.png[Old documentation, title="_alt"]
 
-image::https://image.ibb.co/bXDNDp/old1m.png[]
+image::https://image.ibb.co/jxaPR9/new2.png[New documentation, title="_alt"]
 
-image::https://image.ibb.co/emd0zU/new1m.png[]
+image::https://image.ibb.co/bXDNDp/old1m.png[Old home page (mobile), title="_alt"]
 
-image::https://image.ibb.co/hjx4R9/old2m.png[]
+image::https://image.ibb.co/emd0zU/new1m.png[New home page (mobile), title="_alt"]
 
-image::https://image.ibb.co/mGF2Dp/new2m.png[]
+image::https://image.ibb.co/hjx4R9/old2m.png[Old documentation (mobile), title="_alt"]
+
+image::https://image.ibb.co/mGF2Dp/new2m.png[New documentation (mobile), title="_alt"]
+
+--
 
 [id=changes]
 == Major changes
@@ -61,7 +66,7 @@ image::https://image.ibb.co/mGF2Dp/new2m.png[]
 class MyMixin implements VueMixinRequirements {
   // ...
 }
-  
+
 ----
 
 +++The other change is that there is no longer a mixins: argument to VueComponent:+++
@@ -76,7 +81,7 @@ class MyMixin implements VueMixinRequirements {
 )
 // Notice the mixins are given twice: the mixins: argument above only takes VueDart mixins
 class MyComponent extends VueComponentBase with MyMixin
-  
+
 ----
 
 +++Of course, the problem was you could forget to put the mixin in both places properly. Now, you just need to put it inside the+++ ``+++with+++`` +++clause and drop the+++ ``+++mixins:+++`` +++argument.+++
@@ -92,7 +97,7 @@ class MyComponent extends VueComponentBase with MyMixin
 ----
 
 @VueComponent('my-component', template: '<<')
-  
+
 ----
 
 +++Now, it's like this:+++
@@ -101,7 +106,7 @@ class MyComponent extends VueComponentBase with MyMixin
 ----
 
 @VueComponent(template: '<<')
-  
+
 ----
 
 +++Wait, what? Where did the component name go?+++
@@ -124,7 +129,7 @@ class MyOtherComponent extends VueComponentBase {
 @VueApp(id: '#app', components: [MyOtherComponent])
 class App {
 }
-  
+
 ----
 
 +++The primary benefit is better tree-shaking.+++
@@ -139,7 +144,7 @@ class MyMixin implements VueMixinRequirements {}
 
 @VueComponent(template: '<my-component>')
 class MyThirdComponent extends VueComponentBase with MyMixin {}
-  
+
 ----
 
 +++As a side note, one nice new feature of Dart 2 is that you no longer need to prefix the type lists with+++ ``+++const+++`` +++like you did for the old mixins.+++
@@ -164,7 +169,7 @@ void mounted() {}
 // Now
 @override
 void lifecycleMounted() {}
-  
+
 ----
 
 +++In addition, as mentioned above, there's now a+++ ``+++lifecycleCreated+++`` +++hook.+++
@@ -212,7 +217,7 @@ class MyOtherButton {
     });
   }
 }
-  
+
 ----
 
 [id=sass]
@@ -236,7 +241,7 @@ class MyOtherButton {
     }
   }
 <style>
-  
+
 ----
 
 [id=model]
@@ -250,7 +255,7 @@ class MyOtherButton {
 @model(event: 'my-event')
 @prop
 int someProp = 0;
-  
+
 ----
 
 [id=bugfixes]
