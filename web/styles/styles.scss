@@ -84,6 +84,12 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
   }
 
   .mdc-drawer {
+    border-color: #ffffff1f;
+
+    .mdc-drawer__title {
+      color: #ffffffde;
+    }
+
     .mdc-list-group__subheader {
       color: #ffffff99;
     }
@@ -105,6 +111,10 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
   :not(.mdc-list-item--disabled).mdc-list-item .mdc-list-item__ripple::before,
   :not(.mdc-list-item--disabled).mdc-list-item .mdc-list-item__ripple::after {
     background-color: #fff !important;
+  }
+
+  .mdc-list-divider {
+    border-bottom-color: #ffffff1f;
   }
 }
 
