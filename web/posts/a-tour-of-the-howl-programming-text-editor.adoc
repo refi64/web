@@ -2,7 +2,7 @@
 
 :created: 2016-03-20
 
-:tags: howl,moonscript,lua,video,youtube,editor
+:tags: howl moonscript lua video youtube editor
 
 [#teaser]
 --

@@ -2,7 +2,7 @@
 
 :created: 2018-01-02
 
-:tags: programming,hack,assembly,qldv,elf
+:tags: programming hack assembly qldv elf
 
 [#teaser]
 --

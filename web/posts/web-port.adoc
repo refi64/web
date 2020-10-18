@@ -2,7 +2,7 @@
 
 :created: 2017-10-10
 
-:tags: programming,website,polymer,dart,vue
+:tags: programming website polymer dart vue
 
 [#teaser]
 --

@@ -1,31 +1,24 @@
 import * as dom from './dom'
-import {
-  MDCChipSet,
-  MDCChipSelectionEvent,
-  MDCChipSelectionEventDetail,
-} from '@material/chips'
+import { MDCChipSet, MDCChipSelectionEvent } from '@material/chips'
 
 function attachChips(content: HTMLElement) {
   const chipIdPrefix = 'chip-'
+  const matchesAttr = 'data-matches'
 
-  function onChipSelection(event: MDCChipSelectionEvent) {
-    // Remove chip- prefix.
-    const { chipId, selected } = event.detail
-    if (!chipId.startsWith(chipIdPrefix)) {
-      throw new Error(`Unexpected chip ID ${chipId}`)
-    }
+  function onChipSelection(_event: MDCChipSelectionEvent) {
+    let selectedTags = Array.from(
+      content.querySelectorAll('.mdc-chip--selected')
+    ).map((chip) => chip.id.substr(chipIdPrefix.length))
 
-    let tag = chipId.substr(chipIdPrefix.length)
-    content.querySelectorAll(`.tag-${tag}`).forEach((el: HTMLElement) => {
-      let diff = selected ? 1 : -1
-      const matchesAttr = 'data-matches'
+    content.querySelectorAll(`[${matchesAttr}]`).forEach((el: HTMLElement) => {
+      el.removeAttribute(matchesAttr)
+      el.style.display = 'none'
+    })
 
-      let prevMatches = parseInt(el.getAttribute(matchesAttr) || '0')
-      console.log(el.getAttribute(matchesAttr) || '0')
-      let newMatches = prevMatches + diff
-
-      el.setAttribute(matchesAttr, newMatches.toString())
-      el.style.display = newMatches ? 'initial' : 'none'
+    let selector = selectedTags.map((tag) => `.tag-${tag}`).join('')
+    content.querySelectorAll(selector).forEach((el: HTMLElement) => {
+      el.setAttribute(matchesAttr, '')
+      el.style.display = 'initial'
     })
   }
 

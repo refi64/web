@@ -2,7 +2,7 @@
 
 :created: 2017-05-26
 
-:tags: laptop,motherboard,usb
+:tags: laptop motherboard usb
 
 [#teaser]
 --

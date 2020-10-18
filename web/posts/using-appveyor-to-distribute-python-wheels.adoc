@@ -2,7 +2,7 @@
 
 :created: 2014-09-21
 
-:tags: appveyor,ci,python,wheels
+:tags: appveyor ci python wheels
 
 [#teaser]
 --

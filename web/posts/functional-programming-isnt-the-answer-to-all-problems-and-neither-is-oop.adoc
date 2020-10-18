@@ -2,7 +2,7 @@
 
 :created: 2015-05-17
 
-:tags: function,programming,oop,haskell,c++
+:tags: function programming oop haskell c++
 
 [#teaser]
 --

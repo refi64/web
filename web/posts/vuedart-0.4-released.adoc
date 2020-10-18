@@ -2,7 +2,7 @@
 
 :created: 2018-10-08
 
-:tags: vue,vuedart
+:tags: vue vuedart
 
 [#teaser]
 --

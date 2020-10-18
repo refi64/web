@@ -2,7 +2,7 @@
 
 :created: 2015-06-19
 
-:tags: programming,joke,satire
+:tags: programming joke satire
 
 [#teaser]
 --
