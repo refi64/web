@@ -32,6 +32,19 @@ class PostListExtractorWorker extends utils.WorkerImpl<Args> {
       .next('output', utils.Parsers.nonEmptyString)
   }
 
+  cleanContent(content: Cheerio) {
+    let classes = [
+      '.imageblock-text',
+      '.post-section-header-link',
+      '.post-title.if-mobile',
+      '.post-subheader',
+    ]
+
+    content.find(classes.join(',')).remove()
+
+    content.find('.post-title-link').removeAttr('href')
+  }
+
   async execute(args: Args, _inputs?: utils.WorkerInputs): Promise<void> {
     if (args.metadataFiles.length !== args.postFiles.length) {
       throw new utils.WorkerError(
@@ -61,12 +74,16 @@ class PostListExtractorWorker extends utils.WorkerImpl<Args> {
         throw new utils.WorkerError(`${post.post} has no teaser`)
       }
 
+      let content = html('#post-content')
+      this.cleanContent(content)
+
       result.posts.push({
         title,
         created,
         tags: tags.split(' '),
         id: path.basename(post.post),
         teaser: teaser.html(),
+        content: content.html(),
       })
     }
 

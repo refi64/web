@@ -1,11 +1,12 @@
 <!-- Make all the headers smaller -->
-<div class="mdc-typography--headline{{node.getLevel() + 3}} post-section-header adjusted-link-target-outer">
+<h{{node.getLevel() + 1}}
+  class="mdc-typography--headline{{node.getLevel() + 3}} post-section-header adjusted-link-target-outer">
   <span id="{{node.getId()}}" class="adjusted-link-target"></span>
   {{ node.getTitle() | safe }}
 
   <a
     class="mdc-icon-button material-icons post-section-header-link"
     href="#{{node.getId()}}">link</a>
-</div>
+</h{{node.getLevel() + 1}}>
 
 {{ node.getContent() | safe }}

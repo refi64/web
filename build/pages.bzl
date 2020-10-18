@@ -36,7 +36,7 @@ def build_pages(pages, default_extends = None, default_templates = None, block =
 
         if page.ext == "adoc":
             asciidoctor_njk(
-                name = "%s-njk" % page.basename,
+                name = "%s_njk" % page.basename,
                 adoc = "%s.adoc" % page.basename,
                 block = block,
                 extends = page.extends or default_extends,
@@ -46,14 +46,14 @@ def build_pages(pages, default_extends = None, default_templates = None, block =
             )
         else:
             nunjucks_library(
-                name = "%s-njk" % page.basename,
+                name = "%s_njk" % page.basename,
                 primary = "%s.njk" % page.basename,
             )
 
         nunjucks_binary(
-            name = "%s-html" % page.basename,
-            template = ":%s-njk" % page.basename,
-            output = page.basename,
+            name = "%s_html" % page.basename,
+            template = ":%s_njk" % page.basename,
+            output = page.basename + ".html",
             visibility = ["//visibility:public"],
-            deps = [":%s-njk" % page.basename],
+            deps = [":%s_njk" % page.basename],
         )

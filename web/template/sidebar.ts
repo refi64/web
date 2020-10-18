@@ -14,7 +14,7 @@ type Sidebar = {
 export let sidebar: Sidebar = {
   root: [
     { name: 'Home', icon: 'home', url: '/' },
-    { name: 'RSS', icon: 'rss_feed', url: '#' },
+    { name: 'Atom', icon: 'rss_feed', url: '/atom.xml' },
     { name: 'Tags', icon: 'label', url: '/tags.html' },
     {
       name: 'Report a bug',

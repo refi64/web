@@ -53,7 +53,7 @@ nunjucks_library = rule(
 )
 
 def _nunjucks_binary_impl(ctx):
-    output = ctx.actions.declare_file((ctx.attr.output or ctx.label.name) + ".html")
+    output = ctx.outputs.output or ctx.actions.declare_file(ctx.label.name + ".html")
 
     args = ctx.actions.args()
     args.use_param_file("@%s", use_always = True)
@@ -112,7 +112,7 @@ nunjucks_binary = rule(
     attrs = {
         "template": attr.label(allow_files = True),
         "deps": attr.label_list(allow_files = False),
-        "output": attr.string(),
+        "output": attr.output(),
         "tool": attr.label(
             default = Label("//packages/nunjucks_compiler"),
             executable = True,

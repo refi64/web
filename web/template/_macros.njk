@@ -2,14 +2,14 @@
   {% set desktop_level = 4 if small else 3 %}
   {% set mobile_level = desktop_level + 1 %}
 
-  <a href="{{ url }}">
-    <span class="if-not-mobile post-title mdc-typography--headline{{desktop_level}}">
+  <a class="post-title-link" href="{{ url }}">
+    <h1 class="if-not-mobile post-title mdc-typography--headline{{desktop_level}}">
       {{ title }}
-    </span>
+    </h1>
 
-    <span class="if-mobile post-title mdc-typography--headline{{mobile_level}}">
+    <h1 class="if-mobile post-title mdc-typography--headline{{mobile_level}}">
       {{ title }}
-    </span>
+    </h1>
   </a>
 
   <p class="post-subheader">

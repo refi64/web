@@ -2,5 +2,9 @@
   "[html]": {
     "editor.formatOnSave": false
   },
+  "[xml]": {
+    "editor.formatOnSave": false,
+    "files.trimTrailingWhitespace": true
+  },
   "html.validate.scripts": false
 }

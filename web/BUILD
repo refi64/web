@@ -1,6 +1,8 @@
-# load("//packages/asciidoctor_compiler:defs.bzl", "asciidoctor_njk")
+load("//packages/git_context:defs.bzl", "git_context")
 load("//packages/nunjucks_compiler:defs.bzl", "nunjucks_binary")
 load("@npm//http-server:index.bzl", "http_server")
+
+git_context(name = "git_context")
 
 nunjucks_binary(
     name = "index",
@@ -22,10 +24,21 @@ nunjucks_binary(
     ],
 )
 
+nunjucks_binary(
+    name = "atom",
+    output = "atom.xml",
+    template = "atom.njk",
+    deps = [
+        ":git_context",
+        "//web/posts:post_list_context",
+    ],
+)
+
 http_server(
     name = "server",
     args = ["web"],
     data = [
+        ":atom",
         ":index",
         ":tags",
         "//web/images",

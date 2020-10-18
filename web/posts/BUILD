@@ -5,8 +5,8 @@ load("//packages/post_list_extractor:defs.bzl", "post_list_metadata")
 
 post_list_metadata(
     name = "post_list_metadata",
-    metadata = [":%s-njk" % post.basename for post in POST_PAGES],
-    posts = [":%s-html" % post.basename for post in POST_PAGES],
+    metadata = [":%s_njk" % post.basename for post in POST_PAGES],
+    posts = [":%s_html" % post.basename for post in POST_PAGES],
 )
 
 nunjucks_context(
@@ -24,6 +24,6 @@ build_pages(
 
 filegroup(
     name = "posts",
-    srcs = [":%s-html" % post.basename for post in POST_PAGES],
+    srcs = [":%s_html" % post.basename for post in POST_PAGES],
     visibility = ["//visibility:public"],
 )

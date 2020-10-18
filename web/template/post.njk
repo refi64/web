@@ -10,8 +10,10 @@
 {% block content %}
   {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}
 
-  {% block post_content %}
-  {% endblock %}
+ <div id="post-content">
+    {% block post_content %}
+    {% endblock %}
+  </div>
 
   <div id="hyvor-talk-view"></div>
   <script>

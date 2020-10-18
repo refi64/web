@@ -1,2 +1,4 @@
 try-import user.bazelrc
-build --strategy=SassCompiler=sandboxed
+build \
+  --strategy=SassCompiler=sandboxed \
+  --workspace_status_command=build/workspace_status.sh
