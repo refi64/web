@@ -13,7 +13,7 @@ enum EventKind {
 }
 
 // XXX: hardcoding this is ugly
-let ourSubPaths = ['posts']
+let ourSubPaths = ['posts', 'proj']
 
 export const localNavigateBeginEvent = 'local-navigate-begin'
 export const localNavigateCompleteEvent = 'local-navigate-complete'
