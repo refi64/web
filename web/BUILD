@@ -15,6 +15,15 @@ nunjucks_binary(
 )
 
 nunjucks_binary(
+    name = "404",
+    template = "404.njk",
+    deps = [
+        "//web/template",
+        "//web/template:macros",
+    ],
+)
+
+nunjucks_binary(
     name = "tags",
     template = "tags.njk",
     deps = [
@@ -38,6 +47,7 @@ http_server(
     name = "server",
     args = ["web"],
     data = [
+        ":404",
         ":atom",
         ":index",
         ":tags",

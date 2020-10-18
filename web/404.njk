@@ -1,0 +1,18 @@
+{% extends "web/template/main.njk" %}
+{% from "web/template/_macros.njk" import post_title %}
+
+{% block title %} 404 {% endblock %}
+
+{% block content %}
+  <h1 class="mdc-typography--headline3">404</h1>
+
+  <p>
+    That means that you tried to go somewhere on this site that doesn't exist.
+  </p>
+
+  <p>
+    Check out some of the links in the sidebar area to see if you can figure out
+    what you're looking for, or report a bug there if you were redirected to
+    this missing page from another part of this site.
+  </p>
+{% endblock %}
