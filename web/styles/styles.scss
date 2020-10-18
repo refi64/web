@@ -159,6 +159,11 @@ html {
   }
 }
 
+.tobii__btn {
+  border-radius: 10px;
+  --button-background: #00000080;
+}
+
 body {
   margin: 0;
   display: flex;
