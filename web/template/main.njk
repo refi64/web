@@ -1,13 +1,30 @@
 {% include "web/template/_macros.njk" %}
 
+<!DOCTYPE html>
+
+<html lang="en">
+
 <head>
   <title>
     {% block title %} {% endblock %} - re:fi.64's site
   </title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons&display=swap"
+  />
+  <link rel="preload" as="style" href="/styles/styles.css" />
+
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons"
+    media="print"
+    onload="this.media='all'"
+    href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons&display=swap"
   />
+
   <link rel="stylesheet" href="/styles/styles.css" />
   <script async src="/js/bundle.core.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -83,3 +100,5 @@
     </div>
   </main>
 </body>
+
+</html>
