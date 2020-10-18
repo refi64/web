@@ -14,7 +14,7 @@
 
 void myfunc(int);
 void myfunc(int, int);
-    
+
 ----
 
 +++C doesn't have a way to do this. You'll often see code like this:+++
@@ -24,15 +24,13 @@ void myfunc(int, int);
 
 void myfunc_1(int);
 void myfunc_2(int, int);
-    
+
 ----
 
 +++However, this+++ __+++can+++__ +++be implemented, albeit in a slightly convoluted way, using a very controversial tool: the C preprocessor.+++
 
 [WARNING]
-=-
 +++This is a very messy method that is bound to cause confusion. Do not use this is real production code. Ever. At all.+++
-=-
 
 +++Here's the code in myfunc.h:+++
 
@@ -56,7 +54,7 @@ void _myfunc_2(int a, int b)
 #define myfunc(...) _MYFUNC_SEL(__VA_ARGS__, _myfunc_2, _myfunc_1)(__VA_ARGS__)
 
 #endif // MYFUNC_H
-    
+
 ----
 
 +++and the main file:+++
@@ -72,7 +70,7 @@ int main()
     myfunc(1, 2); // Got 2 args
     return 0;
 }
-    
+
 ----
 
 +++What's going on here? The easiest way to see is to look at what happens in the preprocessor.+++
@@ -83,7 +81,7 @@ int main()
 ----
 
 _MYFUNC_SEL(1, _myfunc_2, _myfunc_1)(1)
-    
+
 ----
 
 +++Remember,+++ ``+++__VA_ARGS__+++`` +++expands to the+++ ``+++...+++`` +++arguments. The+++ ``+++_MYFUNC_SEL+++`` +++macro returns the third argument,+++ ``+++_myfunc_1+++`` +++. Therefore, the expansion is ends up being:+++
@@ -92,7 +90,7 @@ _MYFUNC_SEL(1, _myfunc_2, _myfunc_1)(1)
 ----
 
 _myfunc_1(1)
-    
+
 ----
 
 +++The second call (+++ ``+++myfunc(1, 2)+++`` +++) expands to this:+++
@@ -101,7 +99,7 @@ _myfunc_1(1)
 ----
 
 _MYFUNC_SEL(1, 2, _myfunc_2, _myfunc_1)(1, 2)
-    
+
 ----
 
 +++Again,+++ ``+++_MYFUNC_SEL+++`` +++returns the third argument, which, in this case, is+++ ``+++_myfunc_2+++`` +++.+++
@@ -136,7 +134,7 @@ void _myfunc_2(int a, int b)
 #define myfunc(...) _MYFUNC_SEL(__VA_ARGS__, _myfunc_2, _MYFUNC_1)(__VA_ARGS__)
 
 #endif // MYFUNC_H
-    
+
 ----
 
 +++and the new main source file:+++
@@ -153,7 +151,7 @@ int main()
     myfunc(1, 2); // Got 2 args
     return 0;
 }
-    
+
 ----
 
 +++Let's review the expansion process:+++
@@ -165,7 +163,7 @@ myfunc(1)
 _MYFUNC_SEL(1, _myfunc_2, _MYFUNC_1)(1)
 _MYFUNC_1(1)
 _Generic((1), int: _myfunc_1_int, void*: _myfunc_1_void)(1)
-    
+
 ----
 
 +++Now, the+++ ``+++_Generic+++`` +++function basically is like pattern-matching on types. (See the linked article above for more info.) The+++ ``+++_Generic+++`` +++call evaluates to:+++
@@ -174,7 +172,7 @@ _Generic((1), int: _myfunc_1_int, void*: _myfunc_1_void)(1)
 ----
 
 _myfunc_1_int(1)
-    
+
 ----
 
 +++See how the magic works?+++
