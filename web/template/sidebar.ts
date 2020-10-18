@@ -26,7 +26,12 @@ export let sidebar: Sidebar = {
     {
       name: 'Projects',
       icon: 'code',
-      items: [{ name: 'Cloverplay', url: 'https://cloverplay.app' }],
+      items: [
+        { name: 'nsbox', url: 'https://nsbox.dev/' },
+        { name: 'Cloverplay', url: 'https://cloverplay.app' },
+        { name: 'XCXSound', url: '/proj/xcxsound.html' },
+        { name: 'zdata (old)', url: '/proj/zdata.html' },
+      ],
     },
     {
       name: 'Links',

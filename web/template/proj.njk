@@ -2,10 +2,16 @@
 {% from "web/template/_macros.njk" import post_title %}
 
 {% block title %} {{ metadata.doctitle }} {% endblock %}
+{% block side_title %} {{ metadata.doctitle }} {% endblock %}
+
+{% block head %}
+  <script async src="/js/bundle.lightbox.js"></script>
+{% endblock %}
 
 {% block content %}
-  {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}
-
-  {% block post_content %}
+  <h1 class="mdc-typography--headline3 post-section-header">
+    {{ metadata.doctitle }}
+  </h1>
+  {% block proj_content %}
   {% endblock %}
 {% endblock %}

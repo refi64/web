@@ -1,0 +1,54 @@
+# zdata
+
+zdata is an Android app that compresses applications to reduce their data usage.
+More info is available on the
+https://forum.xda-developers.com/android/apps-games/alpha-zdata-app-makes-apps-space-t3655656[XDA page].
+
+[id=notes]
+== Important Information
+
+* *Do NOT try using zdata on any system apps!*
+* When you boot up your device, make sure that you wait for zdata to say it's
+  mounted the apps before trying to use them.
+* zdata doesn't always have a major effect, if it has an effect at all.
+
+[id=downloads]
+== Downloads
+
+[id=v0.2.0]
+=== Version 0.2.0
+
+* https://play.google.com/store/apps/details?id=com.refi64.zdata.app[Google Play Store.]
+* https://forum.xda-developers.com/devdb/project/dl/?id=27645[XDA DevDB.]
+* https://forum.xda-developers.com/devdb/project/dl/?id=27646[XDA DevDB (debug build, only use on X86 devices).]
+
+[id=v0.1.3]
+=== Version 0.1.3
+
+* https://forum.xda-developers.com/devdb/project/dl/?id=26244[XDA DevDB.]
+* https://forum.xda-developers.com/devdb/project/dl/?id=26245[XDA DevDB (debug build, only use on X86 devices).]
+* https://www.mediafire.com/file/fawwnrfcayddr4e/zdata-v0.1.3-08-18-17.apk[MediaFire.]
+* https://www.mediafire.com/file/e2yciap7cs494xy/zdata-v0.1.3-08-18-17-debug.apk[MediaFire (debug build, only use on X86 devices).]
+
+[id=v0.1.2]
+=== Version 0.1.2
+
+* https://forum.xda-developers.com/devdb/project/dl/?id=26211[XDA DevDB.]
+* https://www.mediafire.com/file/t85zk850c0cih1d/zdata-v0.1.2-08-16-17.apk[MediaFire.]
+
+[id=v0.1.1]
+=== Version 0.1.1
+
+https://www.mediafire.com/file/2ejrvnq1r7f42nx/zdata-v0.1.1-08-14-17.apk[MediaFire.]
+
+[id=v0.1]
+=== Version 0.1
+
+https://www.mediafire.com/file/glvx9k1plwgphba/zdata-v0.1-08-12-17.apk[MediaFire.]
+
+[id=all]
+=== All Downloads
+
+* https://forum.xda-developers.com/devdb/project/?id=22044#downloads[XDA DevDB.]
+* https://www.mediafire.com/folder/61w9jrgw297ji/zdata[MediaFire.]
+* https://github.com/kirbyfan64/zdata[Source code.]

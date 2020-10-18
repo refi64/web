@@ -1,0 +1,171 @@
+# XCXSound
+
+XCXSound is a tool that makes it easier to use custom music in Xenoblade
+Chronicles X. Runs on Windows and Linux (OSX should work, but it's untested).
+
+[id=screenshots]
+== Screenshots
+
+image::/images/proj/xcxsound/xcxsound-v0-4.png[XCXSound main window]
+
+[id=downloads]
+== Downloads
+
+[id=v04]
+=== Version 0.4
+
+https://www.dropbox.com/s/smfaw5kfrpaubr2/xcxsound_v0.4.zip?dl=0[Windows binaries.]
+
+[id=v03]
+=== Version 0.3
+
+https://www.dropbox.com/s/29d9q1h6no9p2oz/xcxsound_v0.3.zip?dl=0[Windows binaries.]
+
+[id=v02]
+=== Version 0.2
+
+https://www.dropbox.com/s/8a8iy0iivwq3rmd/xcxsound_v0.2.zip?dl=0[Windows binaries.]
+
+[id=v01]
+=== Version 0.1
+
+https://www.dropbox.com/s/wtsruq1tis9aap2/xcxsound_v0.1.zip?dl=0[Windows binaries.]
+
+[id=src]
+=== Source code
+
+https://hub.darcs.net/refi64/xcxsound[Source code is available on Darcs Hub.]
+
+
+[id=howto]
+== How to use
+
+[id=extracting]
+=== Extracting and opening
+
+* *On Windows:* Unzip the archive, right-click xcxsound.exe, and hit
+  _Run as Administrator_.
+* *On Linux:* You'll have to get it from source. Download the
+  http://hub.darcs.net/refi64/xcxsound/dist[zip from Darcs Hub] or clone the
+  source yourself via `darcs get http://hub.darcs.net/refi64/xcxsound`. Make
+  sure you have Python 3.4+, PySide, and Wine installed, then run
+  `python3 xcxsound.py`.
+
+[id=basics]
+=== Setting up XCXSound
+
+The top-left field of the XCXSound window allows you to set the directory where
+the music files will be stored. *This does not go on your SD card; it goes on
+your main hard drive!* In most cases, the default is fine, so you can ignore
+this option.
+
+Set the _Game ID_ dropdown to your game's region. Note that I've only tested
+XCXSound with the US region. After this, click the _Load_ button.
+
+[id=editing]
+=== Editing the songs
+
+Select the song you want to change and click _Edit Song_. There are several
+options at this point:
+
+* *Reset* - Remove any modifications to the song.
+* *Cancel* - Do nothing.
+* *No music* - No music will be played.
+* *Custom song* - Select an audio file to use. XCXSound uses FFmpeg, which means
+  that a wide variety of music formats are supported, including `.mp3`, `.wav`,
+  `.flac`, `.ogg`, `.m4a`, `.acc`, and more. Once you select the audio file to
+  convert, XCXSound will automatically convert it to the proper format and loop
+  it if necessary. Note that there is a catch when replacing the ambush music:
+  if the song is under 30 seconds long, it will be padded with silence until it
+  reaches 30 seconds in length. Fix? Just pick a longer song for the ambush
+  music!!!
+
+After this, you will be shown another dialog that lets you change the volume of
+the music. Positive values increase the volume by the corresponding percentage,
+and negative values decrease it. If you don't want to change the volume at all,
+click _Don't Change_.
+
+[id=cafiine]
+=== Connecting the Wii U to the computer
+
+[id=computer]
+==== On your computer
+
+* Make note of your IP address on the bottom-ride of XCXSound.
+* Click _Start Cafiine_ inside XCXSound. This will start up the Cafiine server.
+  If the Windows firewall pops up and says it blocked Cafiine, make sure you
+  select both check boxes, then hit _Allow access_.
+
+[id=wii-u]
+==== On the Wii U
+
+* Open up the web browser and navigate to _loadiine.ovh_.
+* Select _Cafiine + Kernel_ from the drop-down menu and hit _Submit_.
+* Once you end up back at the main menu, return to the internet browser. After
+  this, you should end up with a screen on the Wii U gamepad gamepad asking you
+  to enter an IP address. Use the D-pad to enter the IP address you saw in
+  XCXSound earlier, then hit the A button. Open up Xenoblade X and enjoy the
+  custom music!
+
+[id=rm-flight]
+=== Removing the flight music
+
+NOTE: This feature is still in testing!! Please read this section fully before
+attempting to use it.
+
+XCXSound can automatically try to replace the flight music with the normal
+continent music, but there are some gotchas involved. In order to enable this,
+just check the _No flight music_ checkbox before hitting _Start Cafiine_. Note
+the following:
+
+* This restarts the continent theme.
+* If you cross a continent boundary, or the time changes between day and night,
+  you need to land your skell, wait a second or so for the correct music to
+  load, and then take off again.
+* If you fast-travel, wait a few seconds before taking off flying to make sure
+  the new music gets loaded.
+* This will erase any previous flight music mods that you've done.
+* After you're done with Cafiine, make sure you select the flight music in
+  XCXSound and hit _Edit song_ -> _Reset_.
+
+If you follow these directions carefully, it should work well!
+
+[id=rst]
+=== Resetting your mods
+
+If you want to reset all your music mods, use the _Reset all mods_ button.
+
+[id=changelog]
+== Changelog
+
+[id=log-v0.4]
+=== Version 0.4
+
+* Add the ability to change the volume of songs.
+* Add support for changing the overdrive theme
+  (https://hub.darcs.net/refi64/xcxsound/issue/3[issue #3]).
+* Fix some audio glitches when a song would loop.
+* Avoid spawning unnecessary cmd.exe windows on Windows.
+
+[id=log-v0.3]
+=== Version 0.3
+
+* Add the ability to automatically remove flight music!!! Many thanks to
+  GameFAQs user https://www.gamefaqs.com/community/hshamsedin546[hshamsedin546]
+  for helping make this possible! (I don't have a flight module yet, so they
+  tested out all the changes, reported what was wrong, etc.)
+* Changed the behavior of _Restore a backup_ to not remove current mods.
+
+[id=log-v0.2]
+=== Version 0.2
+
+* Add the ability to replace 14 more songs.
+* Fix ambush music from glitching if under 30 seconds in length.
+* Fix MONOX not playing (https://hub.darcs.net/refi64/xcxsound/issue/1[#1]).
+* Add the _No music_ option.
+* Add backup and restore.
+
+[id=log-v0.1]
+=== Version 0.1
+
+Initial version.

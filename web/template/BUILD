@@ -47,3 +47,10 @@ nunjucks_library(
         ":template",
     ],
 )
+
+nunjucks_library(
+    name = "proj",
+    context_files = [":template"],
+    primary = "proj.njk",
+    deps = [":template"],
+)

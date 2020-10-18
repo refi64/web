@@ -44,6 +44,7 @@ http_server(
         "//web/images",
         "//web/js",
         "//web/posts",
+        "//web/proj",
         "//web/styles",
     ],
 )
