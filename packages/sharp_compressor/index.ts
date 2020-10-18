@@ -10,6 +10,14 @@ type Args = {
   originalCopy: string
 }
 
+interface AvifOptions {
+  quality?: number
+}
+
+interface SharpWithAvif extends sharp.Sharp {
+  avif(options: AvifOptions): SharpWithAvif
+}
+
 class SharpWorker extends utils.WorkerImpl<Args> {
   constructor() {
     super()
@@ -60,7 +68,9 @@ class SharpWorker extends utils.WorkerImpl<Args> {
           })
           break
         case '.avif':
-          // No custom options here.
+          pipeline = (pipeline as SharpWithAvif).avif({
+            quality: 80,
+          })
           break
         default:
           throw new Error(`Unexpected output extension: ${output}`)
