@@ -138,8 +138,6 @@ def _asciidoctor_njk_impl(ctx):
         extends_info = ctx.attr.extends[NjkInfo]
         if not extends_info.primary:
             fail("extends value must have a primary template")
-        extends = extends_info.primary
-        extends_transitive = extends_info.transitive
 
     args.add("--extends=%s" % (extends_info.primary.path if extends_info else ""))
 
@@ -166,7 +164,10 @@ def _asciidoctor_njk_impl(ctx):
         DefaultInfo(files = depset(outputs)),
         NjkInfo(
             primary = output,
-            transitive = depset(transitive = [extends_info.transitive]) if extends_info else depset(),
+            transitive = depset(transitive = [
+                depset([extends_info.primary]),
+                extends_info.transitive,
+            ]) if extends_info else depset(),
         ),
     ]
 
