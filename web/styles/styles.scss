@@ -47,6 +47,10 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
   @import 'highlight.js/scss/androidstudio';
 }
 
+:root {
+  --warning-color: #5c00d2;
+}
+
 @media (prefers-color-scheme: dark) {
   $primary: #ffffffe0;
   $background: #171717;
@@ -57,6 +61,8 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
     --mdc-theme-secondary: #5882c2;
     --mdc-theme-on-primary: #{$primary};
     --mdc-theme-on-surface: #{$primary};
+
+    --warning-color: #df55f2;
   }
 
   body,
@@ -247,14 +253,33 @@ a:not(.post-section-header-link):not(.mdc-list-item) {
   vertical-align: middle;
 }
 
-pre {
-  font-family: 'Roboto Mono', monospace;
+@mixin simple-card {
   margin: 0 16px;
   padding: 16px;
-  overflow-y: auto;
 
   border: solid 1px var(--mdc-theme-on-primary);
   @include shape.radius($radius: medium);
+}
+
+pre {
+  @include simple-card();
+
+  font-family: 'Roboto Mono', monospace;
+  overflow-y: auto;
+}
+
+.admonition {
+  @include simple-card();
+
+  display: inline-block;
+
+  .admonition-name {
+    text-transform: capitalize;
+  }
+
+  &.admonition-warning .admonition-name {
+    color: var(--warning-color);
+  }
 }
 
 #moot-logo a {

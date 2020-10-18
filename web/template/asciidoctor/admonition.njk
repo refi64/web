@@ -1,0 +1,7 @@
+{% set name = node.getAttribute('name') %}
+<div class="admonition admonition-{{name}}">
+  <div class="admonition-name mdc-typography--headline6">
+    {{ name }}
+  </div>
+  {{ node.getContent() | safe }}
+</div>
