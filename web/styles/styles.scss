@@ -1,7 +1,9 @@
+@use 'sass:color';
+
 @use '@material/theme' with (
   $primary: #ffffffdb,
   $secondary: #0d47a1,
-  $on-primary: black,
+  $on-primary: #000000,
 );
 
 $headline-font-family: Montserrat, Roboto, sans-serif;
@@ -28,6 +30,7 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use '@material/typography/mdc-typography';
 
+@use '@material/chips/mixins' as chip-mixins;
 @use '@material/drawer/variables' as drawer-variables;
 @use '@material/list/mixins' as list-mixins;
 @use '@material/list/variables' as list-variables;
@@ -42,6 +45,61 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   @import 'highlight.js/scss/androidstudio';
+}
+
+@media (prefers-color-scheme: dark) {
+  $primary: #ffffffe0;
+  $background: #171717;
+
+  // XXX: This is all super ugly!
+  :root {
+    --mdc-theme-background: #{$background};
+    --mdc-theme-secondary: #5882c2;
+    --mdc-theme-on-primary: #{$primary};
+    --mdc-theme-on-surface: #{$primary};
+  }
+
+  body,
+  .mdc-drawer {
+    background-color: var(--mdc-theme-background);
+    color: var(--mdc-theme-on-primary);
+  }
+
+  .mdc-chip {
+    // Based on how the official Sass rules handle this.
+    @include chip-mixins.fill-color(color.mix($primary, $background, 12%));
+
+    color: #ffffffb3;
+
+    .mdc-chip__checkmark {
+      // XXX: The color is hardcoded black in the SVG, so we flip it here.
+      filter: invert(85%);
+    }
+  }
+
+  .mdc-drawer {
+    .mdc-list-group__subheader {
+      color: #ffffff99;
+    }
+
+    .mdc-list-item {
+      color: #ffffffde;
+    }
+  }
+
+  .mdc-top-app-bar {
+    background-color: #171717f0;
+    color: #ffffffde;
+  }
+
+  .mdc-icon-button::before,
+  .mdc-icon-button::after,
+  .mdc-chip .mdc-chip__ripple::before,
+  .mdc-chip .mdc-chip__ripple::after,
+  :not(.mdc-list-item--disabled).mdc-list-item .mdc-list-item__ripple::before,
+  :not(.mdc-list-item--disabled).mdc-list-item .mdc-list-item__ripple::after {
+    background-color: #fff !important;
+  }
 }
 
 @include icon-button.core-styles;

@@ -19,17 +19,54 @@
     <div id="hyvor-talk-view"></div>
   </div>
   <script>
-    // Make sure we handle our custom navigation.
-    window.HYVOR_TALK_WEBSITE = {{ settings.hyvor_website_id }}
-    window.HYVOR_TALK_CONFIG = {
-      url: window.location.href.split('#')[0],
-      id: window.location.pathname
-    }
+    // This has special handling to ensure custom navigation works.
 
-    console.log(window.HYVOR_TALK_CONFIG.id)
-    if (window.hyvor_talk) {
-      window.hyvor_talk.reload()
-    }
+    (function() {
+      function changeAlpha(color, alpha) {
+        if (!color.startsWith('#')) {
+          console.error(`Unexpected color to switch alpha of: ${color}`)
+          return color
+        }
+
+        let threeDigitColor = color.match(/#(?<r>.)(?<g>.)(?<b>.)$/);
+        if (threeDigitColor) {
+          color = '#'
+          for (let channel of 'rgb') {
+            color += threeDigitColor.groups[channel].repeat(2)
+          }
+        }
+
+        return color.substring(0, 7) + alpha;
+      }
+
+      let style = getComputedStyle(document.body)
+      let background = style.getPropertyValue('--mdc-theme-background').trim()
+      let text = style.getPropertyValue('--mdc-theme-on-primary').trim()
+      let accent = style.getPropertyValue('--mdc-theme-secondary').trim()
+      let accentText = style.getPropertyValue('--mdc-theme-on-secondary').trim()
+
+      let palette = {
+        accent,
+        accentText: accentText,
+        footerHeader: background,
+        footerHeaderText: changeAlpha(text, 'cc'),
+        box: background,
+        boxText: text,
+        boxLightText: changeAlpha(text, 'ab'),
+        backgroundText: text,
+      }
+
+      window.HYVOR_TALK_WEBSITE = {{ settings.hyvor_website_id }}
+      window.HYVOR_TALK_CONFIG = {
+        url: window.location.href.split('#')[0],
+        id: window.location.pathname,
+        palette,
+      }
+
+      if (window.hyvor_talk) {
+        window.hyvor_talk.reload()
+      }
+    })()
   </script>
   <script async src="//talk.hyvor.com/web-api/embed"></script>
 {% endblock %}
