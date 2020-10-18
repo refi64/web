@@ -99,13 +99,15 @@ function navigateTo(target: string, event: Event, kind: EventKind) {
   )
   // Support fast navigation to paths on the root *or* in a supported subpath.
   // Also make sure it's not scrolling to something on the page we're already on,
-  // and that it's an HTML file.
+  // and that it's an HTML file (including the index).
   if (
     (splitIdx == -1 || ourSubPaths.includes(path.substr(0, splitIdx))) &&
     (kind == EventKind.LINK
       ? path.split('#', 1)[0] != window.location.pathname.substr(1)
       : true) &&
-    (target.endsWith('.html') || target.indexOf('.html#') != -1)
+    (path.length == 0 ||
+      target.endsWith('.html') ||
+      target.indexOf('.html#') != -1)
   ) {
     event.preventDefault()
     localNavigateTo(target, kind)
