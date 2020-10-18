@@ -29,11 +29,6 @@ export let sidebar: Sidebar = {
       items: [{ name: 'Cloverplay', url: 'https://cloverplay.app' }],
     },
     {
-      name: 'Misc',
-      icon: 'settings',
-      items: [{ name: 'KaTeX Previewer', url: '/pages/katex.html' }],
-    },
-    {
       name: 'Links',
       icon: 'link',
       items: [
