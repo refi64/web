@@ -78,7 +78,13 @@ async function localNavigateTo(target: string, kind: EventKind) {
   })
 
   if (kind == EventKind.LINK) {
-    window.scrollTo(0, 0)
+    if (target.includes('#')) {
+      document
+        .querySelector(target.substring(target.lastIndexOf('#')))
+        ?.scrollIntoView()
+    } else {
+      window.scrollTo(0, 0)
+    }
   }
 
   document.dispatchEvent(new Event(localNavigateCompleteEvent))
