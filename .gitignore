@@ -1,4 +1,5 @@
 .brt/
+.firebase/
 bazel-*
 node_modules/
 settings.bzl

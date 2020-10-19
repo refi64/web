@@ -1,0 +1,7 @@
+{
+  "hosting": {
+    "target": "r64-staging",
+    "public": "bazel-bin/web/out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
+}
