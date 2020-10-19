@@ -1,3 +1,4 @@
+load("//:build/copy_files.bzl", "copy_files")
 load("//packages/git_context:defs.bzl", "git_context")
 load("//packages/nunjucks_compiler:defs.bzl", "nunjucks_binary")
 load("@npm//http-server:index.bzl", "http_server")
@@ -43,10 +44,11 @@ nunjucks_binary(
     ],
 )
 
-http_server(
-    name = "server",
-    args = ["web"],
-    data = [
+WEB_OUTPUT = "out"
+
+copy_files(
+    name = WEB_OUTPUT,
+    srcs = [
         ":404",
         ":atom",
         ":index",
@@ -57,4 +59,11 @@ http_server(
         "//web/proj",
         "//web/styles",
     ],
+    strip_prefix = "web",
+)
+
+http_server(
+    name = "server",
+    args = ["web/%s" % WEB_OUTPUT],
+    data = [":%s" % WEB_OUTPUT],
 )
