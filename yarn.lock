@@ -1885,18 +1885,6 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-nanoassert@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-1.1.0.tgz#4f3152e09540fde28c76f44b19bbcd1d5a42478d"
-  integrity sha1-TzFS4JVA/eKMdvRLGbvNHVpCR40=
-
-nanomorph@^5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/nanomorph/-/nanomorph-5.4.1.tgz#eff6cab5f6615ed537eb2b956e997b393b5095a4"
-  integrity sha512-3Qk/Mo0F9V1NogQh3h5PXds5VQHx/oxU1L7VvQ6S3hXQxb+f21LMhsHOXGTleGXzQVgvk63JqQ/kJRH0oZxHwQ==
-  dependencies:
-    nanoassert "^1.1.0"
-
 napi-build-utils@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/napi-build-utils/-/napi-build-utils-1.0.2.tgz#b1fddc0b2c46e380a0b7a76f984dd47c41a13806"

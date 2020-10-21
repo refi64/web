@@ -9,7 +9,6 @@ ts_library(
     ],
     deps = [
         "@npm//@material/base",
-        "@npm//nanomorph",
     ],
 )
 

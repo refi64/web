@@ -1,6 +1,3 @@
-// @ts-ignore
-import nanomorph from 'nanomorph'
-
 interface WindowWithState extends Window {
   currentState: string
 }
@@ -19,6 +16,115 @@ export const localNavigateBeginEvent = 'local-navigate-begin'
 export const localNavigateCompleteEvent = 'local-navigate-complete'
 
 const navigationInterceptorAttached = Symbol('NavigationInterceptorAttached')
+
+function mergeTextNode({ from, to }: { from: HTMLElement; to: HTMLElement }) {
+  to.innerText = from.innerText
+}
+
+function setSubtract(xs: string[], ys: string[]): string[] {
+  let ysSet = new Set(ys)
+  return xs.filter((x) => !ysSet.has(x))
+}
+
+function mapSubtract<T>(
+  xs: { [key: string]: T },
+  ys: { [key: string]: T }
+): { [key: string]: T } {
+  return Object.fromEntries(
+    setSubtract(Object.keys(xs), Object.keys(ys)).map((x) => [x, xs[x]])
+  )
+}
+
+function mapOfElements<E extends HTMLElement>(
+  key: (E) => string,
+  elements: NodeListOf<E>
+): { [key: string]: E } {
+  return Object.fromEntries(Array.from(elements).map((e) => [key(e), e]))
+}
+
+function updateKeyedChildren<E extends HTMLElement>(options: {
+  from: HTMLElement
+  to: HTMLElement
+  selector: string
+  key: (e: E) => string
+  onAdded?: (e: E) => void
+}) {
+  let oldElements = mapOfElements(
+    options.key,
+    options.from.querySelectorAll(options.selector) as NodeListOf<E>
+  )
+  let newElements = mapOfElements(
+    options.key,
+    options.to.querySelectorAll(options.selector) as NodeListOf<E>
+  )
+
+  let removed = mapSubtract(oldElements, newElements)
+  let added = mapSubtract(newElements, oldElements)
+
+  for (let key in removed) {
+    console.debug(`removing: ${options.selector} -> ${key}`)
+    removed[key].remove()
+  }
+
+  for (let key in added) {
+    console.debug(`adding: ${options.selector} -> ${key}`)
+    options.from.appendChild(added[key])
+    if (options.onAdded) {
+      options.onAdded(added[key])
+    }
+  }
+}
+
+function mergeHead({
+  from,
+  to,
+  onStylesLoaded,
+}: {
+  from: HTMLElement
+  to: HTMLElement
+  onStylesLoaded: () => void
+}) {
+  mergeTextNode({
+    from: from.querySelector('title'),
+    to: to.querySelector('title'),
+  })
+
+  updateKeyedChildren({
+    from,
+    to,
+    selector: 'script',
+    key: (e: HTMLScriptElement) => e.src,
+  })
+
+  let unloadedStyles = new Set()
+
+  for (let rel of ['preload', 'stylesheet']) {
+    let onAdded
+    if (rel == 'stylesheet') {
+      onAdded = (element: HTMLLinkElement) => {
+        unloadedStyles.add(element.href)
+        element.onload = element.onerror = () => {
+          unloadedStyles.delete(element.href)
+          if (unloadedStyles.size == 0) {
+            onStylesLoaded()
+          }
+        }
+      }
+    }
+
+    updateKeyedChildren({
+      from,
+      to,
+      selector: `link[rel=${rel}]`,
+      key: (e: HTMLLinkElement) => e.href,
+      onAdded: onAdded,
+    })
+  }
+
+  if (unloadedStyles.size == 0) {
+    onStylesLoaded()
+  }
+}
 
 async function localNavigateTo(target: string, kind: EventKind) {
   document.dispatchEvent(new Event(localNavigateBeginEvent))
@@ -53,12 +159,18 @@ async function localNavigateTo(target: string, kind: EventKind) {
   document.querySelector('.page-content').replaceWith(newContent)
   attachNavigationInterceptorsTo(newContent)
 
-  nanomorph(
-    document.querySelector('.side-title'),
-    newDoc.querySelector('.side-title')
-  )
+  mergeTextNode({
+    from: document.querySelector('.side-title'),
+    to: newDoc.querySelector('.side-title'),
+  })
 
-  nanomorph(document.head, newDoc.head)
+  mergeHead({
+    from: document.head,
+    to: newDoc.head,
+    onStylesLoaded: () => {
+      document.dispatchEvent(new Event(localNavigateCompleteEvent))
+    },
+  })
 
   document.querySelectorAll('script').forEach((el) => {
     if (el.src && alreadyLoadedScripts.includes(el.src)) {
@@ -86,8 +198,6 @@ async function localNavigateTo(target: string, kind: EventKind) {
       window.scrollTo(0, 0)
     }
   }
-
-  document.dispatchEvent(new Event(localNavigateCompleteEvent))
 }
 
 function navigateTo(target: string, event: Event, kind: EventKind) {
@@ -127,7 +237,6 @@ function navigateTo(target: string, event: Event, kind: EventKind) {
 
 function attachNavigationInterceptorsTo(el: Element) {
   el.querySelectorAll('a:not(.lightbox)').forEach((el: HTMLAnchorElement) => {
-    // NOTE: nanomorph will not support this!
     if (el[navigationInterceptorAttached]) {
       return
     }
