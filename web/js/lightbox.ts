@@ -12,16 +12,40 @@ type Tobii = {
 }
 let tobii: Tobii
 
-function inInclusiveRange(x, left, right): boolean {
+interface Segment {
+  value: number
+  length: number
+}
+
+function inInclusiveRange(x: number, left: number, right: number): boolean {
   return x >= left && x <= right
 }
 
-function doRectsIntersect(a: DOMRect, b: DOMRect) {
+function inAxisRange(a: Segment, b: Segment) {
   return (
-    (inInclusiveRange(a.x, b.x, b.x + b.width) ||
-      inInclusiveRange(b.x, a.x, a.x + a.width)) &&
-    (inInclusiveRange(a.y, b.y, b.y + b.height) ||
-      inInclusiveRange(b.y, a.y, a.y + a.height))
+    inInclusiveRange(a.value, b.value, b.value + b.length) ||
+    inInclusiveRange(b.value, a.value, a.value + a.length)
+  )
+}
+
+function doRectsIntersect(
+  a: DOMRect,
+  b: DOMRect,
+  axes: { x: boolean; y: boolean } = { x: true, y: true }
+) {
+  return (
+    (axes.x
+      ? inAxisRange(
+          { value: a.x, length: a.width },
+          { value: b.x, length: b.width }
+        )
+      : true) &&
+    (axes.y
+      ? inAxisRange(
+          { value: a.y, length: a.height },
+          { value: b.y, length: b.height }
+        )
+      : true)
   )
 }
 
@@ -93,7 +117,7 @@ function resetAnimated(element: HTMLElement) {
   }
 }
 
-function attachGestures(element: HTMLElement) {
+function attachGestures(tobii: Tobii, element: HTMLElement) {
   let lightbox: HTMLElement = element.closest('.tobii')
   let img: HTMLElement = element.querySelector('img')
 
@@ -108,18 +132,39 @@ function attachGestures(element: HTMLElement) {
     element.style.transform = `scale(${scale}) translate(${translate.x}px, ${translate.y}px)`
   }
 
-  // XXX: The way Tobii works (which is that the lightbox  is wide enough to
+  // XXX: The way Tobii works (which is that the lightbox is wide enough to
   // fit all sides, and just hides the others off screen) messes with
   // interact.js's automated bound checks. This means that interact.js's
   // automatic restriction code fails, so we need to restrict it ourselves.
-  function readjustIfFallingOffScreen() {
-    // Readjust if at least 80% (0.8) of the element is no longer visible.
-    let limitFactor = 0.8
+  function readjustIfFallingOffScreen(options?: { enableMoveSlides: boolean }) {
+    // Readjust if at least 50% (0.5) of the element is no longer visible.
+    let limitFactor = 0.5
     let lightboxRect = lightbox.getBoundingClientRect()
     let criticalLightboxRect = scaleRect(lightboxRect, limitFactor)
     let imageRect = img.getBoundingClientRect()
-
     if (!doRectsIntersect(criticalLightboxRect, imageRect)) {
+      // If this still intersects with the y range, then it only left the x
+      // range, meaning that this should be considered a slide transition.
+      if (
+        options?.enableMoveSlides &&
+        doRectsIntersect(criticalLightboxRect, imageRect, { x: false, y: true })
+      ) {
+        let movedSlides = false
+
+        if (imageRect.x > 0 && element.previousElementSibling) {
+          tobii.previous()
+          movedSlides = true
+        } else if (imageRect.x < 0 && element.nextElementSibling) {
+          tobii.next()
+          movedSlides = true
+        }
+
+        if (movedSlides) {
+          // Clear the state as we leave the object.
+          previousTranslate = { x: 0, y: 0 }
+        }
+      }
+
       updateState(element, (state) => {
         state.translate.x = previousTranslate.x
         state.translate.y = previousTranslate.y
@@ -149,7 +194,7 @@ function attachGestures(element: HTMLElement) {
           updateElement()
         },
         end(_event: Interact.DragEvent) {
-          readjustIfFallingOffScreen()
+          readjustIfFallingOffScreen({ enableMoveSlides: true })
           previousTranslate = loadState(element).translate
         },
       },
@@ -221,7 +266,9 @@ dom.attachDomCallbacks({
         .forEach(setImageSlideDimensions)
 
       tobii.on('open', () => {
-        document.querySelectorAll('.tobii__slide').forEach(attachGestures)
+        document
+          .querySelectorAll('.tobii__slide')
+          .forEach((e: HTMLElement) => attachGestures(tobii, e))
       })
 
       for (let event of ['next', 'previous']) {
