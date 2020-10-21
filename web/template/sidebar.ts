@@ -34,11 +34,15 @@ export let sidebar: Sidebar = {
       ],
     },
     {
-      name: 'Links',
-      icon: 'link',
+      name: 'Social',
+      icon: '6_ft_apart',
       items: [
         { name: 'GitHub', url: 'https://github.com/refi64' },
         { name: 'Twitter', url: 'https://twitter.com/refi_64' },
+        {
+          name: 'XDA',
+          url: 'https://forum.xda-developers.com/member.php?u=5569318',
+        },
       ],
     },
   ],
