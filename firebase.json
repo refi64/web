@@ -2,6 +2,17 @@
   "hosting": {
     "target": "r64-staging",
     "public": "bazel-bin/web/out",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
+      {
+        "source": "images/**/*.@(jpg|jpeg|png|webp|avif)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=2628000"
+          }
+        ]
+      }
+    ]
   }
 }
