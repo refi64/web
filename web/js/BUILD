@@ -65,6 +65,7 @@ ts_library(
     srcs = ["lightbox.ts"],
     deps = [
         ":dom_lib",
+        "@npm//interactjs",
         "@npm//tobii",
     ],
 )

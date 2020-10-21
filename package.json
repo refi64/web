@@ -22,6 +22,7 @@
     "asciidoctor-highlight.js": "^0.2.1",
     "cheerio": "^1.0.0-rc.3",
     "http-server": "^0.12.3",
+    "interactjs": "^1.10.0",
     "material-components-web": "^7.0.0",
     "node-eval": "^2.0.0",
     "nunjucks": "^3.2.1",
