@@ -19,21 +19,21 @@
 [.image-gallery]
 --
 
-image::/images/posts/vuedart-0.4-released/old1.png[Old home page, title="_alt"]
+image::/images/posts/vuedart-0.4-released/old1.png[Old home page, 3760, 1642, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/new1.png[New home page, title="_alt"]
+image::/images/posts/vuedart-0.4-released/new1.png[New home page, 3760, 1542, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/old2.png[Old documentation, title="_alt"]
+image::/images/posts/vuedart-0.4-released/old2.png[Old documentation, 3760, 1642, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/new2.png[New documentation, title="_alt"]
+image::/images/posts/vuedart-0.4-released/new2.png[New documentation, 3760, 1542, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/old1m.png[Old home page (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/old1m.png[Old home page (mobile), 1079, 1919, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/new1m.png[New home page (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/new1m.png[New home page (mobile), 1079, 1919, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/old2m.png[Old documentation (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/old2m.png[Old documentation (mobile), 1079, 1919, title="_alt"]
 
-image::/images/posts/vuedart-0.4-released/new2m.png[New documentation (mobile), title="_alt"]
+image::/images/posts/vuedart-0.4-released/new2m.png[New documentation (mobile), 1079, 1919, title="_alt"]
 
 --
 

@@ -21,13 +21,13 @@
   />
 
   {% for feature in features %}
-    <link rel="preload" as="script" href="/js/bundle.{{feature}}.js" />
+    {% if feature != "highlight" %}
+      <link rel="preload" as="script" href="/js/bundle.{{feature}}.js" />
+    {% endif %}
   {% endfor %}
 
   {% for feature in features %}
-    {% if feature != "hightlight" %}
-      <link rel="preload" as="style" href="/styles/{{feature}}.css" />
-    {% endif %}
+    <link rel="preload" as="style" href="/styles/{{feature}}.css" />
   {% endfor %}
 
   <link

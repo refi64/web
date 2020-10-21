@@ -19,7 +19,7 @@
     <a class="lightbox" href="{{target}}">
       {% if compressed %}
         <picture>
-          <source srcset="{{basename}}.avif" type="image/avif">
+          <!-- <source srcset="{{basename}}.avif" type="image/avif"> -->
           <source srcset="{{basename}}.webp" type="image/webp">
       {% endif %}
 
@@ -28,9 +28,16 @@
         {% if node.hasAttribute('alt') %}
           alt="{{node.getAttribute('alt')}}"
         {% endif %}
+        {% if node.hasAttribute('width') %}
+          width="{{node.getAttribute('width')}}"
+        {% endif %}
+        {% if node.hasAttribute('height') %}
+          height="{{node.getAttribute('height')}}"
+        {% endif %}
         {% if title %}
           title="{{title}}"
-        {% endif %}>
+        {% endif %}
+      >
 
       {% if compressed %}
         </picture>

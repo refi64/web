@@ -17,8 +17,6 @@ function inInclusiveRange(x, left, right): boolean {
 }
 
 function doRectsIntersect(a: DOMRect, b: DOMRect) {
-  console.log({ a, b })
-
   return (
     (inInclusiveRange(a.x, b.x, b.x + b.width) ||
       inInclusiveRange(b.x, a.x, a.x + a.width)) &&
@@ -176,6 +174,28 @@ function attachGestures(element: HTMLElement) {
     })
 }
 
+function setImageSlideDimensions(slide: HTMLElement) {
+  let image: HTMLImageElement = slide.querySelector('img[data-src]')
+  if (!image) {
+    return
+  }
+
+  let origin: HTMLImageElement = document.querySelector(
+    `a.lightbox[href="${image.dataset.src}"] picture img`
+  )
+  if (!origin) {
+    console.warn(`Could not find origin for: ${image.dataset.src}`)
+    return
+  }
+
+  if (origin.hasAttribute('width')) {
+    image.width = origin.width
+  }
+  if (origin.hasAttribute('height')) {
+    image.height = origin.height
+  }
+}
+
 function updateTobiiLinks() {
   document
     .querySelectorAll('.lightbox picture img')
@@ -188,12 +208,17 @@ function updateTobiiLinks() {
 dom.attachDomCallbacks({
   onPageLoad: () => {
     updateTobiiLinks()
+
     if (document.querySelector('.lightbox')) {
       tobii = new Tobii({
         captionAttribute: 'title',
         draggable: false,
         swipeClose: false,
       })
+
+      document
+        .querySelectorAll('.tobii__slide')
+        .forEach(setImageSlideDimensions)
 
       tobii.on('open', () => {
         document.querySelectorAll('.tobii__slide').forEach(attachGestures)

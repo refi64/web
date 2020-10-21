@@ -97,14 +97,14 @@ deploy_script:
 --
 +++Go to your AppVeyor account and click your username in the top-right corner. Select "Encrypt Data" in the menu that appears.+++
 
-image::/images/posts/using-appveyor-to-distribute-python-wheels/appveyor-encrypt.png["The encryption dropdown"]
+image::/images/posts/using-appveyor-to-distribute-python-wheels/appveyor-encrypt.png["The encryption dropdown",442,551]
 --
 . {blank}
 +
 --
 +++Type your password in the box and click "Encrypt". AppVeyor should give you an encrypted value. Copy it.+++
 
-image::/images/posts/using-appveyor-to-distribute-python-wheels/appveyor-encrypt-win.png["The encryption screen"]
+image::/images/posts/using-appveyor-to-distribute-python-wheels/appveyor-encrypt-win.png["The encryption screen",1042,489]
 --
 . {blank}
 +
