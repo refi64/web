@@ -1,0 +1,23 @@
+@use 'sass:color';
+
+@use '@material/chips/mdc-chips';
+
+@use '@material/chips/mixins' as chip-mixins;
+
+@use 'colors';
+
+@media (prefers-color-scheme: dark) {
+  .mdc-chip {
+    // Based on how the official Sass rules handle this.
+    @include chip-mixins.fill-color(
+      color.mix(colors.$on-primary-dark, colors.$primary-dark, 12%)
+    );
+
+    color: #ffffffb3;
+
+    .mdc-chip__checkmark {
+      // XXX: The color is hardcoded black in the SVG, so we flip it here.
+      filter: invert(85%);
+    }
+  }
+}

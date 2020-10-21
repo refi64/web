@@ -1,7 +1,7 @@
 # The top 5 programming languages you've never heard of (part 2)
 
 :created: 2015-03-08
-
+:features: highlight
 :tags: compilers felix k language myrddin nim objeck programming
 
 [#teaser]
@@ -30,7 +30,7 @@ proc update(options: Options) =
   echo("Downloading package list from " & url)
   downloadFile(url, options.getNimbleDir() / "packages.json")
   echo("Done.")
-    
+
 ----
 
 +++A longer piece:+++
@@ -74,7 +74,7 @@ proc parseConfig*(): Config =
       of cfgError:
         raise newException(NimbleError, "Unable to parse config file: " & e.msg)
     close(p)
-    
+
 ----
 
 [id=felix]
@@ -196,7 +196,7 @@ class JSON {
         tok TEOF;
     }
 }
-    
+
 ----
 
 ++++++ link:+++http://felix-lang.org/%24/usr/local/lib/felix/felix-latest//share/lib/web/json.flx+++[+++Here's+++] +++a link to Felix's own JSON parser, which is written more nicely than mine is...+++
@@ -243,7 +243,7 @@ const write = {f, src
         -> writebuf(f.fd, src)
     ;;
 }
-    
+
 ----
 
 +++However, the compiler generates VERY slow x64 assembly code at the moment...and only x64 assembly code. I'm working on a C backend, though, but it'll be a while until it's finished.+++
@@ -265,7 +265,7 @@ fib:{x{x,+/-2#x}/!2} / Fibonacci
 life:{|/(1;x)&3 4=\:+/,/2{-1 0 1!'\:x}/x} / Conway's Game of Life
 sort:{x@<x} / Sort list
 powerset:{x[&:'!2+&#x]} / Powerset
-    
+
 ----
 
 +++As you can see, K is very concise. A little too concise. However, as an array-processing language, it's great for iterating over large sequences of data, as+++ link:+++http://kx.com/+++[+++kdb++++] +++has shown. It's also very fast and lean (I'm speaking for kdb+, though, not Kona).+++
@@ -301,7 +301,7 @@ class Factorial {
         Factorial(number)->PrintLine();
     }
 }
-    
+
 ----
 
 +++It's very Java-esque but nicer to use. The cons would be the fact that there is+++ __+++no true native compiler+++__ +++. Sure, there's a "compiler", but it's like the Java compiler: it compiles to a bytecode that's executed by a VM. It Objeck's case, the VM is+++ ``+++obe+++`` +++. You also have to manually specify that a function is native for it to be compiled to machine code. There also seem to be no unsigned types or operator overloading. Again.+++

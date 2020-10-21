@@ -1,7 +1,7 @@
 #  Getting rid of version warnings: an experiment at hacking the Linux/glibc dynamic linker to shut up
 
 :created: 2018-01-02
-
+:features: highlight
 :tags: programming hack assembly qldv elf
 
 [#teaser]
@@ -16,7 +16,7 @@ usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available
 usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
 usr/bin/lldb-argdumper: /usr/lib/libtinfo.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
 usr/bin/lldb-argdumper: /usr/lib/libpanel.so.5: no version information available (required by /tmp/tmp.8oiyW382Pu/usr/bin/../lib/liblldb.so.4)
-      
+
 ----
 
 +++Ugh. Normally these warnings are nothing more than an annoyance. However, recently I started trying to get Swift working on my new Arch install. With Swift, the warnings suddenly turned much more lethal: some part of+++ ``+++swift package build+++`` +++assumes that, if one of the commands outputs anything (including these warnings), it has failed, and the build will be aborted.+++
@@ -56,7 +56,7 @@ usr/bin/lldb-argdumper: /usr/lib/libpanel.so.5: no version information available
 	}
       return 0;
     }
-    
+
 ----
 
 +++Looks pretty simple, right? This is inside the function+++ __+++match_symbol+++__ +++, which takes an argument named+++ __+++verbose+++__ +++. I figured all I had to do was figure out how to make+++ __+++verbose+++__ +++0/false.+++
@@ -77,7 +77,7 @@ version_check_doit (void *a)
     /* We cannot start the application.  Abort now.  */
     _exit (1);
 }
-    
+
 ----
 
 +++See the constant+++ ``+++1+++`` +++argument that can't be changed? Yup, that's the+++ __+++verbose+++__ +++argument.+++
@@ -99,7 +99,7 @@ version_check_doit (void *a)
  ryan@DevPC-archLX  ~  mkdir ld-hack
  ryan@DevPC-archLX  ~  cd ld-hack
  ryan@DevPC-archLX  ~/ld-hack  cp /usr/lib/ld-2.26.so ld.so
-    
+
 ----
 
 +++Now that I had a copy of the linker, I used lldb to print the assembler code inside of the+++ __+++_dl_check_all_versions+++__ +++(this seemed like an easy target to change):+++
@@ -155,7 +155,7 @@ ld.so[0x11209] <+105>: pop    rbp
 ld.so[0x1120a] <+106>: pop    r12
 ld.so[0x1120c] <+108>: pop    r13
 ld.so[0x1120e] <+110>: ret
-    
+
 ----
 
 ++++++ __+++_dl_check_all_versions+++__ +++calls+++ __+++_dl_check_map_versions+++__ +++at offset+++ ``+++0x111db+++`` +++:+++ ``+++call 0x10d30+++`` +++. Look at the instruction immediately before it (at+++ ``+++0x111d8+++`` +++):+++ ``+++mov esi, r12d+++`` +++. With the System-V x86_64 ABI,+++ ``+++esi+++`` +++is the register used to hold the second argument. Therefore, this instruction is the one that gets the+++ __+++verbose+++__ +++argument ready to pass to+++ __+++_dl_check_map_versions+++__ +++.+++
@@ -177,7 +177,7 @@ Disassembly of section .text:
 0000000000000000 <.text>:
    0:	be 00 00 00 00       	mov    esi,0x0
    5:	31 f6                	xor    esi,esi
-    
+
 ----
 
 +++(Technically,+++ ``+++shr esi, 1+++`` +++would've also done the trick, since+++ ``+++1 >> 1 == 0+++`` +++.)+++
@@ -188,7 +188,7 @@ Disassembly of section .text:
 ----
 
  ryan@DevPC-archLX  ~/ld-hack  printf '\x31\xf6\x90' | dd of=ld.so bs=1 seek=$((0x111d8)) count=3 conv=notrunc
-    
+
 ----
 
 ++++++ __+++printf+++__ +++is used to send the bytes to+++ __+++dd+++__ +++, which will write them to+++ __+++ld.so+++__ +++at the given offset (the+++ ``+++$((...))+++`` +++syntax is used to convert the hex location to decimal).+++ __+++count=3+++__ +++is passed to ensure only 3 bytes are written, and+++ __+++conv=notrunc+++__ +++prevents+++ __+++dd+++__ +++from truncating the rest of the file.+++
@@ -205,7 +205,7 @@ ld.so`_dl_check_all_versions:
 (...)
 ld.so[0x111d8] <+56>:  xor   esi, esi
 ld.so[0x111da] <+58>:  nop
-    
+
 ----
 
 +++Viola!+++
@@ -219,7 +219,7 @@ ld.so[0x111da] <+58>:  nop
 ----
 
  ryan@DevPC-archLX  ~/ld-hack  patchelf --set-interpreter $PWD/ld.so usr/bin/lldb-argdumper
-    
+
 ----
 
 +++Now you can try the executable again, and there will be no warnings this time!+++
@@ -233,5 +233,5 @@ ld.so[0x111da] <+58>:  nop
 ----
 
  ryan@DevPC-archLX  ~/ld-hack  qldv -set usr/bin/lldb-argdumer ld.so
-    
+
 ----

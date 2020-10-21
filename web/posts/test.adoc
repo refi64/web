@@ -1,6 +1,7 @@
 # Hello
 
 :created: 2018-10-08
+:features: highlight
 :tags: test
 
 [#teaser]

@@ -1,9 +1,9 @@
-@use 'sass:color';
+@use 'colors';
 
 @use '@material/theme' with (
-  $primary: #ffffffdb,
-  $secondary: #0d47a1,
-  $on-primary: #000000,
+  $primary: colors.$primary-light,
+  $secondary: colors.$accent-light,
+  $on-primary: colors.$on-primary-light,
 );
 
 $headline-font-family: Montserrat, Roboto, sans-serif;
@@ -23,32 +23,20 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
 @use "@material/icon-button";
 @use "@material/shape";
 
-@use '@material/chips/mdc-chips';
 @use '@material/drawer/mdc-drawer';
 @use '@material/list/mdc-list';
 @use '@material/theme/mdc-theme';
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use '@material/typography/mdc-typography';
 
-@use '@material/chips/mixins' as chip-mixins;
 @use '@material/drawer/variables' as drawer-variables;
 @use '@material/list/mixins' as list-mixins;
 @use '@material/list/variables' as list-variables;
 @use '@material/top-app-bar/variables' as top-app-bar-variables;
 @use '@material/typography/mixins' as typography-mixins;
 
-@use 'tobii/src/scss/tobii';
-
-// Have to use @import here, because @use can't go in a media query
-@media (prefers-color-scheme: light) {
-  @import 'highlight.js/scss/github';
-}
-@media (prefers-color-scheme: dark) {
-  @import 'highlight.js/scss/androidstudio';
-}
-
 :root {
-  --warning-color: #5c00d2;
+  --warning-color: #{colors.$warning-light};
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,30 +45,18 @@ $headline-font-family: Montserrat, Roboto, sans-serif;
 
   // XXX: This is all super ugly!
   :root {
-    --mdc-theme-background: #{$background};
-    --mdc-theme-secondary: #5882c2;
-    --mdc-theme-on-primary: #{$primary};
-    --mdc-theme-on-surface: #{$primary};
+    --mdc-theme-background: #{colors.$primary-dark};
+    --mdc-theme-secondary: #{colors.$accent-dark};
+    --mdc-theme-on-primary: #{colors.$on-primary-dark};
+    --mdc-theme-on-surface: #{colors.$on-primary-dark};
 
-    --warning-color: #df55f2;
+    --warning-color: $colors.warning-dark;
   }
 
   body,
   .mdc-drawer {
     background-color: var(--mdc-theme-background);
     color: var(--mdc-theme-on-primary);
-  }
-
-  .mdc-chip {
-    // Based on how the official Sass rules handle this.
-    @include chip-mixins.fill-color(color.mix($primary, $background, 12%));
-
-    color: #ffffffb3;
-
-    .mdc-chip__checkmark {
-      // XXX: The color is hardcoded black in the SVG, so we flip it here.
-      filter: invert(85%);
-    }
   }
 
   .mdc-drawer {
@@ -138,75 +114,6 @@ html {
   scroll-behavior: smooth;
 }
 
-.imageblock {
-  max-height: 50vh;
-  width: 100%;
-  margin: 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .imageblock-inner {
-    position: relative;
-
-    img {
-      max-height: 50vh;
-      max-width: 50vw;
-    }
-
-    .imageblock-text {
-      // TODO: make this appear properly if the text is wider than the image
-
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-
-      pointer-events: none;
-
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-
-      color: white;
-
-      padding-bottom: 16px;
-
-      visibility: hidden;
-
-      .imageblock-text-inner {
-        padding: 4px 16px;
-        background-color: #595959e6;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 12px;
-      }
-    }
-
-    &:hover .imageblock-text {
-      visibility: visible;
-    }
-  }
-}
-
-.image-gallery .content {
-  display: flex;
-  overflow-y: auto;
-
-  .imageblock {
-    // Without this the nested flexboxes get super screwy for some reason
-    height: 25vh;
-    // and this is required to make them not overlap with each other
-    width: unset;
-
-    .imageblock-inner img {
-      max-height: 25vh;
-    }
-  }
-}
-
 .strike {
   text-decoration: line-through;
 }
@@ -231,19 +138,6 @@ html {
 @include if-not-mobile() {
   .if-mobile {
     display: none;
-  }
-}
-
-.tobii__btn {
-  border-radius: 10px;
-  --button-background: #00000080;
-}
-
-.tobii__slide {
-  touch-action: none;
-
-  [data-type] {
-    pointer-events: none;
   }
 }
 
@@ -299,10 +193,6 @@ pre {
   &.admonition-warning .admonition-name {
     color: var(--warning-color);
   }
-}
-
-#moot-logo a {
-  z-index: 0 !important;
 }
 
 .mdc-top-app-bar {
@@ -370,9 +260,7 @@ pre {
     // Based on mdc-top-app-bar.scss
     padding-top: top-app-bar-variables.$row-height;
   }
-}
 
-.mdc-drawer {
   .mdc-list-group__subheader {
     // Make sure the icon is aligned properly.
     @include list-mixins.item-base_;

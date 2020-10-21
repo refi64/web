@@ -1,6 +1,9 @@
 {% extends "web/template/main.njk" %}
 {% from "web/template/_macros.njk" import post_title %}
 
+{% set features = features | default([]) %}
+{% set features = (features.push("tags"), features) %}
+
 {% block title %} Tags {% endblock %}
 {% block side_title %} Tags {% endblock %}
 
@@ -14,10 +17,6 @@
     {% endif %}
   {% endfor %}
 {% endfor %}
-
-{% block head %}
-  <script async src="/js/bundle.tags.js"></script>
-{% endblock %}
 
 {% block content %}
   <div class="mdc-typography--headline6">Select some tags to filter posts</div>

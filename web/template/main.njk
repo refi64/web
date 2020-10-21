@@ -5,6 +5,9 @@
 <html lang="en">
 
 <head>
+  {% set features = features | default([]) %}
+  {% set features = (features.push("core"), features.reverse(), features) %}
+
   <title>
     {% block title %} {% endblock %} - re:fi.64's site
   </title>
@@ -16,15 +19,32 @@
     as="style"
     href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons&display=swap"
   />
-  <link rel="preload" as="style" href="/styles/styles.css" />
+
+  {% for feature in features %}
+    <link rel="preload" as="script" href="/js/bundle.{{feature}}.js" />
+  {% endfor %}
+
+  {% for feature in features %}
+    {% if feature != "hightlight" %}
+      <link rel="preload" as="style" href="/styles/{{feature}}.css" />
+    {% endif %}
+  {% endfor %}
 
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono|Montserrat:400,500|Material+Icons&display=swap"
   />
 
-  <link rel="stylesheet" href="/styles/styles.css" />
-  <script async src="/js/bundle.core.js"></script>
+  {% for feature in features %}
+    {% if feature != "highlight" %}
+      <script async src="/js/bundle.{{feature}}.js"></script>
+    {% endif %}
+  {% endfor %}
+
+  {% for feature in features %}
+    <link rel="stylesheet" href="/styles/{{feature}}.css" />
+  {% endfor %}
+
   <meta name="viewport" content="width=device-width" />
   <meta charset="utf-8" />
 

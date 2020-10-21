@@ -1,7 +1,7 @@
 # Implementing a (sort of) generic, (sort of) type-safe array in C
 
 :created: 2015-11-28
-
+:features: highlight
 :tags: c programming preprocessor hack
 
 [#teaser]
@@ -30,7 +30,7 @@ printf("%zu %d\n", list_len(mylist), *mylist[0]); // Prints 1 1.
 list_append(mylist, &b);
 printf("%zu %d %d\n", list_len(mylist), *mylist[0], *mylist[1]); // Prints 2 1 2.
 list_free(mylist);
-    
+
 ----
 
 +++Note that I used the term+++ ``+++list+++`` +++, not+++ ``+++array+++`` +++, since I'm a Python nerd.+++
@@ -53,7 +53,7 @@ list_free(mylist);
 ...
 
 #endif
-    
+
 ----
 
 +++Yeah, we all know what this is for! Joyous header files.+++
@@ -66,7 +66,7 @@ list_free(mylist);
 #define list_cat2(a,b) a##b
 #define list_cat(a,b) list_cat2(a,b)
 #define list_var(b) list_cat(list_type_,list_cat(b,__LINE__))
-    
+
 ----
 
 +++This is just a way of creating anonymous, single-use variables inside a macro in order to avoid name clashes. Think Lisp's+++ ``+++gensym+++`` +++.+++
@@ -78,7 +78,7 @@ list_free(mylist);
 ----
 
 #define List(t) t*
-    
+
 ----
 
 ++++++ __+++Now+++__ +++the interesting stuff starts! This is just a macro to make uses of the list type look like generics, so that I can do stuff like+++ ``+++List(int*)+++`` +++.+++
@@ -87,7 +87,7 @@ list_free(mylist);
 ----
 
 #define list_lenref(l) ((size_t*)l)[-1]
-    
+
 ----
 
 +++I think I need to explain a moment.+++
@@ -101,7 +101,7 @@ struct my_list_type {
     size_t length;
     some_type my_array[size_here];
 };
-    
+
 ----
 
 +++(Except that+++ ``+++my_array+++`` +++can be of any size.) However, the list is a pointer to the array, after the length. Therefore,+++ ``+++list_lenref+++`` +++(which gets the length of the list) needs to index BEFORE the given list to get the length.+++
@@ -112,7 +112,7 @@ struct my_list_type {
 ----
 
 #define list_len(l) (l?list_lenref(l):0)
-    
+
 ----
 
 +++This is just a wrapper macro around+++ ``+++list_lenref+++`` +++to support getting the length of an empty list (+++ ``+++NULL+++`` +++).+++
@@ -132,7 +132,7 @@ struct my_list_type {
     list_lenref(l) = list_var(len)+1;\
     l[list_lenref(l)-1] = x;\
 } while (0)
-  
+
 ----
 
 +++This is definitely the biggest macro (and arguably the most important), so I'll explain it line-by-line:+++
@@ -143,7 +143,7 @@ struct my_list_type {
 ----
 
 size_t list_var(len) = list_len(l);\
-    
+
 ----
 
 +++Next, the list is+++ ``+++realloc+++`` +++'d:+++
@@ -153,7 +153,7 @@ size_t list_var(len) = list_len(l);\
 
 l = realloc(l?((void*)l)-sizeof(size_t):NULL,\
             sizeof(void*)*(list_var(len)+1)+sizeof(size_t))+sizeof(size_t);\
-    
+
 ----
 
 +++This alone deserves explanation, too! The first argument to+++ ``+++realloc+++`` +++is the block of memory to be resized. If the list is+++ ``+++NULL+++`` +++, then+++ ``+++NULL+++`` +++is passed to+++ ``+++realloc+++`` +++. Otherwise, the size of the length is subtracted from the pointer to get the beginning of the allocated memory.+++
@@ -170,7 +170,7 @@ l = realloc(l?((void*)l)-sizeof(size_t):NULL,\
 ----
 
 list_lenref(l) = list_var(len)+1;\
-    
+
 ----
 
 +++If you're wondering why I didn't just use+++ ``+++++list_lenref(l)+++`` +++, it's because, if the list was empty before the append, the length will be uninitialized. Also,+++ ``+++list_lenref+++`` +++is used instead of+++ ``+++list_len+++`` +++because the latter is an rvalue because it handles empty lists, but we know the list is non-empty, and you can only assign to an l-value.+++
@@ -181,7 +181,7 @@ list_lenref(l) = list_var(len)+1;\
 ----
 
 l[list_lenref(l)-1] = x;\
-    
+
 ----
 
 +++All of this is wrapped in a+++ ``+++do/while+++`` +++block to avoid+++ link:+++http://stackoverflow.com/a/154138/2097780+++[+++surprising issues+++] +++.+++
@@ -195,7 +195,7 @@ l[list_lenref(l)-1] = x;\
 ----
 
 #define list_free(l) free(l?(void*)l-sizeof(size_t):NULL)
-    
+
 ----
 
 +++If the list is empty, then it just tries to free+++ ``+++NULL+++`` +++, which does nothing. If the list is+++ __+++not+++__ +++empty, then+++ ``+++sizeof(size_t)+++`` +++is subtracted to get the beginning of the list, and that is freed.+++
@@ -211,7 +211,7 @@ l[list_lenref(l)-1] = x;\
 List(int*) l;
 char c=0;
 list_append(l, &c);
-    
+
 ----
 
 +++If I try to compile this, my compiler (Clang) says:+++
@@ -226,7 +226,7 @@ tst.c:13:5: warning: incompatible pointer types assigning to 'int *' from 'char 
     l[list_lenref(l)-1] = x;\
                         ^
 1 warning generated.
-    
+
 ----
 
 +++GCC 4.9 (which is admittedly an old version) gives a slightly less helpful but still informative warning:+++
@@ -242,7 +242,7 @@ list.h:16:25: warning: assignment from incompatible pointer type
 tst.c:13:5: note: in expansion of macro ‘list_append’
      list_append(l, &c);
      ^
-    
+
 ----
 
 +++Intel's doesn't show the macro expansion, but it still works:+++
@@ -253,7 +253,7 @@ tst.c:13:5: note: in expansion of macro ‘list_append’
 tst.c(13): warning #556: a value of type "char *" cannot be assigned to an entity of type "int *"
       list_append(l, &c);
       ^
-    
+
 ----
 
 +++You can see that the compiler always notices when something isn't right, and building with+++ ``+++-Werror+++`` +++will prevent this from even compiling.+++

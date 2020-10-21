@@ -1,7 +1,7 @@
-#  Functional programming isn't the answer to all problems (and neither is OOP) 
+#  Functional programming isn't the answer to all problems (and neither is OOP)
 
 :created: 2015-05-17
-
+:features: highlight
 :tags: function programming oop haskell c++
 
 [#teaser]
@@ -33,7 +33,7 @@
 ----
 
 f = foldl1 (+)
-    
+
 ----
 
 +++will explode if given a list too long; the stack will be exhausted. Or it will just take forever. You need to use+++ ``+++foldl1'+++`` +++in that case, which is strict.+++
@@ -45,7 +45,7 @@ f = foldl1 (+)
 
 std::vector<int> v(10000000, 1);
 std::cout << std::accumulate(v.begin(), v.end(), 0, std::plus<int>{}) << std::endl;
-    
+
 ----
 
 +++I had this code in all:+++
@@ -58,7 +58,7 @@ std::cout << std::accumulate(v.begin(), v.end(), 0, std::plus<int>{}) << std::en
 f = foldl1 (+)
 
 main = print . f $ replicate 10000000 1
-    
+
 ----
 
 [NOTE]
@@ -81,7 +81,7 @@ int main() {
     vector<int> v(10000000, 1);
     cout << accumulate(v.begin(), v.end(), 0, plus<int>()) << endl;
 }
-    
+
 ----
 
 +++The Haskell version gives a stack overflow after 1.7 seconds. Changing+++ ``+++foldl1+++`` +++to+++ ``+++foldl1'+++`` +++fixes it, but it still takes 0.184s. C++ version? 0.022s.+++
@@ -97,7 +97,7 @@ int main() {
 
 f :: [Int] -> Int
 f = foldl1' (+)
-    
+
 ----
 
 +++This finishes in 1.7s on my (not-too-fast) computer. He also pointed out that using+++ ``+++Data.Vector+++`` +++instead made it faster than the C++ version:+++
@@ -111,7 +111,7 @@ f :: V.Vector Int -> Int
 f = V.foldl1' (+)
 
 main = print . f $ V.replicate 10000000 1
-    
+
 ----
 
 +++This actually took a whopping 1.08s on my laptop. Ouch!+++

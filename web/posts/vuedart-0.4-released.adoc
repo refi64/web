@@ -1,7 +1,7 @@
 # VueDart 0.4 released!
 
 :created: 2018-10-08
-
+:features: highlight lightbox
 :tags: vue vuedart
 
 [#teaser]

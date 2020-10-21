@@ -1,7 +1,7 @@
 # Using AppVeyor to distribute Python wheels
 
 :created: 2014-09-21
-
+:features: highlight lightbox
 :tags: appveyor ci python wheels
 
 [#teaser]

@@ -1,7 +1,7 @@
 #  How to be an awesome hacker, according to the anime/J-drama industry
 
 :created: 2017-06-26
-
+:features: lightbox
 :tags: programming
 
 [#teaser]

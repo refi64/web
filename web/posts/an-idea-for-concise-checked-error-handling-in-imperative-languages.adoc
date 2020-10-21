@@ -1,7 +1,7 @@
 #  An idea for concise, checked error handling in imperative languages
 
 :created: 2016-03-20
-
+:features: highlight
 :tags: programming errors crystal
 
 [#teaser]
@@ -45,7 +45,7 @@ def myfunc(a : Int32)
   raise MyErrorType.new if a == 0
   return a
 end
-    
+
 ----
 
 +++This+++ __+++appears+++__ +++to be just a normal exception throw, but it really isn't.+++ ``+++raise+++`` +++here would actually just be returning+++ ``+++MyErrorType.new+++`` +++. This code would roughly be the exact same thing semantically as:+++
@@ -58,7 +58,7 @@ def myfunc(a)
   return Left.new "invalid number #{a}" if a == 0
   return Right.new a
 end
-    
+
 ----
 
 +++In short, it's just union types, but more concise. Because of Crystal's type inference, this would make myfunc's return type+++ ``+++Int32![MyErrorType]+++`` +++.+++
@@ -76,7 +76,7 @@ def myotherfunc(a)
     puts "Function returned: #{value}"
   end
 end
-    
+
 ----
 
 +++However, this is where things go a completely different route:+++
@@ -92,7 +92,7 @@ def myotherfunc(a)
   else value
     puts "Function returned: #{value}"
 end
-    
+
 ----
 
 +++"But wait," you say, "how is this different from exceptions!?" Well, this+++ ``+++try+++`` +++is not at all like a normal+++ ``+++try+++`` +++.+++
@@ -111,7 +111,7 @@ def myfunc(a : Int32)
   # A new error:
   raise MyOtherErrorType.new if a < 0
 end
-    
+
 ----
 
 +++What would happen to+++ ``+++myotherfunc+++`` +++? It wouldn't compile!+++
@@ -132,7 +132,7 @@ def myotherfunc(a)
   else value
     puts "Function returned: #{value}"
 end
-    
+
 ----
 
 +++Now+++ ``+++myotherfunc+++`` +++is inferred to return+++ ``+++Int32![MyOtherErrorType]+++`` +++. In order to fix it, you can just do:+++
@@ -149,7 +149,7 @@ def myotherfunc(a)
   else value
     puts "Function returned: #{value}"
 end
-    
+
 ----
 
 +++You could also omit any+++ ``+++except+++`` +++clause. For example:+++
@@ -164,7 +164,7 @@ def myotherfunc(a)
   else value
     puts "Function returned: #{value}"
 end
-    
+
 ----
 
 +++This would be equivalent to:+++
@@ -181,7 +181,7 @@ def myotherfunc(a)
   else value
     puts "Function returned: #{value}"
 end
-    
+
 ----
 
 +++In addition, this can be an expression. If an error occurs, the function instantly returns; otherwise, the value of the+++ ``+++else+++`` +++block is returned:+++
@@ -199,7 +199,7 @@ def myotherfunc(a)
     value + 1
   puts result
 end
-    
+
 ----
 
 +++If the+++ ``+++else+++`` +++block is ommitted, then the non-error value is returned:+++
@@ -217,7 +217,7 @@ def myotherfunc(a)
   #   value
   puts result
 end
-    
+
 ----
 
 +++Now you can combine all this to get a nice shorthand:+++
@@ -228,7 +228,7 @@ end
 def myotherfunc(a)
   return try myfunc a
 end
-    
+
 ----
 
 +++The compiler would basically desugar that into:+++
@@ -245,7 +245,7 @@ def myotherfunc(a)
     else value
       value
 end
-    
+
 ----
 
 +++As an added benefit, you can chain+++ ``+++!+++`` +++uses, so+++ ``+++T![E1]![E2]+++`` +++would be converted to+++ ``+++T![E1,E2]+++`` +++. This seems useless, but it's very handy with generic types.+++
@@ -279,7 +279,7 @@ try:
     something_else(x)
 except IOError: # If any of the expressions result in an IOError.
     print('Error occurred!')
-    
+
 ----
 
 +++Well, that could go something like this:+++
@@ -292,7 +292,7 @@ try
     something_else x
 except IOError as ex
     puts "Error occurred!"
-    
+
 ----
 
 +++What exactly does this do?+++

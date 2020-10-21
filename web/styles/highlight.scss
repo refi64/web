@@ -1,0 +1,7 @@
+// Have to use @import here, because @use can't go in a media query
+@media (prefers-color-scheme: light) {
+  @import 'highlight.js/scss/github';
+}
+@media (prefers-color-scheme: dark) {
+  @import 'highlight.js/scss/androidstudio';
+}

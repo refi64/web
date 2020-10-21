@@ -1,7 +1,6 @@
 # Going from Polymer to Vue, from JavaScript to Dart
 
 :created: 2017-10-10
-
 :tags: programming website polymer dart vue
 
 [#teaser]

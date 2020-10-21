@@ -1,7 +1,6 @@
 # Welcome!
 
 :created: 2014-09-10
-
 :tags: miscellaneous
 
 [#teaser]

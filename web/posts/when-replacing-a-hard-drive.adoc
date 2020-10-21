@@ -1,7 +1,7 @@
 # When replacing a hard drive turns into a fried motherboard, a VM mess, and a slow USB stick
 
 :created: 2017-05-26
-
+:features: lightbox
 :tags: laptop motherboard usb
 
 [#teaser]

@@ -1,7 +1,7 @@
 # The Magic of RPython
 
 :created: 2015-05-29
-
+:features: highlight
 :tags: rpython interpreter python
 
 [#teaser]
@@ -24,7 +24,7 @@ def entry_point(argv):
 def target(driver, args):
     # this is run at compile time
     return entry_point, None
-    
+
 ----
 
 +++You'd run RPython kind of like this:+++
@@ -33,7 +33,7 @@ def target(driver, args):
 ----
 
 $ python path_to_pypy_source/rpython/bin/rpython -O0 my_program.py
-    
+
 ----
 
 +++The+++ ``+++-O0+++`` +++turns off all optimizations, which makes compile times+++ __+++much+++__ +++faster while testing.+++
@@ -44,7 +44,7 @@ $ python path_to_pypy_source/rpython/bin/rpython -O0 my_program.py
 ----
 
 $ alias rpython="python path_to_pypy_source/rpython/bin/rpython"
-    
+
 ----
 
 +++The+++ ``+++target+++`` +++function lets you set certain or check command-line arguments passed to RPython. For instance:+++
@@ -57,7 +57,7 @@ def target(driver, args):
     if driver.exe_name == 'xyz-c':
         driver.exe_name = 'bin/xyz'
     return entry_point, None
-    
+
 ----
 
 +++I have+++ __+++no+++__ +++clue what the None is for, though.+++
@@ -77,7 +77,7 @@ print 'This is run during compile time!' # guess when this is run?
 def entry_point(argv):
     print 'This is run at run time!'
     return 0
-    
+
 ----
 
 +++This has really cool implications. For one thing, RPython lazily compiles functions. For instance:+++
@@ -95,7 +95,7 @@ def g():
 
 def entry_point(argv):
     print g()
-    
+
 ----
 
 +++That means we can do lots of compile-time computations:+++
@@ -115,7 +115,7 @@ else:
 def entry_point(argv):
     print plat()
     return 0
-    
+
 ----
 
 [id=statically-typed]
@@ -129,7 +129,7 @@ def entry_point(argv):
 def entry_point(argv):
     x = 123 # ok
     x = '456' # error!
-    
+
 ----
 
 +++Notice that no variable annotations were needed. This is because RPython uses type inference.+++
@@ -149,7 +149,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 [id=errors]
@@ -161,7 +161,7 @@ def target(driver, args):
 ----
 
 error: myfile.whatever:22: variable 'xyz' may be 'null' when used here
-    
+
 ----
 
 +++Not RPython! This is what I get when I try to compile the above snippet:+++
@@ -219,7 +219,7 @@ error: myfile.whatever:22: variable 'xyz' may be 'null' when used here
 [translation:ERROR]
 [translation:ERROR]         print x+1+2 # compile-time error
 [translation:ERROR]
-    
+
 ----
 
 +++Wow! RPython's exceptions generally go like this:+++
@@ -251,7 +251,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 +++RPython gives this error message:+++
@@ -308,7 +308,7 @@ def target(driver, args):
 [translation:ERROR]  containing the following operations:
 [translation:ERROR]        v0 = bool(b_0)
 [translation:ERROR]  --end--
-    
+
 ----
 
 +++This tells us that the type conflict is between an integer and+++ ``+++None+++`` +++. Also note that there are no absolute line numbers. RPython will sometimes show just the function where the error occurred (in this case,+++ ``+++f+++`` +++) and the internal, simplified code that is near the cause of the error.+++
@@ -344,7 +344,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 +++This reads one or more numbers from stdin and prints the first one added to+++ ``+++2.3+++`` +++. You may have noticed an error in the program. When compiling, this happens:+++
@@ -384,7 +384,7 @@ def target(driver, args):
 [translation:ERROR] Known variable annotations:
 [translation:ERROR]  v0 = SomeNone()
 [translation:ERROR]
-    
+
 ----
 
 +++What?? What RPython means is that it can't infer the type of+++ ``+++data+++`` +++. Why? Because somewhere in+++ ``+++rd+++`` +++we put a plain+++ ``+++return+++`` +++. In Python, this returns+++ ``+++None+++`` +++. In RPython? It's an error.+++
@@ -407,7 +407,7 @@ def target(driver, args):
 def entry_point(argv):
     print argv.x
     return 0
-    
+
 ----
 
 +++Gives:+++
@@ -439,7 +439,7 @@ def entry_point(argv):
 [translation:ERROR]        v2 = simple_call((function rpython_print_item), v1)
 [translation:ERROR]        v3 = simple_call((function rpython_print_newline))
 [translation:ERROR]  --end--
-    
+
 ----
 
 +++Also note the types again. Here, it's telling us it's a list (+++ ``+++SomeList+++`` +++) of non-nullable strings (+++ ``+++listdef=<[SomeString(no_nul=True)]>+++`` +++).+++
@@ -468,7 +468,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 +++This gives:+++
@@ -504,7 +504,7 @@ def target(driver, args):
 [translation:ERROR]        v4 = simple_call((function rpython_print_item), v3)
 [translation:ERROR]        v5 = simple_call((function rpython_print_newline))
 [translation:ERROR]  --end--
-    
+
 ----
 
 +++The solution? You can use an assertion:+++
@@ -517,7 +517,7 @@ def entry_point(argv):
     assert isinstance(a, B)
     print a.x() # Ok; this will never run if 'a' is of type 'C'
     return 0
-    
+
 ----
 
 +++Or an+++ ``+++if+++`` +++statement:+++
@@ -532,7 +532,7 @@ def entry_point(argv):
     elif isinstance(a, C):
         print a.x(1)
     return 0
-    
+
 ----
 
 [id=info]
@@ -554,7 +554,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 +++If you give it no arguments, it'll throw an+++ ``+++IndexError+++`` +++, right? WRONG! If I build it without optimizations, it'll print+++ ``+++None+++`` +++; if I use optimizations (+++ ``+++-O2+++`` +++), it'll segfault. Why? See, it would be rude to throw an exception! After all, you asked it for the first argument. Therefore, it returns a safe value:+++ ``+++None+++`` +++. However, when you build it with optimizations, RPython couldn't care less about your computers memory, so it happily...crashes. However, try this:+++
@@ -568,7 +568,7 @@ def entry_point(argv):
     except:
         print 'Too few arguments!'
     return 0
-    
+
 ----
 
 +++This will correctly print "Too few arguments!" if given no arguments. See, now that you put a+++ ``+++try+++`` +++block around it, RPython knows you want an exception, so it'll throw one.+++
@@ -589,7 +589,7 @@ def entry_point(argv):
 
 def target(driver, args):
     return entry_point, None
-    
+
 ----
 
 +++This will segfault when build with+++ ``+++-O2+++`` +++. But we put a+++ ``+++try+++`` +++block! RPython analyses the function individually in this case, so it doesn't pick up the+++ ``+++try+++`` +++block in+++ ``+++entry_point+++`` +++. To circumvent this, put another+++ ``+++try+++`` +++block around+++ ``+++f+++`` +++that explicitly re-raises any errors:+++
@@ -602,7 +602,7 @@ def f(x):
         return x[1]
     except:
         raise
-    
+
 ----
 
 [id=restricted]
@@ -640,7 +640,7 @@ def readline():
         if not buf: return res
         res += buf
         if res[-1] == '\n': return res[:-1]
-    
+
 ----
 
 +++For reading all the lines in+++ ``+++stdin+++`` +++into a list:+++
@@ -658,7 +658,7 @@ def readlines():
         if not buf: return res
         cur += buf
         if cur[-1] == '\n': res.append(cur[:-1])
-    
+
 ----
 
 +++For writing to+++ ``+++stderr+++`` +++:+++
@@ -670,7 +670,7 @@ import os
 
 def write_err(msg):
     os.write(2, msg+'\n')
-    
+
 ----
 
 +++And for writing to+++ ``+++stdout+++`` +++without any trailing newlines or spaces:+++
@@ -682,7 +682,7 @@ import os
 
 def write(msg):
     os.write(1, msg)
-    
+
 ----
 
 [id=fun]

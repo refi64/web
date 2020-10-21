@@ -1,7 +1,7 @@
 # VueDart 0.3 released! Featuring scoped styles, mixins, a CLI, and more!
 
 :created: 2017-11-19
-
+:features: highlight
 :tags: vue vuedart
 
 [#teaser]
@@ -23,7 +23,7 @@
 ----
 
 $ vuedart create my-project --aspen
-    
+
 ----
 
 +++(Aspen is covered below.)+++
@@ -34,7 +34,7 @@ $ vuedart create my-project --aspen
 ----
 
 $ vuedart migrate . pubspec.yaml lib/* any_other_files_to_migrate
-    
+
 ----
 
 +++I actually used the migration tool to update this website's components!+++
@@ -74,7 +74,7 @@ targets:
       prod: node_modules/better-share-button/dist/share-button.min.css
     - name: material-icons-css
       default: node_modules/material-design-icons/iconfont/material-icons.css
-    
+
 ----
 
 +++Now I just run+++ ``+++aspen+++`` +++for development builds and+++ ``+++aspen -m prod+++`` +++for production builds, and it all "just works".+++
@@ -98,7 +98,7 @@ targets:
     background-color: purple;
   }
 <style>
-    
+
 ----
 
 [id=plugins]
@@ -119,7 +119,7 @@ final router = new VueRouter(routes: [
     'root': #RootComponent,
   }),
 ]);
-    
+
 ----
 
 +++In order to access+++ ``+++$router+++`` +++and+++ ``+++$route+++`` +++, you need to use the+++ ``+++VueRouterMixin+++`` +++mixin. Again, this is explained further in the documentation.+++
@@ -144,7 +144,7 @@ abstract class TodoMixin {
 class ShowName extends VueComponentBase with TodoMixin {
   // ...
 }
-    
+
 ----
 
 +++Note that at the moment, only components can use mixins.+++
@@ -156,7 +156,7 @@ class ShowName extends VueComponentBase with TodoMixin {
 
 @watch('my-value')
 void watchMyValue() => print('Watching my-value!');
-    
+
 ----
 
 [id=instance]
@@ -172,7 +172,7 @@ $emit('my-custom-event', ['some arg', 'some other arg']);
 $on('something', (event) {
   print(123);
 });
-    
+
 ----
 
 ``+++$nextTick+++`` +++also works:+++
@@ -183,7 +183,7 @@ $on('something', (event) {
 $nextTick().then(() => {
   print('In \$nextTick callback!');
 });
-    
+
 ----
 
 +++Several others work now, too.+++
@@ -197,7 +197,7 @@ $nextTick().then(() => {
 ----
 
 VueConfig.ignoredElements = ['my-element'];
-    
+
 ----
 
 [id=rewriting]
@@ -214,7 +214,7 @@ VueConfig.ignoredElements = ['my-element'];
 ----
 
 <script src="https://unpkg.com/vue">
-    
+
 ----
 
 +++will be transformed into this:+++
@@ -223,7 +223,7 @@ VueConfig.ignoredElements = ['my-element'];
 ----
 
 <script src="https://unpkg.com/vue/dist/vue.min.js">
-    
+
 ----
 
 +++Now this will be done to any Vue imports, not just the ones from unpkg. Note that Aspen is still the recommended way of loading your Vue JS files.+++
@@ -242,7 +242,7 @@ VueConfig.ignoredElements = ['my-element'];
 - vue2:
     entry_points:
       - web/index.dart
-    
+
 ----
 
 +++As mentioned above, the VueDart CLI will take care of this change for you.+++
@@ -256,7 +256,7 @@ VueConfig.ignoredElements = ['my-element'];
 ----
 
 @VueComponent('my-component')
-    
+
 ----
 
 +++You now need to do this:+++
@@ -265,7 +265,7 @@ VueConfig.ignoredElements = ['my-element'];
 ----
 
 @VueComponent(name: 'my-component')
-    
+
 ----
 
 +++Again, this is a minor change, and the CLI will automatically migrate your code. (It's worth noting that this very website was migrated using the CLI, because I didn't want to go through all 12 components and change it manually.) It was necessary in order to allow a component to be unnamed (for VueRouter support).+++
@@ -288,7 +288,7 @@ VueConfig.ignoredElements = ['my-element'];
 
 @prop
 String myFirstProp, mySecondProp;
-    
+
 ----
 
 +++Now, it works much like you'd expect: it declares multiple props on one line. Same goes for+++ ``+++@data+++`` +++, too.+++

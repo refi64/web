@@ -1,7 +1,7 @@
 # The top 5 programming languages you've never heard of
 
 :created: 2015-03-07
-
+:features: highlight
 :tags: compilers felix k language myrddin nim objeck programming
 
 [#teaser]
@@ -33,7 +33,7 @@ if number < 0:
   quit QuitFailure
 
 echo fac number
-    
+
 ----
 
 [id=felix]
@@ -45,7 +45,7 @@ echo fac number
 ----
 
 $ flx my_prog.flx arg1 arg2
-    
+
 ----
 
 +++Here's a factorial program, this time in Felix:+++
@@ -71,7 +71,7 @@ done;
 
 // Print factorial
 println $ fac number
-    
+
 ----
 
 [id=myrddin]
@@ -114,7 +114,7 @@ const main = {
         std.exit(1)
     ;;
 }
-    
+
 ----
 
 +++Notice the explicit error handling.+++
@@ -128,7 +128,7 @@ const main = {
 ----
 
 fac:{*/1+!x}
-    
+
 ----
 
 +++If that isn't readable enough, here's another version:+++
@@ -137,7 +137,7 @@ fac:{*/1+!x}
 ----
 
 fac:*/1+!:
-    
+
 ----
 
 +++You can now call it:+++
@@ -146,7 +146,7 @@ fac:*/1+!:
 ----
 
 fac[4]
-    
+
 ----
 
 +++K is actually surprisingly readable once you learn it...provided you don't get a nervous breakdown and blow your eyes out in the process. :)+++
@@ -178,7 +178,7 @@ class Factorial {
         Factorial(number)->PrintLine();
     }
 }
-    
+
 ----
 
 [source]

@@ -1,0 +1,83 @@
+@use 'tobii/src/scss/tobii';
+
+.tobii__btn {
+  border-radius: 10px;
+  --button-background: #00000080;
+}
+
+.tobii__slide {
+  touch-action: none;
+
+  [data-type] {
+    pointer-events: none;
+  }
+}
+
+.imageblock {
+  max-height: 50vh;
+  width: 100%;
+  margin: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .imageblock-inner {
+    position: relative;
+
+    img {
+      max-height: 50vh;
+      max-width: 50vw;
+    }
+
+    .imageblock-text {
+      // TODO: make this appear properly if the text is wider than the image
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      pointer-events: none;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+
+      color: white;
+
+      padding-bottom: 16px;
+
+      visibility: hidden;
+
+      .imageblock-text-inner {
+        padding: 4px 16px;
+        background-color: #595959e6;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+
+    &:hover .imageblock-text {
+      visibility: visible;
+    }
+  }
+}
+
+.image-gallery .content {
+  display: flex;
+  overflow-y: auto;
+
+  .imageblock {
+    // Without this the nested flexboxes get super screwy for some reason
+    height: 25vh;
+    // and this is required to make them not overlap with each other
+    width: unset;
+
+    .imageblock-inner img {
+      max-height: 25vh;
+    }
+  }
+}

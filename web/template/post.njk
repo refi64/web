@@ -3,9 +3,8 @@
 
 {% block title %} {{ metadata.doctitle }} {% endblock %}
 
-{% block head %}
-  <script async src="/js/bundle.lightbox.js"></script>
-{% endblock %}
+{% set features = features | default([]) %}
+{% set features = features.concat((metadata.features | default('')).split(' ')) %}
 
 {% block content %}
   {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}

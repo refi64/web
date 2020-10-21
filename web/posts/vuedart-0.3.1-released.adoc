@@ -1,7 +1,7 @@
 # VueDart 0.3.1 released!
 
 :created: 2017-11-19
-
+:features: highlight
 :tags: vue vuedart
 
 [#teaser]
@@ -33,7 +33,7 @@
     background-color: purple;
   }
 <style>
-    
+
 ----
 
 +++However, there was a bug where these styles would also go into any child components, which basically defeated the entire purpose of scoped styles. Now, by default absolutely no bleeding will take place. If you want bleeding, you can use the+++ ``+++bleeds+++`` +++attribute:+++
@@ -50,7 +50,7 @@
     background-color: purple;
   }
 <style>
-    
+
 ----
 
 +++Note that now, even if you pass+++ __+++bleeds+++__ +++, styles will only bleed into everything+++ __+++except+++__ +++VueDart components. This behavior is less error-prone than before.+++
