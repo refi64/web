@@ -41,7 +41,4 @@ function attachChips(content: HTMLElement) {
   }
 }
 
-dom.attachDomCallbacks(
-  { onPageLoad: attachChips },
-  { restrictPath: '/tags.html' }
-)
+dom.attachDomCallbacks('tags', { onPageLoad: attachChips })

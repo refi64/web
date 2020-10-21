@@ -250,7 +250,7 @@ function updateTobiiLinks() {
     })
 }
 
-dom.attachDomCallbacks({
+dom.attachDomCallbacks('lightbox', {
   onPageLoad: () => {
     updateTobiiLinks()
 

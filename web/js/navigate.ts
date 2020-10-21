@@ -17,6 +17,23 @@ export const localNavigateCompleteEvent = 'local-navigate-complete'
 
 const navigationInterceptorAttached = Symbol('NavigationInterceptorAttached')
 
+function mergeData(options: {
+  from: HTMLElement
+  to: HTMLElement
+  keys: string[]
+}) {
+  for (let key of options.keys) {
+    console.log(`key: ${options.from.dataset[key]}`)
+
+    let value = options.from.dataset[key]
+    if (value) {
+      options.to.dataset[key] = value
+    } else {
+      delete options.to.dataset[key]
+    }
+  }
+}
+
 function mergeTextNode({ from, to }: { from: HTMLElement; to: HTMLElement }) {
   to.innerText = from.innerText
 }
@@ -49,17 +66,17 @@ function updateKeyedChildren<E extends HTMLElement>(options: {
   key: (e: E) => string
   onAdded?: (e: E) => void
 }) {
-  let oldElements = mapOfElements(
+  let incomingElements = mapOfElements(
     options.key,
     options.from.querySelectorAll(options.selector) as NodeListOf<E>
   )
-  let newElements = mapOfElements(
+  let currentlyPresentElements = mapOfElements(
     options.key,
     options.to.querySelectorAll(options.selector) as NodeListOf<E>
   )
 
-  let removed = mapSubtract(oldElements, newElements)
-  let added = mapSubtract(newElements, oldElements)
+  let removed = mapSubtract(currentlyPresentElements, incomingElements)
+  let added = mapSubtract(incomingElements, currentlyPresentElements)
 
   for (let key in removed) {
     console.debug(`removing: ${options.selector} -> ${key}`)
@@ -68,7 +85,8 @@ function updateKeyedChildren<E extends HTMLElement>(options: {
 
   for (let key in added) {
     console.debug(`adding: ${options.selector} -> ${key}`)
-    options.from.appendChild(added[key])
+    console.debug(options.to)
+    options.to.appendChild(added[key])
     if (options.onAdded) {
       options.onAdded(added[key])
     }
@@ -94,6 +112,21 @@ function mergeHead({
     to,
     selector: 'script',
     key: (e: HTMLScriptElement) => e.src,
+    onAdded: (el) => {
+      // After merge, no script tags will actually be loaded, so those will need
+      // to be re-added manually. We track all the already-loaded ones before
+      // anything gets replaced, so later on those don't get reloaded when we
+      // re-add the new scripts.
+      var newEl = document.createElement('script')
+      newEl.textContent = el.textContent
+
+      if (el.src) {
+        newEl.src = el.src
+      }
+
+      newEl.async = el.async
+      el.replaceWith(newEl)
+    },
   })
 
   let unloadedStyles = new Set()
@@ -104,6 +137,7 @@ function mergeHead({
       onAdded = (element: HTMLLinkElement) => {
         unloadedStyles.add(element.href)
         element.onload = element.onerror = () => {
+          console.log(`removing ${element.href} from ${unloadedStyles}`)
           unloadedStyles.delete(element.href)
           if (unloadedStyles.size == 0) {
             onStylesLoaded()
@@ -148,45 +182,22 @@ async function localNavigateTo(target: string, kind: EventKind) {
   let newDoc = parser.parseFromString(html, 'text/html')
   let newContent: HTMLElement = newDoc.querySelector('.page-content')
 
-  // After morph, no script tags will actually be loaded, so those will need
-  // to be re-added manually. We track all the already-loaded ones before
-  // anything gets replaced, so later on those don't get reloaded when we
-  // re-add the new scripts.
-  let alreadyLoadedScripts = Array.from(document.querySelectorAll('script'))
-    .map((el) => el.src)
-    .filter((src) => src)
-
   document.querySelector('.page-content').replaceWith(newContent)
   attachNavigationInterceptorsTo(newContent)
 
+  mergeData({ from: newDoc.body, to: document.body, keys: ['features'] })
+
   mergeTextNode({
-    from: document.querySelector('.side-title'),
-    to: newDoc.querySelector('.side-title'),
+    from: newDoc.querySelector('.side-title'),
+    to: document.querySelector('.side-title'),
   })
 
   mergeHead({
-    from: document.head,
-    to: newDoc.head,
+    from: newDoc.head,
+    to: document.head,
     onStylesLoaded: () => {
       document.dispatchEvent(new Event(localNavigateCompleteEvent))
     },
-  })
-
-  document.querySelectorAll('script').forEach((el) => {
-    if (el.src && alreadyLoadedScripts.includes(el.src)) {
-      console.debug(`skipping ${el.src} because it's already loaded`)
-      return
-    }
-
-    var newEl = document.createElement('script')
-    newEl.textContent = el.textContent
-
-    if (el.src) {
-      newEl.src = el.src
-    }
-
-    newEl.async = el.async
-    el.replaceWith(newEl)
   })
 
   if (kind == EventKind.LINK) {

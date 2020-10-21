@@ -325,6 +325,9 @@ pre {
 
   & + .page-content {
     opacity: 0;
+    // Page content may rely on stylesheets that aren't present yet while still
+    // loading, meaning that it might overflow its X axis.
+    overflow: hidden;
   }
 
   .circle {

@@ -37,7 +37,7 @@ function attachToChangingElements(content: HTMLElement) {
     .forEach((el) => (el.unbounded = true))
 }
 
-dom.attachDomCallbacks({
+dom.attachDomCallbacks('core', {
   onRootLoad: attachToPersistentElements,
   onPageLoad: (content: HTMLElement) => {
     attachToChangingElements(content)

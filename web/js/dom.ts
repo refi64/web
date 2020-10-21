@@ -37,20 +37,16 @@ export interface Callbacks {
   onLocalNavigateEnd?: () => void
 }
 
-export interface Options {
-  restrictPath?: string
-}
-
-export function attachDomCallbacks(callbacks: Callbacks, options?: Options) {
+export function attachDomCallbacks(feature: string, callbacks: Callbacks) {
   function navigateBeginListener() {
     callbacks.onLocalNavigateBegin()
   }
 
   function navigateCompleteListener() {
-    if (
-      options?.restrictPath &&
-      window.location.pathname !== options.restrictPath
-    ) {
+    let usesRemovedFeature = !document.body.dataset.features
+      .split(' ')
+      .includes(feature)
+    if (usesRemovedFeature) {
       document.removeEventListener(
         localNavigateBeginEvent,
         navigateBeginListener
