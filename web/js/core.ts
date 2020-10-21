@@ -7,8 +7,6 @@ import { MDCTopAppBar } from '@material/top-app-bar'
 import { attachNavigationInterceptors } from './navigate'
 import * as dom from './dom'
 
-const mdcSym = Symbol('MDC')
-
 function attachToPersistentElements() {
   let drawerEl = document.querySelector('.mdc-drawer')
   let drawer = dom.attachToElement(MDCDrawer, drawerEl)
@@ -18,6 +16,10 @@ function attachToPersistentElements() {
     document.querySelector('.mdc-top-app-bar')
   )
   topAppBar.listen('MDCTopAppBar:nav', () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+
     drawer.open = !drawer.open
   })
 
@@ -42,6 +44,13 @@ dom.attachDomCallbacks({
   },
 
   onLocalNavigateBegin: () => {
+    let drawer = dom.getComponent<MDCDrawer>(
+      document.querySelector('.mdc-drawer')
+    )
+    if (drawer) {
+      drawer.open = false
+    }
+
     document.querySelector('.loading').classList.add('loading-active')
   },
 
