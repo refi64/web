@@ -38,6 +38,22 @@ function mergeTextNode({ from, to }: { from: HTMLElement; to: HTMLElement }) {
   to.innerText = from.innerText
 }
 
+function replaceScriptWithSelf(script: HTMLScriptElement) {
+  // After merge, no script tags will actually be loaded, so those will need
+  // to be re-added manually. We track all the already-loaded ones before
+  // anything gets replaced, so later on those don't get reloaded when we
+  // re-add the new scripts.
+  var replacement = document.createElement('script')
+  replacement.textContent = script.textContent
+
+  if (script.src) {
+    replacement.src = script.src
+  }
+
+  replacement.async = script.async
+  script.replaceWith(replacement)
+}
+
 function setSubtract(xs: string[], ys: string[]): string[] {
   let ysSet = new Set(ys)
   return xs.filter((x) => !ysSet.has(x))
@@ -85,7 +101,6 @@ function updateKeyedChildren<E extends HTMLElement>(options: {
 
   for (let key in added) {
     console.debug(`adding: ${options.selector} -> ${key}`)
-    console.debug(options.to)
     options.to.appendChild(added[key])
     if (options.onAdded) {
       options.onAdded(added[key])
@@ -112,21 +127,7 @@ function mergeHead({
     to,
     selector: 'script',
     key: (e: HTMLScriptElement) => e.src,
-    onAdded: (el) => {
-      // After merge, no script tags will actually be loaded, so those will need
-      // to be re-added manually. We track all the already-loaded ones before
-      // anything gets replaced, so later on those don't get reloaded when we
-      // re-add the new scripts.
-      var newEl = document.createElement('script')
-      newEl.textContent = el.textContent
-
-      if (el.src) {
-        newEl.src = el.src
-      }
-
-      newEl.async = el.async
-      el.replaceWith(newEl)
-    },
+    onAdded: replaceScriptWithSelf,
   })
 
   let unloadedStyles = new Set()
@@ -170,7 +171,7 @@ async function localNavigateTo(target: string, kind: EventKind) {
 
   window.currentState = target
 
-  let resp = await fetch(target)
+  let resp = await fetch(target, { cache: 'no-cache' })
   if (resp.status != 200) {
     // Fall back.
     throw Error('navigation failure')
@@ -199,6 +200,8 @@ async function localNavigateTo(target: string, kind: EventKind) {
       document.dispatchEvent(new Event(localNavigateCompleteEvent))
     },
   })
+
+  document.body.querySelectorAll('script').forEach(replaceScriptWithSelf)
 
   if (kind == EventKind.LINK) {
     if (target.includes('#')) {

@@ -15,11 +15,16 @@ function attachChips(content: HTMLElement) {
       el.style.display = 'none'
     })
 
-    let selector = selectedTags.map((tag) => `.tag-${tag}`).join('')
-    content.querySelectorAll(selector).forEach((el: HTMLElement) => {
-      el.setAttribute(matchesAttr, '')
-      el.style.display = 'initial'
-    })
+    if (selectedTags.length) {
+      let selector = selectedTags.map((tag) => `.tag-${tag}`).join('')
+      content.querySelectorAll(selector).forEach((el: HTMLElement) => {
+        el.setAttribute(matchesAttr, '')
+        el.style.display = 'initial'
+      })
+    }
+
+    let ref = selectedTags.length ? `#${selectedTags.join(' ')}` : '#'
+    history.replaceState(history.state, ref, ref)
   }
 
   let chipSet = dom.attachToElement(
