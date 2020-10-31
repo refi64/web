@@ -4,8 +4,8 @@
 {% set features = features | default([]) %}
 {% set features = (features.push("tags"), features) %}
 
-{% block title %} Tags {% endblock %}
-{% block side_title %} Tags {% endblock %}
+{% set title = 'Tags' %}
+{% set side_title = true %}
 
 <!-- XXX: garbage time complexity but we don't have enough tags to care (yet) -->
 {% set tags = [] %}

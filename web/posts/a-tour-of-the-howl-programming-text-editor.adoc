@@ -1,8 +1,8 @@
 # A tour of the Howl programming text editor
 
 :created: 2016-03-20
-
-:tags: howl moonscript lua video youtube editor
+:description: A video tour of the Howl text editor
+:tags: howl moonscript video
 
 [#teaser]
 --

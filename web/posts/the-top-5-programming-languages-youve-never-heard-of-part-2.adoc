@@ -2,7 +2,7 @@
 
 :created: 2015-03-08
 :features: highlight
-:tags: compilers felix k language myrddin nim objeck programming
+:tags: programming felix k myrddin nim objeck
 
 [#teaser]
 --

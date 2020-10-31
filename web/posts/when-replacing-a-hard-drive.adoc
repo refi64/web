@@ -2,7 +2,10 @@
 
 :created: 2017-05-26
 :features: lightbox
-:tags: laptop motherboard usb
+:tags: laptop
+:description: Have you ever tried to do something simple, like changing a lightbulb, but \
+              in the end you end up rewiring your house, the neighbor's house, and the \
+              governer's ice box? Yeah, that's how I felt. It all started with...
 
 [#teaser]
 --

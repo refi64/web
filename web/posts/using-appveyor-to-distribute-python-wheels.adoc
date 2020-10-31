@@ -2,7 +2,11 @@
 
 :created: 2014-09-21
 :features: highlight lightbox
-:tags: appveyor ci python wheels
+:tags: programming appveyor python wheels
+:description: Wheels are the future of distribution. No more messy broken setup.py \
+              scripts or need for a compiler to build C extensions! Of course, this has \
+              a glaring issue: a Linux user can't build Wheels of their C extension for \
+              Windows. Here, we'll cover building them automatically using AppVeyor.
 
 [#teaser]
 --

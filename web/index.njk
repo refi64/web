@@ -1,7 +1,7 @@
 {% extends "web/template/main.njk" %}
 {% from "web/template/_macros.njk" import post_title %}
 
-{% block title %} Home {% endblock %}
+{% set title = 'Home' %}
 
 {% block content %}
   {% for post in posts %}

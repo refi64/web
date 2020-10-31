@@ -1,6 +1,16 @@
 {% extends "web/template/adoc.njk" %}
 {% from "web/template/_macros.njk" import post_title %}
 
+{% set ogtype = 'article' %}
+{% block head %}
+  <meta name="og:article:published_time" content="{{metadata.created}}">
+  {% for tag in metadata.tags.split(' ') %}
+    <meta name="og:article:tags" content="{{tag}}">
+  {% endfor %}
+{% endblock %}
+
+{% set description = metadata.description %}
+
 {% block content %}
   {{ post_title(title = metadata.doctitle, url = '#', created = metadata.created) }}
 

@@ -37,7 +37,7 @@ class GitContextWorker extends utils.WorkerImpl<Args> {
     }
 
     fs.writeFileSync(args.output, JSON.stringify(result))
-    worker.log(`Wrote ${args.output}`)
+    worker.debug(`Wrote ${args.output}`)
   }
 }
 

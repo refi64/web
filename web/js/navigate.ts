@@ -35,7 +35,9 @@ function mergeData(options: {
 }
 
 function mergeTextNode({ from, to }: { from: HTMLElement; to: HTMLElement }) {
-  to.innerText = from.innerText
+  // XXX: trim here is nasty, for some reason side-title has tons of extra
+  // whitespace in its innerText.
+  to.innerText = from.innerText.trim()
 }
 
 function replaceScriptWithSelf(script: HTMLScriptElement) {

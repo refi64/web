@@ -2,7 +2,7 @@
 
 :created: 2014-09-15
 :features: highlight
-:tags: hack c preprocessor programming
+:tags: c preprocessor programming
 
 [#teaser]
 --

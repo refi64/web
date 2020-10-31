@@ -2,7 +2,7 @@
 
 :created: 2017-11-19
 :features: highlight
-:tags: vue vuedart
+:tags: programming vue dart vuedart
 
 [#teaser]
 --

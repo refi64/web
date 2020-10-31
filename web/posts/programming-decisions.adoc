@@ -1,8 +1,10 @@
 # Programming Decisions
 
 :created: 2015-06-19
-
-:tags: programming joke satire
+:description: A farmer couldn't figure out how to maintain his web servers, \
+              so he gave it to his animals. However, they simply couldn't \
+              agree on what tools to use.
+:tags: programming humor
 
 [#teaser]
 --

@@ -8,9 +8,7 @@
   {% set features = features | default([]) %}
   {% set features = (features.push("core"), features.reverse(), features) %}
 
-  <title>
-    {% block title %} {% endblock %} - re:fi.64's site
-  </title>
+  <title>{{title}} - re:fi.64's site</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -48,6 +46,17 @@
   <meta name="viewport" content="width=device-width" />
   <meta charset="utf-8" />
 
+  {% if description %}
+    <meta name="description" content="{{description}}" />
+  {% endif %}
+
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:type" content="{{ogtype | default('website')}}">
+  <meta property="og:site_name" content="re:fi.64's site">
+  {% if description %}
+    <meta name="og:description" content="{{description}}">
+  {% endif %}
+
   {% block head %} {% endblock %}
 </head>
 
@@ -59,7 +68,9 @@
           menu
         </button>
         <span class="mdc-top-app-bar__title">re:fi.64</span>
-        <span class="side-title mdc-typography--headline6">{% block side_title %}{% endblock %}</span>
+        <span class="side-title mdc-typography--headline6">
+          {% if side_title %} {{title}} {% endif %}
+        </span>
       </section>
     </div>
   </header>

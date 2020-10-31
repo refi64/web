@@ -1,8 +1,11 @@
 #  An idea for concise, checked error handling in imperative languages
 
 :created: 2016-03-20
+:description: This is an idea I've had for a while on an error handling model \
+              that tries to combine safe, checked code with the conciseness of \
+              unchecked exceptions.
 :features: highlight
-:tags: programming errors crystal
+:tags: programming crystal
 
 [#teaser]
 --

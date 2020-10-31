@@ -2,7 +2,11 @@
 
 :created: 2015-11-28
 :features: highlight
-:tags: c programming preprocessor hack
+:description: I've been using C for a project I've been working on, and one \
+              thing I find annoying are manually-managed arrays. This made me \
+              wonder: is it possible to implement a type-safe, generic array \
+              type in C?
+:tags: c programming preprocessor
 
 [#teaser]
 --

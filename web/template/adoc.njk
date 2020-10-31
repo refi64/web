@@ -4,4 +4,4 @@
 {% set features = features | default([]) %}
 {% set features = features.concat((metadata.features | default('')).split(' ')) %}
 
-{% block title %} {{ metadata.doctitle }} {% endblock %}
+{% set title = metadata.doctitle %}

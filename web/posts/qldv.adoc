@@ -2,7 +2,11 @@
 
 :created: 2018-01-02
 :features: highlight
-:tags: programming hack assembly qldv elf
+:description: If you use a non-Debian/Ubuntu distro (I recently switched to \
+              Arch), you've probably had a moment where you downloaded some \
+              binaries and tried running them, only to get version information \
+              warnings. How hard could it be to silence them?
+:tags: programming assembly qldv elf
 
 [#teaser]
 --

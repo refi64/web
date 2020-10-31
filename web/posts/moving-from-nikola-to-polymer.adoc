@@ -1,6 +1,9 @@
 # Moving from Nikola to...Polymer!?
 
 :created: 2016-05-29
+:description: We've all done those things before. You know it's a horrible \
+              idea, but it just sounds so cool that you can't resist... Well, \
+              that's why I decided to port my website to Polymer.
 :features: lightbox
 :tags: website nikola polymer
 

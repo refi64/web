@@ -2,7 +2,10 @@
 
 :created: 2017-11-19
 :features: highlight
-:tags: vue vuedart
+:tags: programming vue dart vuedart
+:description: After a few months of quiet, I'm super proud to announce VueDart 0.3! \
+              Unlike 0.2 (which should've been a minor release, except I wasn't thinking \
+              clearly), 0.3 brings an enormous amount of new features, bugfixes, and more.
 
 [#teaser]
 --

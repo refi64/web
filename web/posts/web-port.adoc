@@ -1,7 +1,9 @@
 # Going from Polymer to Vue, from JavaScript to Dart
 
 :created: 2017-10-10
-:tags: programming website polymer dart vue
+:tags: programming website polymer dart vue vuedart
+:description: Remember the post a while back where I rewrote my website in Polymer? \
+              Yeah? Well, I rewrote it. Again.
 
 [#teaser]
 --

@@ -2,7 +2,10 @@
 
 :created: 2018-10-08
 :features: highlight lightbox
-:tags: vue vuedart
+:tags: programming vue dart vuedart
+:description: After almost a year, I'm happy to to finally be able to announce VueDart \
+              0.4! It's got Dart 2.0 support, a ton of great changes, a new website, and \
+              more. This is definitely a much bigger release than even 0.3 was!
 
 [#teaser]
 --
