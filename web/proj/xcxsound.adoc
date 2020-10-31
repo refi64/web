@@ -1,5 +1,7 @@
 # XCXSound
 
+:features: lightbox
+
 XCXSound is a tool that makes it easier to use custom music in Xenoblade
 Chronicles X. Runs on Windows and Linux (OSX should work, but it's untested).
 

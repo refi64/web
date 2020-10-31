@@ -39,18 +39,25 @@ nunjucks_library(
 )
 
 nunjucks_library(
-    name = "post",
+    name = "adoc",
     context_files = [":template"],
+    primary = "adoc.njk",
+    deps = [":template"],
+)
+
+nunjucks_library(
+    name = "post",
+    context_files = [":adoc"],
     primary = "post.njk",
     deps = [
+        ":adoc",
         ":macros",
-        ":template",
     ],
 )
 
 nunjucks_library(
     name = "proj",
-    context_files = [":template"],
+    context_files = [":adoc"],
     primary = "proj.njk",
-    deps = [":template"],
+    deps = [":adoc"],
 )

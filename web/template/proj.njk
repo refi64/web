@@ -1,12 +1,6 @@
-{% extends "web/template/main.njk" %}
-{% from "web/template/_macros.njk" import post_title %}
+{% extends "web/template/adoc.njk" %}
 
-{% block title %} {{ metadata.doctitle }} {% endblock %}
 {% block side_title %} {{ metadata.doctitle }} {% endblock %}
-
-{% block head %}
-  <script async src="/js/bundle.lightbox.js"></script>
-{% endblock %}
 
 {% block content %}
   <h1 class="mdc-typography--headline3 post-section-header">
