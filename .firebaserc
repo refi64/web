@@ -5,8 +5,8 @@
   "targets": {
     "refi64-hosting": {
       "hosting": {
-        "r64-staging": [
-          "r64-staging"
+        "r64-final": [
+          "r64-final"
         ]
       }
     }

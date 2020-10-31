@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "r64-staging",
+    "target": "r64-final",
     "public": "bazel-bin/web/out",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
@@ -12,6 +12,13 @@
             "value": "max-age=2628000"
           }
         ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/vuedart",
+        "destination": "https://vuedart.dev/",
+        "type": 301
       }
     ]
   }

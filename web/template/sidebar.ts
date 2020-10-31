@@ -19,7 +19,7 @@ export let sidebar: Sidebar = {
     {
       name: 'Report a bug',
       icon: 'bug_report',
-      url: 'https://github.com/refi64/refi64.github.io/issues/new',
+      url: 'https://github.com/refi64/web/issues/new',
     },
   ],
   sections: [
