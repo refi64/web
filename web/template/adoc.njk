@@ -2,6 +2,8 @@
 {% from "web/template/_macros.njk" import post_title %}
 
 {% set features = features | default([]) %}
-{% set features = features.concat((metadata.features | default('')).split(' ')) %}
+{% if metadata.features %}
+  {% set features = features.concat(metadata.features.split(' ')) %}
+{% endif %}
 
 {% set title = metadata.doctitle %}
