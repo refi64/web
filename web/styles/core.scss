@@ -306,6 +306,10 @@ pre {
   margin: 16px 0;
 }
 
+.quoteblock {
+  border-left: solid var(--mdc-theme-on-primary) 2px;
+}
+
 // XXX: this whole thing is insanely ugly
 
 .loading {
