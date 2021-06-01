@@ -19,6 +19,11 @@
         "source": "/vuedart",
         "destination": "https://vuedart.dev/",
         "type": 301
+      },
+      {
+        "source": "/.well-known/host-meta",
+        "destination": "https://social.refi64.com/.well-known/host-meta",
+        "type": 301
       }
     ]
   }
