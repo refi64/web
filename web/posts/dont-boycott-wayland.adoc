@@ -1,0 +1,311 @@
+# We Don't Need to Boycott Wayland
+
+:created: 2020-10-31
+:tags: wayland linux
+:description: This is a response to the "Boycott Wayland" gist, stating that we should \
+              boycott Wayland because something something Red Hat evil and breakage \
+              and...global menus? Well, there were quite a few exaggerations and \
+              misrepresentations in the gist, which will be shown and explained here.
+
+[#teaser]
+--
+If you couldn't tell by the title, this is a response to
+https://gist.github.com/probonopd/9feb7c20257af5dd915e3a9f2d1f2277[this gist], stating
+that we should boycott Wayland because something something Red Hat evil and breakage
+and...global menus? Well, there were quite a few exaggerations and misrepresentations in
+the gist, which will be shown and explained here.
+--
+
+## Why is this misleading?
+
+I'll start off with this: many of the links are misquoted, some don't even support the
+points made with them, and some are highlighted supposed "broken" functionality with
+either wrong dates or bugs that _have already been fixed_.
+
+Yes, Wayland is different than Xorg. It was a complete re-imagining of how a modern and
+less monolithic display protocol should look. Of course, breakage isn't necessarily a
+_good_ thing...but at the same time, some form of breakage is going to be inevitable. As
+we'll see soon, the breakage has mostly been confined to a few specific places (screen
+capture most notably), where the current X way simply would not work with a more
+secure protocol.
+
+Now, I would be lying if I said this hasn't taken a long time to develop, or that I
+haven't missed some of these features, but Linux apps and development are done by many
+individual developers, whether volunteers or paid. As a result, a lot of work _does_ take
+a long time to complete. That being said, X's current policy towards things like screen
+capture and key binding is simply insecure, and it is inevitable that we will have to move
+away from it eventually.
+
+Furthermore, is it really worth throwing the entire protocol away for screen casting
+(which works but needs more adoption) and...global menus? I've been using Wayland on my
+primary system for ages, and the flag workarounds for screen capture in Chromium (as
+mentioned below) have been working fine for me. It's not a perfect solution, but the
+benefits Wayland provides have far exceeded the amount of time I've had to spend tweaking
+the few things that weren't working out of the box.
+
+Some of Xorg's core issues that required breakage to be solved in Wayland, such as it being
+trivially easy to create keyloggers or view _any window without permissions_ really are
+things that you'd expect to see /r/linuxmasterrace mocking Windows over, not problems that
+we should ignore on a supposedly secure system.
+
+One more thing I'd like to add: _many of these links honestly make no sense as sources_ or
+were talking about entirely different things, with some discussion cherry-picked without
+context. Without further ado...
+
+## Screen recording exists...and it's not a Red Hat thing (?)
+
+Screen recording has been available in Wayland for quite some time now, via
+{link-pipewire} and {link-xdg-desktop-portal}. Now, the gist _does_ make allusions to this:
+
+____
+Or force more Red Hat/Gnome components (glib, Portals, Pipewire) on everyone! +[...]+
+There is a workaround for OBS Studio that requires a obs-xdg-portal plugin (which is known
+to be Red Hat/Flatpak-centric, GNOME-centric, "perhaps" works with other desktops)
+____
+
+This is...really, just completely wrong.
+
+I have no idea why anything here would require clients to use GLib. All of the portal
+APIs work over D-Bus, and Pipewire doesn't even require GLib.
+
+xdg-desktop-portal is not a Red Hat, GNOME-specific, or even Flatpak-specific project; KDE has
+https://github.com/KDE/xdg-desktop-portal-kde[a portal backend], and there's even
+https://github.com/emersion/xdg-desktop-portal-wlr[a backend for wlroots-based] compositors.
+The portals
+https://www.phoronix.com/scan.php?page=news_item&px=XDG-Desktop-Portal-Snapped[even have support for snapd].
+
+Even just looking at the
+https://github.com/flatpak/xdg-desktop-portal/graphs/contributors[top contributors],
+we see contributions from employees of Collabora, Igalia, and Mozilla, not just Red Hat.
+
+Pipewire also is not really a project that's particularly tied to Red Hat; yes, the main
+developer is from Red Hat, but he's also a multimedia expert and one of the two creators
+of https://en.wikipedia.org/wiki/GStreamer#Early_days[GStreamer] (a project founded while
+the developer was still at Collabora). As of right now, Collabora is
+https://www.collabora.com/about-us/open-source/open-source-projects/pipewire.html[a leading contributor to Pipewire as well].
+Even http://libregraphicsworld.org/blog/entry/podcast-ep-003-paul-davis-on-fixing-big-linux-audio-issues#main:~:text=PipeWire%20is%20an%20interesting%20project[
+the creator of JACK is interested in Pipewire], despite initially being skeptical.
+
+A lot of the particular linked examples are just bizarre extrapolations:
+
+____
+https://github.com/mhsabbagh/green-recorder ("I am no longer interested in working with
+things like ffmpeg/wayland/GNOME's screen caster or solving the issues related to them or
+why they don't work")
+____
+
+This was targeting Linux screencasting _in general_ as highlighted by the ffmpeg reference.
+
+____
+https://github.com/vkohaupt/vokoscreenNG/issues/51 broken since at least 7 Mar 2020.
+("I have now decided that there will be no Wayland support for the time being. Reason,
+there is no budget for it. Let's see how it looks in a year or two.") - This is the key
+problem. Wayland breaks everything and then expects others to fix the wreckage it caused
+on their own expense.
+____
+
+Looks like I missed the part where the Wayland developers had the ability to update every
+single project in existence and add full Wayland support. Better yet, the issue would
+indicate more lack of time by the developer to be able to push updates, not that Wayland
+"breaks everything".
+
+____
+https://github.com/obsproject/obs-studio/issues/2471 broken since at least 7 Mar 2020.
+("Wayland is unsupported at this time", "There isn't really something that can just be
+easily changed. Wayland provides no capture APIs")
+____
+
+Okay, this one is just laughable. An OBS developer also stated in the same thread:
+
+____
+For reference X11 solutions are very close to the worst possible interface one could design.
+____
+
+which would imply that we can't really stay with X screencasting either, thus ruining the
+entire "just stick with X argument".
+
+Better yet, https://github.com/obsproject/rfcs/pull/14[there's already an RFC open for
+Wayland support]. All the portals they mentioned as "incomplete" do already support the
+screencast APIs anyway, so their knowledge at the time about it was likely already
+outdated.
+
+Now onto "screen sharing", which is the same API problem as "screen casting", but let's
+entertain the idea that it's actually two separate points:
+
+____
+https://github.com/jitsi/jitsi-meet/issues/2350 broken since 3 Jan 2018
+
+https://github.com/jitsi/jitsi-meet/issues/6389 broken since 24 Jan 2016 ("Closing since
+there is nothing we can do from the Jitsi Meet side.") See? Wayland breaks stuff and
+leaves application developers helpless and unable to fix the breakage, even if they wanted.
+____
+
+First off...this is two issues from the same repo. How does this count as two separate
+breakages? I don't even know where "2016" comes from, because the second issue was created
+this year.
+
+The quoted text was not in response to Wayland missing functionality; Pipewire already
+existed at this point. Rather it was related to browsers implementing the screencast API.
+This has been implemented in Chromium behind a flag for years at least, and it was only
+behind a flag because parts of Chromium's UI flow assumed there was no permissions model,
+so it would ask the user to select a window to share after they already selected it in the
+Wayland compositor. This is actively being worked on in both
+https://webrtc-review.googlesource.com/c/src/+/189544[WebRTC] and
+https://chromium-review.googlesource.com/c/chromium/src/+/1942327[Chromium itself].
+
+Firefox has had it in Fedora via downstream patches for quite some time as well, and
+https://bugzilla.mozilla.org/show_bug.cgi?id=1672944[it's also being actively worked on].
+
+____
+https://github.com/flathub/us.zoom.Zoom/issues/22 Zoom broken since at least 4 Jan 2019.
+("Can not start share, we only support wayland on GNOME with Ubuntu (17, 18), Fedora (25
+to 29), Debian 9, openSUSE Leap 15, Arch Linux"). No word about non-GNOME!
+____
+
+"Yes, let's highlight a Linux client that is notoriously buggy and generally terrible."
+
+## Global menus
+
+Again, I don't know why this is split into three sections. But first off:
+
+____
+https://gitlab.com/lestcape/Gnome-Global-AppMenu/-/issues/116 broken since 24 Aug 2018
+("because the lack of the Gtk+ Wayland support for the Global Menu")
+____
+
+*The issue had nothing to do with this, and this is a gross misquoting.* The issue reads:
+
+____
+This Gtk+4 fact, will be sad and will make Gtk+ unusable to the Gnome Global Menu
+extension, as it's implemented now. That's why the Gnome Global Menu extension will be
+discontinued again. The first reason was because the lack of the Gtk+ Wayland support for
+the Global Menu, that was resolved here and now will be because Gtk+ will no longer
+supports generic loadable modules.
+____
+
+In other words, this issue was showing something unrelated, and at the time, Wayland
+support was already working. The date used in the gist ("broken since 24 Aug 2018") is
+also incorrect, since it's pointing to the date the linked issue was filed, at which point
+Wayland support was again working.
+
+GTK's own lack of support for global menus over Wayland itself had little to do with
+Wayland and more to do with GTK itself not wanting to support global menus, as the current
+global menu implementation was very closely targeting Xorg.
+
+Next up:
+
+____
+https://blog.broulik.de/2016/10/global-menus-returning/ ("it uses global window IDs, which
+don’t exist in a Wayland world... no global menu on Wayland, *I thought*, not without
+significant re-engineering effort").
+____
+
+In other words...if you actually read the article, they were able to make it work on
+Wayland *without* the re-engineering. In fact, the whole point of the article was to
+highlight that they were able to get it to work.
+
+____
+KDE had to do additional work to work around it. And it still did not work:
+
+https://bugs.kde.org/show_bug.cgi?id=385880 broken. ("When using the Plasma-Wayland
+session, the global menu does not work.")
+____
+
+The linked bug literally says this was fixed in 5.20.
+
+____
+https://blog.broulik.de/2016/10/global-menus-returning/ broke non-KDE platformplugins. As
+a result, global menus now need _KDE_NET_WM_APPMENU_OBJECT_PATH which only the KDE
+platformplugin sets, leaving everyone else in the dark
+____
+
+*This is literally the same link as above*. Why is this a separate point?
+
+In addition, non-KDE Qt apps already often needed tweaks to expose global menus,
+because _it was always a separate plugin_ and not part of Qt itself, as
+https://askubuntu.com/questions/588844/how-to-enable-global-application-menu-in-rstudio[shown
+by these hacks to make global menus work in RStudio].
+
+## AppImages being required to ship a Qt plugin
+
+____
+https://blog.martin-graesslin.com/blog/2018/03/unsetting-qt_qpa_platform-environment-variable-by-default/
+broke AppImages that don't ship a special Wayland Qt plugin. "This affects proprietary
+applications, FLOSS applications bundled as appimages, FLOSS applications bundled as
+flatpaks and not distributed by KDE and even the Qt installer itself. In my opinion this
+is a showstopper for running a Wayland session."
+____
+
+*Once again, this has been fixed:*
+
+____
+The best solution is for Qt including the QPA platform plugin and having a proper
+auto-detection based on XDG_SESSION_TYPE. The situation will improve with Qt 5.11, but it
+doesn’t really help as the Qt LTS versions will continue to face the problem.
+
+For now we implemented a change in Plasma 5.13 so that we don’t need to set the env variable
+any more. Plasma is able to select the appropriate platform plugin based on XDG_SESSION_TYPE
+environment variable. Non-Plasma processes will use the default platform plugin. With Qt
+< 5.11 this is xcb, with Qt 5.11 this will most likely change to wayland. KDE’s flatpak
+applications pick Wayland by default in a Wayland session and are unaffected by the change.
+____
+
+Really, I'd argue the actual problem is trying to bundle every individual dependency into
+a single file and expecting the users to never have to add anything else? This is pretty
+bizarre especially because it's no different than having to include the global menu
+platform plugin to make global menus work, which AppImages already need! In other words,
+this is just an AppImage problem and its style clashing with the Qt reliance on various
+forms of dynamically-loaded plugins.
+
+## Side note: what issues does Wayland solve?
+
+The opening to the article says:
+
+____
+Wayland solves no issues I have
+____
+
+I'd like to make a quick jab at this statement: just because you don't have issues doesn't
+imply that aren't issues that others are stuck dealing with or fixing. Xorg's APIs are
+quite nasty, and developers have to deal with them. There are things that Wayland can
+support easily but X cannot, and there are people who have to deal with those.
+
+https://www.linux-magazine.com/Online/Features/Is-Wayland-the-New-X[This article] covers
+a few of the reasons X is a mess:
+
+____
+Stone traces the earliest origins of Wayland to a page on the X.Org wiki started by Adam Jackson called X12. “It wasn’t a serious attempt at a design,” Stone stresses, “but a list of things we would do differently if we had a chance to rework the core protocol.”
+
+For many developers, this list helped codify the problems with X11. “Some of these issues were just out-and-out problems with the core protocol,” Stone says, “but a lot of them were to do with the fact that, in the 26 years since X11 was created, everything around it has changed, both hardware and applications.” Admittedly, X is extensible, but, *with the average X server running an average of 23 out of 27 extensions, many X developers feel that “we’ve kicked that can as far down the road as we can.”*
+
+To make matters worse, because X.org policy is never to break backward compatibility, *today, X includes four separate input models “reflecting the evolution from keyboard and three-button mouse to full multi-touch,” four display models, and two rendering models – not one of which has priority over the others, even though some are obsolete*.
+
+Consequently, the effort to keep X11 running is passing the point of diminishing returns. Although the last few years have seen numerous improvements, most of the easy improvements have already been implemented. Typically today, “*Solving even the most tiny of issues, if [it was] actually solvable at all, would involve a massively disproportionate amount of effort – which would, in itself, create problems in the future,*” says Stone.
+____
+
+Wayland has seen
+https://www.phoronix.com/scan.php?page=news_item&px=Sony-Using-Flutter-Wayland[significant
+adoption in the embedded space]:
+
+____
++[...]+ increasing number of embedded/SoC vendors focusing on Wayland support over other
+display stacks +[...]+
+____
+
+It's even
+https://blogs.igalia.com/dape/2018/03/21/updated-chromium-legacy-wayland-support/#post-179:~:text=LG%20has%20been%20shipping%20a%20full%20Wayland%20experience%20on%20the%20webOS%20TV%20products[used
+in TVs]:
+
+____
+Even if Wayland was not used on Linux desktop, a bunch of embedded devices have been using
+Wayland for their display server for quite some time. LG has been shipping a full Wayland
+experience on the webOS TV products.
+____
+
+Of course, as mentioned in the intro, there are very real security benefits as well. I
+think it would be rather misguided then to only show it as a source of breakage and
+problems, rather than something that caused breakage in order to improve what could not
+be improved with the same APIs.
+
+:link-pipewire: https://pipewire.org/[pipewire]
+:link-xdg-desktop-portal: https://github.com/flatpak/xdg-desktop-portal[xdg-desktop-portal]
