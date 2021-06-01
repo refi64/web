@@ -7,6 +7,16 @@
   {% for tag in metadata.tags.split(' ') %}
     <meta name="og:article:tags" content="{{tag}}">
   {% endfor %}
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{settings.ga_property_id}}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '{{settings.ga_property_id}}');
+  </script>
 {% endblock %}
 
 {% set description = metadata.description %}
