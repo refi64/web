@@ -1,0 +1,2 @@
+#!/bin/bash
+rclone copy drive:audio-storage/exports web/images/posts/audio-storage

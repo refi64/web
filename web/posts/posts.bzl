@@ -5,6 +5,7 @@ TODO
 load("//:build/pages.bzl", "page")
 
 POST_PAGES = [
+    page(src = "audio-storage.adoc"),
     page(src = "dont-boycott-wayland.adoc"),
     # This was a test page
     # page(src = "test.adoc"),
