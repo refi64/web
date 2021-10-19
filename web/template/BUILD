@@ -16,7 +16,6 @@ nunjucks_library(
 nunjucks_literal_context(
     name = "settings_context",
     context = {
-        "ga_property_id": SETTINGS.ga_property_id,
         "hyvor_website_id": SETTINGS.hyvor_website_id,
     },
     namespace = "settings",
